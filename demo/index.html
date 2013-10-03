@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Demo</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Libraries -->
+    <link rel="stylesheet" href="style/bootstrap.css">
+    <link rel="stylesheet" href="style/bootstrap_theme.css">
+    <link rel="stylesheet" href="style/demo.css">
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>hhvm.js</h1>
+        </div>
+        
+        <div id="editor" class="row">
+            <div class="col-md-6 col-xs-6">
+                <h2>PHP code</h2>
+                <textarea id="code" class="form-control" rows="10">
+&lt;?php
+echo "Hello, world!";
+</textarea><br>
+            </div>
+            <div class="col-md-6 col-xs-6">
+                <h2>Output</h2>
+                <textarea id="output" class="form-control" rows="10" readonly></textarea>
+            </div>
+        </div>
+        <button id="btn-run" class="btn btn-primary btn-lg">Run</button>
+    </div>
+    
+    <script src="../src/vendor/script.js"></script>
+    <script src="scripts/demo.js"></script>
+</body>
+</html>
