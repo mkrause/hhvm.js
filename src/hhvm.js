@@ -1,7 +1,8 @@
-$script([
-        'vendor/underscore'
+define([
+        'vendor/underscore',
+        'lib/hhbc'
     ], function() {
-        var hhvm = window.hhvm = function(options) {
+        var hhvm = function(options) {
             this.output = "";
             this.stack = [];
         };
@@ -9,5 +10,7 @@ $script([
         hhvm.prototype.run = function(hhbc) {
             this.output = "FIXME";
         };
+        
+        return hhvm;
     }
 );
