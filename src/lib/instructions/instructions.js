@@ -1,10 +1,10 @@
 define([
         'lib/hhbc'
     ], function(hhbc) {
-        return [
+      return [
             {name: "LowInvalid", func: null},
             // 1. Basic instructions
-            {name: "Nop", func: hhbc.nop},
+            {name: "Nop", func: hhbc.Nop},
             {name: "PopC", func: null},
             {name: "PopV", func: null},
             {name: "PopR", func: null},
@@ -13,12 +13,16 @@ define([
             {name: "Unbox", func: null},
             {name: "BoxR", func: null},
             {name: "UnboxR", func: null},
-            
+
             // 2. Literal and constant instructions
-            {name: "Null", func: null},
-            {name: "True", func: null},
-            {name: "False", func: null},
-            {name: "NullUninit", func: null},
+            {name: "Null", func: hhbc.Null},
+            {name: "True", func: hhbc.True},
+            {name: "False", func: hhbc.False},
+            {name: "NullUninit", func: hhbc.NullUninit},
+            {name: "Int", func: hhbc.Int},
+            {name: "Double", func: hhbc.Double},
+            {name: "String", func: null},
+            {name: "Array", func: null},
             {name: "NewArray", func: null},
             {name: "NewPackedArray", func: null},
             {name: "AddElemC", func: null},
@@ -33,9 +37,10 @@ define([
             {name: "CnsU", func: null},
             {name: "ClsCns", func: null},
             {name: "ClsCnsD", func: null},
-            
+
             // 3. Operator instructions
-            //TODO
+            {name: "Print", func: hhbc.Print},
+
             // 4. Control flow instructions
             //TODO
             // 5. Get instructions
@@ -58,6 +63,6 @@ define([
             //TODO
             // 14. Continuation creation and execution
             //TODO
-            ]
+      ]
     }
 );

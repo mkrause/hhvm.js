@@ -1,9 +1,14 @@
 define([
         'vendor/underscore',
-        'lib/instructions/basic'
-    ], function(_, basic) {
-        return merge(
-            basic
-        );
+        'lib/util/merge',
+        'lib/instructions/basic',
+        'lib/instructions/literals',
+        'lib/instructions/operators'
+    ], function(_, merge, basic, literals, operators) {
+        return merge([
+            basic,
+            literals,
+            operators
+        ]);
     }
 );

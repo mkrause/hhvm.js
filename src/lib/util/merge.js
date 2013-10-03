@@ -1,8 +1,8 @@
 define([], function() {
-    return function() {
+    return function(objs) {
         var merged = {};
-        for (var argIdx in arguments) {
-            var obj = arguments[argIdx];
+        for (var objIdx in objs) {
+            var obj = objs[objIdx];
             for (var propName in obj) {
                 merged[propName] = obj[propName];
             }

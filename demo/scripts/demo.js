@@ -4,21 +4,24 @@ require.config({
         demo: '../demo/scripts',
         jquery: '../demo/scripts/vendor/jquery'
     },
-    shims: {
+    shim: {
         jquery: { exports: 'jQuery' }
     }
 });
 
 define([
         'jquery',
-        'hhvm'
-    ], function($, hhvm) {
+        'hhvm',
+        'lib/instructions/opcodes'
+    ], function($, Hhvm, opcodes) {
         $(document).ready(function() {
             $('#btn-run').click(function() {
-                var vm = new hhvm();
+                var vm = new Hhvm([opcodes.Int, 0, 0, 0, 0, 0, 0, 0, 42, opcodes.Print]);
                 vm.run();
                 
-                $('#output').text(vm.output);
+                var output = vm.output;
+                //output += "\n\n====\n\nStack:\n" + vm.stack;
+                $('#output').text(output);
             });
         });
     }

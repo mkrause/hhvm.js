@@ -2,29 +2,32 @@ define([
         'vendor/underscore'
     ], function(_) {
         return {
-            Null: function(vm) {
-                vm.stack.push(vm.createNull());
+            Null: function() {
+                this.stack.push(this.createNull());
             },
-            True: function(vm) {
-                vm.stack.push(vm.createTrue());
+            True: function() {
+                this.stack.push(this.createTrue());
             },
-            False: function(vm) {
-                vm.stack.push(vm.createFalse());
+            False: function() {
+                this.stack.push(this.createFalse());
             },
-            NullUninit: function(vm) {
-                vm.stack.push(vm.createUninit());
+            NullUninit: function() {
+                this.stack.push(this.createUninit());
             },
-            Int: function(vm) {
-                vm.stack.push(vm.arg());
+            Int: function(byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8) {
+                // Since JavaScript uses doubles, it can only represent integers exactly up to
+                // 2^53. So for now, we only support only 32 bit integers
+                var value = byte8 | byte7 << 8 | byte6 << 16 | byte5 << 24;
+                this.stack.push(value);
             },
-            Double: function(vm) {
-                vm.stack.push(vm.arg());
+            Double: function() {
+                this.stack.push(this.arg());
             },
-            String: function(vm) {
-                vm.stack.push(vm.litstr(vm.arg());
+            String: function() {
+                this.stack.push(this.litstr(this.arg()));
             },
-            Array: function(vm) {
-                vm.stack.push(vm.array(vm.arg()));
+            Array: function() {
+                this.stack.push(this.array(this.arg()));
             },
         };
     }
