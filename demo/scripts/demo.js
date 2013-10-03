@@ -12,11 +12,12 @@ require.config({
 define([
         'jquery',
         'hhvm',
+        'assemble',
         'lib/instructions/opcodes'
-    ], function($, Hhvm, opcodes) {
+    ], function($, Hhvm, assemble, opcodes) {
         $(document).ready(function() {
             $('#btn-run').click(function() {
-                var vm = new Hhvm([opcodes.Int, 0, 0, 0, 0, 0, 0, 0, 42, opcodes.Print]);
+                var vm = new Hhvm(assemble($('#input').val()));
                 vm.run();
                 
                 var output = vm.output;

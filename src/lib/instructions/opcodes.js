@@ -2,9 +2,12 @@ define([
         'vendor/underscore',
         'lib/instructions/instructions'
     ], function(_, instructions) {
-        var opcodes = _.invert(_.map(instructions, function(instr, index) {
-            return instr.name;
-        }));
+        // Create a mapping from mnemonic to opcode from the instructions list
+        var opcodes = {};
+        _.each(instructions, function(instr, key) {
+            opcodes[instr.name] = parseInt(key, 10);
+        });
+        
         return opcodes;
     }
 );

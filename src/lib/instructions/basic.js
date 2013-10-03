@@ -2,7 +2,7 @@ define([
         'vendor/underscore'
     ], function(_) {
         return {
-            Nop: function() { this.print("NOP"); },
+            Nop: function() {},
             PopC: function() {
                 this.stack.pop();
             },
