@@ -5,11 +5,15 @@ define([
             this.stack = [];
         };
         
+        Stack.prototype.peek = function() {
+            return this.stack[this.stack.length - 1];
+        };
+        
         Stack.prototype.push = function(value) {
             this.stack.push(value);
         };
         
-        Stack.prototype.pop = function(value) {
+        Stack.prototype.pop = function() {
             return this.stack.pop();
         };
         

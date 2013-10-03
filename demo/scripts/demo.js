@@ -17,7 +17,8 @@ define([
     ], function($, Hhvm, assemble, opcodes) {
         $(document).ready(function() {
             $('#btn-run').click(function() {
-                var vm = new Hhvm(assemble($('#input').val()));
+                var input = assemble($('#input').val());
+                var vm = new Hhvm(input);
                 vm.run();
                 
                 var output = vm.output;

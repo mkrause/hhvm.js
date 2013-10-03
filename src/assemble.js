@@ -6,6 +6,13 @@ define([
         return function(as) {
             var bytes = [];
             _.each(as.split("\n"), function(line) {
+                var line = line.trim();
+                
+                // Skip empty lines
+                if (line === "") {
+                    return;
+                }
+                
                 var parts = line.split(" ");
                 var mnemonic = parts[0];
                 var args = _.rest(parts);
