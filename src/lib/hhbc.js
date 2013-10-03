@@ -1,6 +1,9 @@
 define([
-        'vendor/underscore'
-    ], function() {
-        return null;
+        'vendor/underscore',
+        'lib/instructions/basic'
+    ], function(_, basic) {
+        return merge(
+            basic
+        );
     }
 );
