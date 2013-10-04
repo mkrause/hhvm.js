@@ -1,0 +1,126 @@
+<html>
+<head>
+  <title>
+    sql.js
+  </title>
+  <script src="sql.js"></script>
+  <script>
+    var db;
+    var reader;
+
+    /**
+     * Check for the various File API support.
+     */
+    function checkFileAPI() {
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            reader = new FileReader();
+            return true; 
+        } else {
+            alert('The File APIs are not fully supported by your browser. Fallback required.');
+            return false;
+        }
+    }
+
+    /**
+     * read text input
+     */
+    function readFile(filePath, onloadfunc) {
+        if(filePath.files && filePath.files[0]) {           
+            reader.onload = onloadfunc;
+            reader.readAsArrayBuffer(filePath.files[0]);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Connect to the HTML element we 'print' to
+    function print(text) {
+      if (text == null)
+        return;
+
+      var element = document.getElementById('output');
+      element.innerHTML = text.replace(/\n/g, '<br>');
+    }
+
+    function opendb(input)
+    {
+      if(!input.value) {
+        db = SQL.open();
+        execute(commands.value);
+      } else {
+        var data = readFile(input,
+          function (e) {
+            var data = e.target.result;
+            var array = new Uint8Array(data);
+            db = SQL.open(array);
+            execute(commands.value);
+        });
+      }
+    }
+
+    // Run a command in the database
+    function execute(commands) {
+      try {
+        if (db == null) {
+          print("No database open.");
+        } else {
+          var data = db.exec(commands.replace(/\n/g, '; '));
+          print(JSON.stringify(data, null, '  '));
+        }
+      } catch(e) {
+        print(e);
+      }
+    }
+
+    function string2ArrayBuffer(string, callback)
+    {
+      var bb = new BlobBuilder();
+      bb.append(string);
+      var f = new FileReader();
+      f.onload = function(e) {
+          callback(e.target.result);
+      }
+      f.readAsArrayBuffer(bb.getBlob());
+  }
+  </script>
+</head>
+<body onload="checkFileAPI();">
+  <p>
+    This is <a href="https://github.com/kripken/sql.js">sql.js</a>: <a href="http://www.sqlite.org/">SQLite</a> compiled from C to JavaScript using <a href="http://emscripten.org">Emscripten</a>. View this page's source to see how easy it is to use it!
+  </p>
+  <p>
+    <ul>
+      <li>This is <b>not</b> a fully optimized build (optimized builds break both <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=733208">Firefox</a> and <a href="http://code.google.com/p/v8/issues/detail?id=1986">Chrome</a>).</li>
+    </ul>
+  </p>
+  <hr>
+  <form onsubmit="opendb(document.getElementById('input')); return false">
+    <b>An existing SQLite database</b>:
+    <br>
+    <input id="input" type="file" />
+    <br>
+    <br>
+    <b>Enter some SQL</b>:
+    <br>
+    <textarea rows="10" cols="80" id="commands">select hex(bc) as bytecode from Unit_56ccb9c5c4a45b351e042a3b4da0b98d7e4e27f9;
+</textarea>
+    <!--textarea rows="10" cols="80" id="commands">CREATE TABLE my_table(key INTEGER, value INTEGER, text VARCHAR(100));
+
+INSERT INTO my_table VALUES(1, 25, 'the first item');
+INSERT INTO my_table VALUES(2, 987, 'the second item');
+
+SELECT key, text FROM my_table WHERE value == 987;
+</textarea-->
+    <br>
+    <input type="submit" value="execute">
+  </form>
+  <hr>
+  <pre>
+    <div id="output" style="font-family: Courier New,Courier,monospace;"></div>
+  </pre>
+
+<a href="https://github.com/kripken/sql.js" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+
+</body>
+</html>
