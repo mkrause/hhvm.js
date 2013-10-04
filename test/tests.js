@@ -2,6 +2,13 @@ require.config({
     baseUrl: '../src/'
 });
 
+var checkVMState(vm, pc, stackSize, output){
+    ok(!vm.running);
+    ok(vm.pc == pc);
+    ok(vm.stack.length == stackSize);
+    ok(vm.output == output);
+}
+
 define([
         'hhvm'
     ], function(hhvm) {
@@ -17,13 +24,11 @@ define([
             return arr;
         }
         
-        //TODO: update tests for new program implementations? Heaps etc?
         test("Nop", function() {
             var vm = new hhvm();
-            var prog = [opcodes.NOP, 42, 8];
+            var prog = [opcodes.NOP];
             vm.run(prog);
-            ok(vm.stack.length === 0);
-            ok(vm.output == "");
+            checkVMState(vm, prog.length, 0, "");
         });
         //TODO: implement tests first by examples from github:
         //https://github.com/facebook/hiphop-php/blob/master/hphp/doc/bytecode.specification#L3936
