@@ -6,19 +6,12 @@ require.config({
 
 define([
         'vendor/underscore',
-        'lib/stack',
-        'lib/hhbc',
-        'lib/instructions/instructions',
-        'lib/util/binary'
-    ], function(_, Stack, hhbc, instructions, binary) {
+        'lib/util/binary',
+        'lib/instruction_set',
+        'lib/stack'
+    ], function(_, binary, InstructionSet, Stack) {
         var Hhvm = function(options) {
-            this.instr = instructions;
-            this.hhbc = {};
-            // Bind all instruction functions to this instance
-            this.hhbc = _.each(hhbc, function(fn, mnemonic, hhbc) {
-                hhbc[mnemonic] = _.bind(fn, this);
-            });
-            
+            this.hhbc = new InstructionSet(this);
             
             this.running = false;
             this.output = "";
@@ -63,20 +56,18 @@ define([
         Hhvm.prototype.step = function() {
             var opcode = this.program[this.pc];
             
-            if (!this.instr[opcode]) {
+            var instr = this.hhbc.getInstruction(opcode);
+            if (!instr) {
                 this.error("No such opcode: " + this.opcode);
                 return;
             }
             
-            var instr = this.instr[opcode];
-            var fn = instr.func;
-            
             // For each formal argument of the function, get one argument from the program
-            var arity = fn.length;
+            var arity = this.hhbc.arity(opcode);
             var args = _.map(_.range(arity), _.bind(this.arg, this));
             
             // Execute the instruction
-            fn.apply(this, args);
+            this.hhbc.execute(opcode);
         };
         
         Hhvm.prototype.print = function(str) {
