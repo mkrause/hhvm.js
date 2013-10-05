@@ -67,7 +67,10 @@ define([
             var args = _.map(_.range(arity), _.bind(this.arg, this));
             
             // Execute the instruction
-            this.hhbc.execute(opcode);
+            this.hhbc.execute(opcode, args);
+            
+            // Move the program counter to the next instruction
+            this.pc += 1;
         };
         
         Hhvm.prototype.print = function(str) {
@@ -92,7 +95,6 @@ define([
                 }
                 
                 this.step();
-                this.pc += 1;
             }
         };
         
