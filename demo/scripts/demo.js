@@ -18,7 +18,8 @@ define([
         $(document).ready(function() {
             $('#btn-run').click(function() {
                 var input = assemble($('#input').val());
-                var vm = new Hhvm(input);
+                var vm = new Hhvm();
+                vm.addProgram(input);
                 vm.run();
                 
                 var output = vm.output;

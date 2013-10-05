@@ -11,7 +11,7 @@ define([
         'lib/instructions/instructions',
         'lib/util/binary'
     ], function(_, Stack, hhbc, instructions, binary) {
-        var Hhvm = function(program, options) {
+        var Hhvm = function(options) {
             this.instr = instructions;
             this.hhbc = {};
             // Bind all instruction functions to this instance
@@ -19,14 +19,18 @@ define([
                 hhbc[mnemonic] = _.bind(fn, this);
             });
             
-            this.program = program;
             
             this.running = false;
             this.output = "";
             
+            this.program = [];
             this.pc = 0;
-            this.sp = 0;
             this.stack = new Stack();
+        };
+        
+        // Add some program code to execute
+        Hhvm.prototype.addProgram = function(program) {
+            this.program = program;
         };
         
         // Get the next instruction argument in the program, and increment the program counter
