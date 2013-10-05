@@ -3,45 +3,42 @@ define([
     ], function(_) {
         return {
             Null: function() {
-                this.stack.push(this.createNull());
+                this.stack.push(null);
             },
             True: function() {
-                this.stack.push(this.createTrue());
+                this.stack.push(true);
             },
             False: function() {
-                this.stack.push(this.createFalse());
+                this.stack.push(false);
             },
             NullUninit: function() {
-                this.stack.push(this.createUninit());
+                this.stack.push(undefined);
             },
-            Int: function(byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8) {
-                // Since JavaScript uses doubles, it can only represent integers exactly up to
-                // 2^53. So for now, we only support only 32 bit integers
-                var value = byte8 | byte7 << 8 | byte6 << 16 | byte5 << 24;
-                this.stack.push(value);
+            Int: function() {
+                this.stack.push(this.arg('int'));
             },
             Double: function() {
-                this.stack.push(this.arg());
+                this.stack.push(this.arg('double'));
             },
             String: function() {
-                this.stack.push(this.litstr(this.arg()));
+                this.stack.push(this.arg('litstr'));
             },
             Array: function() {
-                this.stack.push(this.array(this.arg()));
+                this.stack.push(this.arg('array'));
             },
             NewArray: function() {
                 this.stack.push([]);
             },
             NewPackedArray: function(numElems) {
                 var newArray = [];
-                for(var i = 0; i < numElems; i++){
+                for (var i = 0; i < numElems; i++){
                     newArray.push(this.stack.pop());
                 }
                 this.stack.push(newArray);
             },
             AddElemC: function() {
                 var three = this.stack.peek(2);
-                if(typeof three == Array){
+                if (typeof three == Array){
                     three[this.stack.peek(1)] = this.stack.peek();
                     this.stack.push(three);
                 } else {
@@ -51,7 +48,7 @@ define([
             AddElemV: function() {
                 /*
                 var three = this.stack.peek(2);
-                if(typeof three == Array){
+                if (typeof three == Array){
                     three[this.stack.peek(1)] = this.stack.peek(); //TODO: push pointer...?
                     this.stack.push(three);
                 } else {

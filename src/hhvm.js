@@ -8,8 +8,9 @@ define([
         'vendor/underscore',
         'lib/stack',
         'lib/hhbc',
-        'lib/instructions/instructions'
-    ], function(_, Stack, hhbc, instructions) {
+        'lib/instructions/instructions',
+        'lib/util/binary'
+    ], function(_, Stack, hhbc, instructions, binary) {
         var Hhvm = function(program, options) {
             this.instr = instructions;
             this.hhbc = {};
@@ -29,9 +30,28 @@ define([
         };
         
         // Get the next instruction argument in the program, and increment the program counter
-        Hhvm.prototype.arg = function() {
-            var arg = this.program[this.pc + 1];
-            this.pc += 1;
+        Hhvm.prototype.arg = function(type) {
+            var arg;
+            var prog = this.program;
+            var pc = this.pc;
+            if (type === 'int') {
+                var bytes8 = this.program.slice(this.pc + 1, this.pc + 9);
+                arg = binary.decodeInt64(bytes8);
+                this.pc += 8;
+            } else if (type === 'double') {
+                var bytes8 = this.program.slice(this.pc + 1, this.pc + 9);
+                arg = binary.decodeDouble(bytes8);
+                this.pc += 8;
+            } else if (type === 'litstr') {
+                //TODO
+            } else if (type === 'array') {
+                //TODO
+            } else {
+                // Fallback: get one byte
+                arg = prog[pc + 1];
+                this.pc += 1;
+            }
+            
             return arg;
         };
         
@@ -60,7 +80,7 @@ define([
         };
         
         Hhvm.prototype.error = function(message) {
-            this.output += "\nERROR: " + message;
+            this.print("\nERROR: " + message);
             this.stop();
         };
         

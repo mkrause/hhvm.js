@@ -1,7 +1,8 @@
 define([
         'vendor/underscore',
-        'lib/instructions/opcodes'
-    ], function(_, opcodes) {
+        'lib/instructions/opcodes',
+        'lib/util/binary'
+    ], function(_, opcodes, binary) {
         // Very basic assembler
         return function(as) {
             var bytes = [];
@@ -26,16 +27,7 @@ define([
                         var num = Number(arg);
                         
                         // Push bytes in big endian order
-                        // Note that we don't support 64 bit numbers yet (due to JS limitations),
-                        // so the first four bytes are 0
-                        bytes.push(0);
-                        bytes.push(0);
-                        bytes.push(0);
-                        bytes.push(0);
-                        bytes.push(num >> 24 & 255);
-                        bytes.push(num >> 16 & 255);
-                        bytes.push(num >> 8 & 255);
-                        bytes.push(num & 255);
+                        bytes.push.apply(bytes, binary.encodeInt64(num));
                     }
                 });
             });
