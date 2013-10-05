@@ -21,16 +21,16 @@ define([
             },
             Unbox: function() {
                 var top = this.stack.pop();
-                this.stack.push(top.value());
+                this.stack.push(top.value()); //TODO
             },
             BoxR: function() {
                 if (this.stack.peek().type != 'ref') {
-                    this.hhbc.Box();
+                    this.hhbc.execute('Box');
                 }
             },
             UnboxR: function() {
                 if (this.stack.peek().type != 'cell') {
-                    this.hhbc.Unbox(this);
+                    this.hhbc.execute('Unbox');
                 }
             }
         };

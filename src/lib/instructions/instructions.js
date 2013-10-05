@@ -1,6 +1,6 @@
 define([
-        'lib/hhbc'
-    ], function(hhbc) {
+    ], function() {
+      var hhbc = {}; // FIXME
       return [
             {name: "LowInvalid", func: null},
             // 1. Basic instructions
