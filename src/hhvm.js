@@ -104,7 +104,7 @@ define([
             
             // Step function: perform one execution step, then call a timeout to asynchronously
             // call itself again as soon as possible.
-            // Note that we don't just a loop since that would hang up the browser.
+            // Note that we don't just loop since that would hang up the browser.
             var vm = this;
             (function performStep() {
                 vm.step();
