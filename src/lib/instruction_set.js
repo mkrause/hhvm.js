@@ -1,10 +1,13 @@
+// Implementation of the HipHop bytecode instruction set
 define([
         'vendor/underscore',
         'lib/instructions/instructions',
+        'lib/instructions/opcodes',
         'lib/instructions/basic',
         'lib/instructions/literals',
         'lib/instructions/operators'
-    ], function(_, mnemonics, basic, literals, operators) {
+    ], function(_, opcodeToInstr, mnemonicToOpcode, basic, literals, operators) {
+        // Instruction modules
         var modules = [
             basic,
             literals,
@@ -14,40 +17,29 @@ define([
         // Merge all the different instruction modules together to get a map of all
         // instructions to their implementations
         var instructions = _.reduce(modules, function(merged, module) {
-            for (var key in module) {
-                if (module.hasOwnProperty(key)) {
-                    merged[key] = module[key];
-                }
-            }
+            // Add all of the instruction implementations in this module to the merged map
+            _.each(module, function(implementation, mnemonic) {
+                merged[mnemonic] = implementation;
+            });
+            
             return merged;
         }, {});
         
         var InstructionSet = function(vm) {
             this.vm = vm;
-        };
-        
-        // Get an instruction. Key can be either a string (mnemonic) or number (opcode).
-        InstructionSet.prototype.getInstruction = function(key) {
-            var mnemonic;
-            if (typeof key !== 'string') {
-                mnemonic = mnemonics[key].name;
-            } else {
-                mnemonic = key;
-            }
             
-            return instructions[mnemonic];
-        }
-        
-        // Return the number of formal arguments for the given instruction
-        InstructionSet.prototype.arity = function(key) {
-            var instr = this.getInstruction(key);
-            return instr.length;
+            // Add all instructions to this class
+            _.each(instructions, function(implementation, mnemonic) {
+                this[mnemonic] = _.bind(implementation, vm);
+                this[mnemonic].arity = implementation.length;
+                this[mnemonic].mnemonic = mnemonic;
+                this[mnemonic].opcode = mnemonicToOpcode[mnemonic];
+            }, this);
         };
         
-        // Execute an instruction
-        InstructionSet.prototype.execute = function(key, args) {
-            var instr = this.getInstruction(key);
-            instr.apply(this.vm, args);
+        InstructionSet.prototype.byOpcode = function(opcode) {
+            var mnemonic = opcodeToInstr[opcode].mnemonic;
+            return this[mnemonic];
         };
         
         return InstructionSet;

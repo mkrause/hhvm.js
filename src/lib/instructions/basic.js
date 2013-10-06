@@ -17,7 +17,7 @@ define([
             },
             Box: function() {
                 var top = this.stack.pop();
-                this.stack.push(this.ref(top));
+                this.stack.push(this.ref(top)); // TODO
             },
             Unbox: function() {
                 var top = this.stack.pop();
@@ -25,12 +25,12 @@ define([
             },
             BoxR: function() {
                 if (this.stack.peek().type != 'ref') {
-                    this.hhbc.execute('Box');
+                    this.hhbc.Box();
                 }
             },
             UnboxR: function() {
                 if (this.stack.peek().type != 'cell') {
-                    this.hhbc.execute('Unbox');
+                    this.hhbc.Unbox();
                 }
             }
         };

@@ -5,7 +5,7 @@ define([
         // Create a mapping from mnemonic to opcode from the instructions list
         var opcodes = {};
         _.each(instructions, function(instr, key) {
-            opcodes[instr.name] = parseInt(key, 10);
+            opcodes[instr.mnemonic] = parseInt(key, 10);
         });
         
         return opcodes;

@@ -9,35 +9,48 @@ define([
         'lib/util/binary',
         'lib/instruction_set',
         'lib/stack'
-    ], function(_, binary, InstructionSet, Stack) {
+    ], function(_, binaryUtil, InstructionSet, Stack) {
         var Hhvm = function(options) {
+            this.options = _.defaults(options, {
+                // Default output handler: just append to an internal string
+                outputHandler: function(str) {
+                    this.output += str;
+                }
+            });
+            
+            // Implementation of the HipHop bytecode instruction set
             this.hhbc = new InstructionSet(this);
             
             this.running = false;
-            this.output = "";
             
-            this.program = [];
+            // I/O
+            this.output = "";
+            this.outputHandler = _.bind(this.options.outputHandler, this);
+            
+            // Registers, memory
+            this.prog = [];
             this.pc = 0;
             this.stack = new Stack();
         };
         
-        // Add some program code to execute
-        Hhvm.prototype.addProgram = function(program) {
-            this.program = program;
+        // Set the program code to execute
+        Hhvm.prototype.program = function(program) {
+            this.prog = program;
         };
         
         // Get the next instruction argument in the program, and increment the program counter
         Hhvm.prototype.arg = function(type) {
             var arg;
-            var prog = this.program;
+            var prog = this.prog;
             var pc = this.pc;
+            
             if (type === 'int') {
-                var bytes8 = this.program.slice(this.pc + 1, this.pc + 9);
-                arg = binary.decodeInt64(bytes8);
+                var bytes8 = prog.slice(pc + 1, pc + 9);
+                arg = binaryUtil.decodeInt64(bytes8);
                 this.pc += 8;
             } else if (type === 'double') {
-                var bytes8 = this.program.slice(this.pc + 1, this.pc + 9);
-                arg = binary.decodeDouble(bytes8);
+                var bytes8 = prog.slice(pc + 1, pc + 9);
+                arg = binaryUtil.decodeDouble(bytes8);
                 this.pc += 8;
             } else if (type === 'litstr') {
                 //TODO
@@ -54,27 +67,26 @@ define([
         
         // Execute the next instruction
         Hhvm.prototype.step = function() {
-            var opcode = this.program[this.pc];
+            var opcode = this.prog[this.pc];
             
-            var instr = this.hhbc.getInstruction(opcode);
+            var instr = this.hhbc.byOpcode(opcode);
             if (!instr) {
-                this.error("No such opcode: " + this.opcode);
+                this.error("No such opcode: " + opcode);
                 return;
             }
             
             // For each formal argument of the function, get one argument from the program
-            var arity = this.hhbc.arity(opcode);
-            var args = _.map(_.range(arity), _.bind(this.arg, this));
+            var args = _.map(_.range(instr.arity), _.bind(this.arg, this));
             
             // Execute the instruction
-            this.hhbc.execute(opcode, args);
+            instr.apply(this, args);
             
             // Move the program counter to the next instruction
             this.pc += 1;
         };
         
         Hhvm.prototype.print = function(str) {
-            this.output += str;
+            this.outputHandler(str);
         };
         
         Hhvm.prototype.error = function(message) {
@@ -88,14 +100,12 @@ define([
         
         Hhvm.prototype.run = function() {
             this.running = true;
-            while (this.running) {
-                if (this.pc >= this.program.length) {
-                    this.stop();
-                    break;
-                }
-                
+            
+            while (this.running && this.pc < this.prog.length) {
                 this.step();
             }
+            
+            this.running = false;
         };
         
         return Hhvm;

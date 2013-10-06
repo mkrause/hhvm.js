@@ -17,14 +17,19 @@ define([
     ], function($, Hhvm, assemble, opcodes) {
         $(document).ready(function() {
             $('#btn-run').click(function() {
-                var input = assemble($('#input').val());
-                var vm = new Hhvm();
-                vm.addProgram(input);
-                vm.run();
+                // Clear the output
+                $('#output').val("");
                 
-                var output = vm.output;
-                //output += "\n\n====\n\nStack:\n" + vm.stack;
-                $('#output').text(output);
+                var vm = new Hhvm({
+                    outputHandler: function(str) {
+                        var currentOutput = $('#output').val();
+                        $('#output').val(currentOutput + str);
+                    }
+                });
+                
+                var prog = assemble($('#input').val());
+                vm.program(prog);
+                vm.run();
             });
         });
     }
