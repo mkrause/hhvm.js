@@ -96,16 +96,25 @@ define([
         
         Hhvm.prototype.stop = function() {
             this.running = false;
+            this.pc = 0;
         };
         
         Hhvm.prototype.run = function() {
             this.running = true;
             
-            while (this.running && this.pc < this.prog.length) {
-                this.step();
-            }
-            
-            this.running = false;
+            // Step function: perform one execution step, then call a timeout to asynchronously
+            // call itself again as soon as possible.
+            // Note that we don't just a loop since that would hang up the browser.
+            var vm = this;
+            (function performStep() {
+                vm.step();
+                
+                if (vm.running && vm.pc < vm.prog.length) {
+                    setTimeout(performStep, 0);
+                } else {
+                    vm.stop();
+                }
+            })();
         };
         
         return Hhvm;

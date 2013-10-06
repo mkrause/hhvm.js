@@ -3,5 +3,10 @@
 }
 
 #btn-run {
-    width: 120px;
+    width: 100px;
+}
+
+#btn-stop {
+    margin-left: 10px;
+    width: 100px;
 }

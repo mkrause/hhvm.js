@@ -5,13 +5,15 @@ define([
         'lib/instructions/opcodes',
         'lib/instructions/basic',
         'lib/instructions/literals',
-        'lib/instructions/operators'
-    ], function(_, opcodeToInstr, mnemonicToOpcode, basic, literals, operators) {
+        'lib/instructions/operators',
+        'lib/instructions/control_flow'
+    ], function(_, opcodeToInstr, mnemonicToOpcode, basic, literals, operators, controlFlow) {
         // Instruction modules
         var modules = [
             basic,
             literals,
-            operators
+            operators,
+            controlFlow
         ];
         
         // Merge all the different instruction modules together to get a map of all
@@ -38,6 +40,10 @@ define([
         };
         
         InstructionSet.prototype.byOpcode = function(opcode) {
+            if (!opcodeToInstr[opcode]) {
+                return undefined;
+            }
+            
             var mnemonic = opcodeToInstr[opcode].mnemonic;
             return this[mnemonic];
         };

@@ -41,7 +41,8 @@ define([
             { mnemonic: "Print" },
 
             // 4. Control flow instructions
-            //TODO
+            { mnemonic: "Jmp" },
+            
             // 5. Get instructions
             //TODO
             // 6. Isset, Empty and type querying instructions
