@@ -7,7 +7,7 @@ An implementation of Facebook's [HipHop VM](https://github.com/facebook/hiphop-p
 
 hhvm.js is defined as a [RequireJS](http://requirejs.org) module.
 
-    define([
+    require([
             'hhvm'
         ], function(Hhvm) {
             var vm = new Hhvm();

@@ -35,6 +35,30 @@ Jmp -11
         <button id="btn-stop" class="btn btn-danger btn-lg">Stop</button>
     </div>
     
-    <script src="../src/vendor/require.js" data-main="scripts/demo"></script>
+    <script src="scripts/vendor/jquery.js"></script>
+    <script src="../src/vendor/require.js" data-main="../src/hhvm.js"></script>
+    <script>
+    require(['hhvm', 'assemble'], function(Hhvm, assemble) {
+        var vm = new Hhvm({
+            outputHandler: function(str) {
+                var currentOutput = $('#output').val();
+                $('#output').val(currentOutput + str);
+            }
+        });
+        
+        $('#btn-run').click(function() {
+            // Clear the output
+            $('#output').val("");
+            
+            var prog = assemble($('#input').val());
+            vm.program(prog);
+            vm.run();
+        });
+        
+        $('#btn-stop').click(function() {
+            vm.stop();
+        });
+    });
+    </script>
 </body>
 </html>
