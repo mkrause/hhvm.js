@@ -22,11 +22,10 @@ define([
                 
                 _.each(args, function(arg) {
                     // Numbers
-                    if (/-?\d*(.\d*)?/.test(arg)) {
-                        // Encode as a 64 bit number
-                        var num = Number(arg);
+                    if (/(-|+)?\d*(.\d*)?/.test(arg)) {
+                        var num = Number(arg); // Parse as float
                         
-                        // Push bytes in big endian order
+                        // Encode as a 64 bit number in big endian order
                         bytes.push.apply(bytes, binary.encodeInt64(num));
                     }
                 });

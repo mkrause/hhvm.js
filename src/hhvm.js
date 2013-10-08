@@ -114,8 +114,11 @@ define([
             }
             
             statusCode = statusCode || 0;
+            
+            // Reset state
             this.running = false;
             this.pc = 0;
+            this.stack = new Stack();
             
             // Call the exit handler
             this.exitHandler(statusCode);
