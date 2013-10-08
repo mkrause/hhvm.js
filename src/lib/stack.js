@@ -5,12 +5,8 @@ define([
             this.stack = [];
         };
         
-        Stack.prototype.peek = function(index) {
-            if (index == undefined){
-                return this.stack[this.stack.length - 1];
-            } else {
-                return this.stack[this.stack.length - 1 - index];
-            }
+        Stack.prototype.peek = function() {
+            return this.stack[this.stack.length - 1];
         };
         
         Stack.prototype.push = function(value) {

@@ -22,6 +22,7 @@ define([
             this.hhbc = new InstructionSet(this);
             
             this.running = false;
+            this.status = -1;
             
             // I/O
             this.output = "";
@@ -85,13 +86,26 @@ define([
             this.pc += 1;
         };
         
+        Hhvm.prototype.setStatus = function(newStatus){
+        	this.status = newStatus;
+        };
+        
         Hhvm.prototype.print = function(str) {
             this.outputHandler(str);
+        };
+        
+        Hhvm.prototype.warning = function(message) {
+        	this.print("\nWARNING: " + message);
         };
         
         Hhvm.prototype.error = function(message) {
             this.print("\nERROR: " + message);
             this.stop();
+        };
+        
+        Hhvm.prototype.fatal = function(message) {
+        	this.print("\nFATAL ERROR: " + message);
+        	this.stop();
         };
         
         Hhvm.prototype.stop = function() {
@@ -101,6 +115,7 @@ define([
         
         Hhvm.prototype.run = function() {
             this.running = true;
+            //TODO: update status?
             
             // Step function: perform one execution step, then call a timeout to asynchronously
             // call itself again as soon as possible.

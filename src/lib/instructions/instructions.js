@@ -36,12 +36,52 @@ define([
             { mnemonic: "CnsU" },
             { mnemonic: "ClsCns" },
             { mnemonic: "ClsCnsD" },
+            { mnemonic: "File"},
+           	{ mnemonic: "Dir"},
 
             // 3. Operator instructions
+            { mnemonic: "Concat"},
+            { mnemonic: "Abs"},
+            { mnemonic: "Add"},
+            { mnemonic: "Sub"},
+            { mnemonic: "Mul"},
+            { mnemonic: "Div"},
+            { mnemonic: "Mod"},
+            { mnemonic: "Sqrt"},
+            { mnemonic: "Xor"},
+            { mnemonic: "Not"},
+            { mnemonic: "Same"},
+            { mnemonic: "NSame"},
+            { mnemonic: "Eq"},
+            { mnemonic: "Neq"},
+            { mnemonic: "Lt"},
+            { mnemonic: "Lte"},
+            { mnemonic: "Gt"},
+            { mnemonic: "Gte"},
+            { mnemonic: "BitAnd"},
+            { mnemonic: "BitOr"},
+            { mnemonic: "BitXor"},
+            { mnemonic: "BitNot"},
+            { mnemonic: "Shl"},
+            { mnemonic: "Shr"},
+            { mnemonic: "Floor"},
+            { mnemonic: "Ceil"},
+            { mnemonic: "CastBool"},
+            { mnemonic: "CastInt"},
+            { mnemonic: "CastDouble"},
+            { mnemonic: "CastString"},
+            { mnemonic: "CastArray"},
+            { mnemonic: "CastObject"},
+            { mnemonic: "InstanceOf"},
+            { mnemonic: "InstanceOfD"},
             { mnemonic: "Print" },
+            { mnemonic: "Clone"},
+            { mnemonic: "Exit"},
+            { mnemonic: "Fatal"},
 
             // 4. Control flow instructions
             { mnemonic: "Jmp" },
+            //TODO
             
             // 5. Get instructions
             //TODO
@@ -63,6 +103,6 @@ define([
             //TODO
             // 14. Continuation creation and execution
             //TODO
-      ]
+      ];
     }
 );
