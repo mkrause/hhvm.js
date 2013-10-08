@@ -109,6 +109,10 @@ define([
         };
         
         Hhvm.prototype.stop = function(statusCode) {
+            if (!this.running) {
+                return;
+            }
+            
             statusCode = statusCode || 0;
             this.running = false;
             this.pc = 0;
