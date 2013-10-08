@@ -127,10 +127,13 @@ define([
             (function performStep() {
                 vm.step();
                 
-                if (vm.running && vm.pc < vm.prog.length) {
-                    setTimeout(performStep, 0);
-                } else {
+                if (vm.pc >= vm.prog.length) {
                     vm.stop();
+                    return;
+                }
+                
+                if (vm.running) {
+                    setTimeout(performStep, 0);
                 }
             })();
         };
