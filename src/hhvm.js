@@ -122,6 +122,10 @@ define([
         };
         
         Hhvm.prototype.run = function() {
+            if (this.running) {
+                return;
+            }
+            
             this.running = true;
             
             // Step function: perform one execution step, then call a timeout to asynchronously
