@@ -15,18 +15,22 @@ define([
                 // Default output handler: just append to an internal string
                 outputHandler: function(str) {
                     this.output += str;
-                }
+                },
+                // Default exit handler
+                exitHandler: function(statusCode) {}
             });
             
             // Implementation of the HipHop bytecode instruction set
             this.hhbc = new InstructionSet(this);
             
             this.running = false;
-            this.status = -1;
             
             // I/O
             this.output = "";
+            
+            // Events
             this.outputHandler = _.bind(this.options.outputHandler, this);
+            this.exitHandler = _.bind(this.options.exitHandler, this);
             
             // Registers, memory
             this.prog = [];
@@ -86,10 +90,6 @@ define([
             this.pc += 1;
         };
         
-        Hhvm.prototype.setStatus = function(newStatus){
-        	this.status = newStatus;
-        };
-        
         Hhvm.prototype.print = function(str) {
             this.outputHandler(str);
         };
@@ -108,14 +108,17 @@ define([
         	this.stop();
         };
         
-        Hhvm.prototype.stop = function() {
+        Hhvm.prototype.stop = function(statusCode) {
+            statusCode = statusCode || 0;
             this.running = false;
             this.pc = 0;
+            
+            // Call the exit handler
+            this.exitHandler(statusCode);
         };
         
         Hhvm.prototype.run = function() {
             this.running = true;
-            //TODO: update status?
             
             // Step function: perform one execution step, then call a timeout to asynchronously
             // call itself again as soon as possible.

@@ -43,6 +43,11 @@ Jmp -11
             outputHandler: function(str) {
                 var currentOutput = $('#output').val();
                 $('#output').val(currentOutput + str);
+            },
+            exitHandler: function(statusCode) {
+                var msg = "\n-----\nDone, exited with status code " + statusCode;
+                var currentOutput = $('#output').val();
+                $('#output').val(currentOutput + msg);
             }
         });
         

@@ -213,14 +213,12 @@ define([
                 var value = this.stack.pop();
                 if(!isNaN(parseInt(value))){
                     intValue = parseInt(value);
-                    this.setStatus(intValue);
                     this.stack.push(null);
-                    this.stop();
+                    this.stop(intValue);
                 } else {
                     this.print(value);
-                    this.setStatus(0);
                     this.stack.push(null);
-                    this.stop();
+                    this.stop(0);
                 }
             },
             Fatal: function(){
