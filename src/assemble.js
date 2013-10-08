@@ -7,9 +7,11 @@ define([
         return function(as) {
             var bytes = [];
             _.each(as.split("\n"), function(line) {
-                var line = line.trim();
+                // Remove comments
+                line = line.replace(/#.+/, '');
                 
                 // Skip empty lines
+                line = line.trim();
                 if (line === "") {
                     return;
                 }
