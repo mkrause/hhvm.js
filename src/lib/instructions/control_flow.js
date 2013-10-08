@@ -1,6 +1,5 @@
 define([
-        'vendor/underscore'
-    ], function(_) {
+    ], function() {
         return {
             Jmp: function() {
                 this.pc += this.arg('int');
