@@ -95,17 +95,17 @@ define([
         };
         
         Hhvm.prototype.warning = function(message) {
-        	this.print("\nWARNING: " + message);
+            this.print("\nWARNING: " + message);
         };
         
         Hhvm.prototype.error = function(message) {
             this.print("\nERROR: " + message);
-            this.stop();
+            this.stop(1);
         };
         
         Hhvm.prototype.fatal = function(message) {
-        	this.print("\nFATAL ERROR: " + message);
-        	this.stop();
+            this.print("\nFATAL ERROR: " + message);
+            this.stop(1);
         };
         
         Hhvm.prototype.stop = function(statusCode) {
