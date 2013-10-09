@@ -24,7 +24,7 @@ define([
                 
                 _.each(args, function(arg) {
                     // Numbers
-                    if (/(-|+)?\d*(.\d*)?/.test(arg)) {
+                    if (/[-+]?\d*(.\d*)?/.test(arg)) {
                         var num = Number(arg); // Parse as float
                         
                         // Encode as a 64 bit number in big endian order
