@@ -2,18 +2,23 @@ define([
     ], function() {
         return {
             Jmp: function(offset) {
-<<<<<<< HEAD
-                this.pc += offset;
+                this.offsetPc(offset);
             },
-            //TODO: implement missing functions
             RetC: function() {
-                return this.stack.pop();
+                var frame = this.callStack.pop();
+                var returnValue = frame.stack.pop();
+                this.stack.push(returnValue);
+
+                // TODO: assert that frame.stack is empty
+                // TODO: assert that returnValue is of type Cell
             },
             RetV: function() {
-                return this.stack.pop();
-=======
-                this.offsetPc(offset);
->>>>>>> ae60293f441d03794c391963a5a15b6ecbb0a440
+                var frame = this.callStack.pop();
+                var returnValue = frame.stack.pop();
+                this.stack.push(returnValue);
+
+                // TODO: assert that frame.stack is empty
+                // TODO: assert that returnValue is of type Ref
             }
         };
     }

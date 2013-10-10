@@ -39,20 +39,33 @@ define([
 
             // The call stack containing the activation frames.
             this.callStack = new Stack();
+            this.currentFrame = null;
 
-            // Alias for this.getCurrentFrame().stack (for now)
+            // Points to the stack of the current frame (this.currentFrame.stack)
             this.stack = null;
             this.FPIstack = null;
         };
         
-        // Get the top frame
-        Hhvm.prototype.getCurrentFrame = function() {
-            return this.callStack.peek();
+        // Push new activation frame
+        Hhvm.prototype.pushFrame = function(frame) {
+            this.callStack.push(frame);
+            this.currentFrame = frame;
+            this.stack = frame.stack;
+            this.FPIstack = frame.FPIstack;
+        };
+        
+        // Pop top activation frame
+        Hhvm.prototype.popFrame = function() {
+            var prevFrame = this.callStack.pop();
+            this.currentFrame = callStack.peek();
+            this.stack = this.currentFrame.stack;
+            this.FPIstack = this.currentFrame.FPIstack;
+            return prevFrame;
         };
         
         // Set the program counter
         Hhvm.prototype.offsetPc = function(offset) {
-            this.getCurrentFrame().pc += offset;
+            this.currentFrame.pc += offset;
         };
         
         // Set the program code to execute
@@ -64,7 +77,7 @@ define([
         Hhvm.prototype.arg = function(type) {
             var arg;
             var prog = this.prog;
-            var pc = this.getCurrentFrame().pc;
+            var pc = this.currentFrame.pc;
             
             if (type === 'int') {
                 var bytes8 = prog.slice(pc + 1, pc + 9);
@@ -92,7 +105,7 @@ define([
         
         // Execute the next instruction
         Hhvm.prototype.step = function() {
-            var opcode = this.prog[this.getCurrentFrame().pc];
+            var opcode = this.prog[this.currentFrame.pc];
             
             var instr = this.hhbc.byOpcode(opcode);
             if (!instr) {
@@ -138,7 +151,10 @@ define([
             // Reset state
             this.running = false;
             this.callStack = new Stack();
-            
+            this.currentFrame = null;
+            this.stack = null;
+            this.fpiStack = null;
+
             // Call the exit handler
             this.exitHandler(statusCode);
         };
@@ -150,11 +166,9 @@ define([
             
             this.running = true;
 
-            // Push temporaily a main frame until the fpush* instructions are implemented
-            var frame = new Frame(new FPI("main"), []);
-            this.callStack.push(frame);
-            this.stack = frame.stack;
-            this.fpiStack = frame.FPIstack;
+            // Push initial frames: application and pseudo-main frame
+            this.pushFrame(new Frame(new FPI("Application"), []));
+            this.pushFrame(new Frame(new FPI("Pseudo-main"), []));
             
             // Step function: perform one execution step, then call a timeout to asynchronously
             // call itself again as soon as possible.
@@ -168,8 +182,10 @@ define([
                 
                 vm.step();
                 
-                if (vm.callStack.isEmpty()) {
-                    vm.stop();
+                // Loop until only the Application frame remains (containing the exit code on stack)
+                if (vm.callStack.length() === 1) {
+                    var cell = vm.currentFrame.stack.pop();
+                    vm.stop(cell.value);
                     return;
                 }
                 

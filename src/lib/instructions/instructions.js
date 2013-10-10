@@ -81,9 +81,14 @@ define([
 
             // 4. Control flow instructions
             { mnemonic: "Jmp", spec: ['byte'] },
-            { mnemonic: "RetC", spec: []},
-            { mnemonic: "RetV", spec: []},
-            //TODO: implement missing functions
+            { mnemonic: "JmpZ", spec: ['byte'] },
+            { mnemonic: "JmpNZ", spec: ['byte'] },
+            { mnemonic: "Switch", spec: ['byteVector', 'int', 'varInt'] },
+            { mnemonic: "SSwitch", spec: ['stringVector'] },
+            { mnemonic: "RetC", spec: [] },
+            { mnemonic: "RetV", spec: [] },
+            { mnemonic: "Unwind", spec: [] },
+            { mnemonic: "Throw", spec: [] },
             
             // 5. Get instructions
             { mnemonic: "CGetL", spec: ['int']},
