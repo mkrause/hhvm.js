@@ -2,8 +2,8 @@ define([
         'vendor/underscore',
         'lib/instructions/instructions',
         'lib/instructions/opcodes',
-        'lib/util/binary'
-    ], function(_, instructions, opcodes, binary) {
+        'lib/util/binary_converter'
+    ], function(_, instructions, opcodes, BinaryConverter) {
         // Very basic assembler
         return function(as) {
             var program = {
@@ -13,6 +13,7 @@ define([
                     }
                 ]
             };
+            var binary = new BinaryConverter();
             var unit = program.units[0];
             var bytes = [];
             
@@ -50,7 +51,7 @@ define([
                     } else if (argType === 'int') {
                         var intValue = parseInt(arg, 10);
                         
-                        // Encode as a 64 bit number in big endian order
+                        // Encode as a 64 bit number in little endian order
                         bytes.push.apply(bytes, binary.encodeInt64(intValue));
                     } else if (argType === 'double') {
                         var dbl = Number(arg); // Parse as double

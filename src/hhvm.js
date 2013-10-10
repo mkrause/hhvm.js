@@ -6,12 +6,12 @@ require.config({
 
 define([
         'vendor/underscore',
-        'lib/util/binary',
+        'lib/util/binary_converter',
         'lib/instruction_set',
         'lib/stack',
         'lib/frame',
         'lib/fpi'
-    ], function(_, binaryUtil, InstructionSet, Stack, Frame, FPI) {
+    ], function(_, BinaryConverter, InstructionSet, Stack, Frame, FPI) {
         var Hhvm = function(options) {
             this.options = _.defaults(options, {
                 // Default output handler: just append to an internal string
@@ -24,6 +24,9 @@ define([
             
             // Implementation of the HipHop bytecode instruction set
             this.hhbc = new InstructionSet(this);
+
+            // A binary converter helper
+            this.bConverter = new BinaryConverter();
             
             this.running = false;
             
@@ -81,11 +84,11 @@ define([
             
             if (type === 'int') {
                 var bytes8 = prog.slice(pc + 1, pc + 9);
-                arg = binaryUtil.decodeInt64(bytes8);
+                arg = this.bConverter.decodeInt64(bytes8);
                 this.offsetPc(8);
             } else if (type === 'double') {
                 var bytes8 = prog.slice(pc + 1, pc + 9);
-                arg = binaryUtil.decodeDouble(bytes8);
+                arg = this.bConverter.decodeDouble(bytes8);
                 this.offsetPc(8);
             } else if (type === 'litstr') {
                 //TODO

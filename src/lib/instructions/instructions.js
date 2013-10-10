@@ -19,7 +19,7 @@ define([
             { mnemonic: "False", spec: [] },
             { mnemonic: "NullUninit", spec: [] },
             { mnemonic: "Int", spec: ['int'] },
-            { mnemonic: "Double", spec: [] },
+            { mnemonic: "Double", spec: ['double'] },
             { mnemonic: "String", spec: [] },
             { mnemonic: "Array", spec: ['array'] },
             { mnemonic: "NewArray", spec: [] },
