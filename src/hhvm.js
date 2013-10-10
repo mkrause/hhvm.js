@@ -136,6 +136,11 @@ define([
             // Note that we don't just loop since that would hang up the browser.
             var vm = this;
             (function performStep() {
+                // We may have stopped in the mean time, in which case we just return
+                if (!vm.running) {
+                    return;
+                }
+                
                 vm.step();
                 
                 if (vm.pc >= vm.prog.length) {
@@ -143,9 +148,7 @@ define([
                     return;
                 }
                 
-                if (vm.running) {
-                    setTimeout(performStep, 0);
-                }
+                setTimeout(performStep, 0);
             })();
         };
         
