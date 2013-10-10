@@ -81,7 +81,7 @@ define([
             },
             //TODO: implement newCol, ColAddElemC, ColAddNewElemC when we have output from hhvm that shows what this is about.
             Cns: function(litstrId) {
-                var constant = this.constant(litstrId);
+                var constant = this.getConstant(litstrId);
                 if(constant == undefined){
                     this.notice("NOTICE: constant not found by Cns.");
                     this.stack.push(new Cell(litstrId));
@@ -90,7 +90,7 @@ define([
                 }
             },
             CnsE: function(litstrId) {
-                var constant = this.constant(litstrId);
+                var constant = this.getConstant(litstrId);
                 if(constant == undefined){
                     this.fatal("constant not found by CnsE.");
                 } else {
@@ -98,7 +98,7 @@ define([
                 }
             },
             CnsU: function(litstrId, litstrFallback) {
-                var constant = this.constant(litstrId);
+                var constant = this.getConstant(litstrId);
                 if(constant == undefined){
                     this.hhbc.Cns(litstrFallback);
                 } else {
@@ -107,7 +107,7 @@ define([
             },
             ClsCns: function(litstrId) {
                 var clsClass = this.stack.pop().value;
-                var clsConstant = this.classConstant(litstrId, clsClass);
+                var clsConstant = this.getClassConstant(litstrId, clsClass);
                 if(clsConstant == undefined){
                     this.fatal("class constant not found by ClsCns.");
                 } else {

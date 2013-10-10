@@ -81,15 +81,19 @@ define([
 
             // 4. Control flow instructions
             { mnemonic: "Jmp", spec: ['byte'] },
+            { mnemonic: "RetC", spec: []},
+            { mnemonic: "RetV", spec: []},
             //TODO: implement missing functions
             
             // 5. Get instructions
+            { mnemonic: "CGetL", spec: ['int']},
             //TODO: implmeent missing funtions
             
             // 6. Isset, Empty and type querying instructions
             //TODO: implement missing functions
             
             // 7. Mutator instructions
+            { mnemonic: "SetL", spec: ['int']}
             //TODO: implement missing functions
             
             // 8. Call instructions

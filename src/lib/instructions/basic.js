@@ -1,5 +1,5 @@
 define([
-        'vendor/underscore'
+        'vendor/underscore',
     ], function(_) {
         return {
             Nop: function() {},

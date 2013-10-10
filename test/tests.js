@@ -39,6 +39,7 @@ define([
         // function f() { g($a, $b); }
         test("f2", function() {
             var vm = new hhvm();
+            //TODO: implement instructions
             var hbbc = 
                "FPushFuncD 2 \"g\"\
                 FPassL 0 0\
@@ -56,6 +57,7 @@ define([
         // function f() { return $a + $b; }
         test("f3", function() {
             var vm = new hhvm();
+            //TODO: implement instructions
             var hbbc = 
                "CGetL 1\
                 CGetL2 0\
@@ -67,30 +69,8 @@ define([
             checkVMState(vm, hbbc, 0, "");
         });
         
-        // 
-        test("f4", function() {
-            var vm = new hhvm();
-            var hbbc = 
-               "";
-            var prog = assemble(hbbc);
-            vm.run(prog);
-            //TODO: checkVMState
-            checkVMState(vm, hbbc, 0, "");
-        });
-        
-        // 
-        test("f4", function() {
-            var vm = new hhvm();
-            var hbbc = 
-               "";
-            var prog = assemble(hbbc);
-            vm.run(prog);
-            //TODO: checkVMState
-            checkVMState(vm, hbbc, 0, "");
-        });
-        
         // function f() { echo "Hello world\n"; }
-        test("f5", function() {
+        test("f4", function() {
             var vm = new hhvm();
             var hbbc = 
                "String \"Hello world\n\"\
@@ -104,8 +84,9 @@ define([
             checkVMState(vm, hbbc, 0, "");
         });
         
+        //TODO: implement missing instructions of tests below
         // function f($a) { return $a[0]++; }
-        test("f6", function() {
+        test("f5", function() {
             var vm = new hhvm();
             var hbbc = 
                "Int 0\
@@ -118,7 +99,7 @@ define([
         });
         
         // function f($a, $b) { $a[4] = $b; }
-        test("f7", function() {
+        test("f6", function() {
             var vm = new hhvm();
             var hbbc = 
                "Int 4\
@@ -134,7 +115,7 @@ define([
         });
         
         // function f($a, $b, $i) { $a[$i] = $b; }
-        test("f8", function() {
+        test("f7", function() {
             var vm = new hhvm();
             var hbbc = 
                "CGetL 1\
@@ -149,7 +130,7 @@ define([
         });
         
         // function f($a, $b) { return $a[4] = $b; }
-        test("f9", function() {
+        test("f8", function() {
             var vm = new hhvm();
             var hbbc = 
                "Int 4\
@@ -163,7 +144,7 @@ define([
         });
         
         // function f($a, $b) { return $a[4][5] = $b[6]; }
-        test("f10", function() {
+        test("f9", function() {
             var vm = new hhvm();
             var hbbc = 
                "Int 4\
@@ -179,7 +160,7 @@ define([
         });
         
         // function f($a, $b, $i) { return $a[$i][5] = $b[6]; }
-        test("f11", function() {
+        test("f10", function() {
             var vm = new hhvm();
             var hbbc = 
                "Int 5\
@@ -194,7 +175,7 @@ define([
         });
         
         // function f($a, $b) { $a->prop = $b; }
-        test("f12", function() {
+        test("f11", function() {
             var vm = new hhvm();
             var hbbc = 
                "String \"prop\"\
@@ -210,7 +191,7 @@ define([
         });
         
         // function f() { return FOO; }
-        test("f13", function() {
+        test("f12", function() {
             var vm = new hhvm();
             var hbbc = 
                "Cns \"FOO\"\
@@ -222,7 +203,7 @@ define([
         });
         
         // function f() { return c::FOO; }
-        test("f14", function() {
+        test("f13", function() {
             var vm = new hhvm();
             var hbbc = 
                "ClsCnsD \"FOO\" \"c\"\
@@ -234,7 +215,7 @@ define([
         });
         
         // function f($cls) { return $cls::FOO; }
-        test("f15", function() {
+        test("f14", function() {
             var vm = new hhvm();
             var hbbc = 
                "AGetL 0\
