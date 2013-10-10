@@ -42,6 +42,7 @@ define([
 
             // Alias for this.getCurrentFrame().stack (for now)
             this.stack = null;
+            this.FPIstack = null;
         };
         
         // Get the top frame
@@ -153,6 +154,7 @@ define([
             var frame = new Frame(new FPI("main"), []);
             this.callStack.push(frame);
             this.stack = frame.stack;
+            this.fpiStack = frame.FPIstack;
             
             // Step function: perform one execution step, then call a timeout to asynchronously
             // call itself again as soon as possible.

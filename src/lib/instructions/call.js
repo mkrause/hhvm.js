@@ -8,9 +8,13 @@ define([
                 if(y = undefined){
                     this.fatal("No such function: " + x);
                 } else {
-                    
-                    //TODO
+                    //TODO: push new FPI structure on stack
+                    this.FPIstack.push(new FPI(/*TODO*/))
                 }
+            } else if (x instanceof Object){
+                //TODO
+            } else {
+                //TODO
             }
         };
         
