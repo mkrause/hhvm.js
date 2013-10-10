@@ -13,23 +13,22 @@ define([
                 this.stack.pop();
             },
             Dup: function() {
-                this.stack.push(this.stack.peek());
+                this.stack.push(this.stack.peek().clone());
             },
             Box: function() {
-                var top = this.stack.pop();
-                this.stack.push(new Ref(top)); // TODO
+                this.stack.push(new Ref(this.stack.pop().clone()));
             },
             Unbox: function() {
                 var top = this.stack.pop();
-                this.stack.push(top.value()); //TODO
+                this.stack.push(this.stack.pop().cell.clone());
             },
             BoxR: function() {
-                if (this.stack.peek().type != 'ref') {
+                if (!(this.stack.peek() instanceof Ref)) {
                     this.hhbc.Box();
                 }
             },
             UnboxR: function() {
-                if (this.stack.peek().type != 'cell') {
+                if (!(this.stack.peek() instanceof Cell)) {
                     this.hhbc.Unbox();
                 }
             }

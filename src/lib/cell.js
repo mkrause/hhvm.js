@@ -9,6 +9,10 @@ define([
             return this.value;
         };
         
+        Cell.prototype.clone = function() {
+            return this(JSON.parse(JSON.stringify(this.value)));
+        };
+        
         Cell.prototype.toString = function() {
             return "[Cell: " + this.value + "]";
         };
