@@ -60,7 +60,7 @@ define([
         // Pop top activation frame
         Hhvm.prototype.popFrame = function() {
             var prevFrame = this.callStack.pop();
-            this.currentFrame = callStack.peek();
+            this.currentFrame = this.callStack.peek();
             this.stack = this.currentFrame.stack;
             this.FPIstack = this.currentFrame.FPIstack;
             return prevFrame;
