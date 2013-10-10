@@ -77,8 +77,9 @@ define([
             Same: function() {
                 this.stack.push(new Cell(this.stack.pop().value === this.stack.pop().value));
             },
-            Nsame: function() {
+            NSame: function() {
                 this.stack.push(new Cell(this.stack.pop().value !== this.stack.pop().value));
+                this.stack.push(this.stack.pop() !== this.stack.pop());
             },
             Eq: function() {
                 this.stack.push(new Cell(this.stack.pop().value == this.stack.pop().value));

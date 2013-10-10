@@ -24,5 +24,7 @@ define([
         Ref.prototype.toString = function() {
             return "[Ref: " + this.cell + "]";
         };
+        
+        return Ref;
     }
 );

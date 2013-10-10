@@ -32,10 +32,13 @@ define([
             
             // Add all instructions to this class
             _.each(instructions, function(implementation, mnemonic) {
+                var opcode = mnemonicToOpcode[mnemonic];
+                var instr = opcodeToInstr[opcode];
+                
                 this[mnemonic] = _.bind(implementation, vm);
-                this[mnemonic].arity = implementation.length;
                 this[mnemonic].mnemonic = mnemonic;
-                this[mnemonic].opcode = mnemonicToOpcode[mnemonic];
+                this[mnemonic].opcode = opcode;
+                this[mnemonic].spec = instr.spec;
             }, this);
         };
         

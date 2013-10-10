@@ -1,8 +1,8 @@
 define([
     ], function() {
         return {
-            Jmp: function() {
-                this.pc += this.arg('int');
+            Jmp: function(offset) {
+                this.pc += offset;
             }
         };
     }

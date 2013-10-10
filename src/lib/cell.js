@@ -16,5 +16,7 @@ define([
         Cell.prototype.toString = function() {
             return "[Cell: " + this.value + "]";
         };
+        
+        return Cell;
     }
 );

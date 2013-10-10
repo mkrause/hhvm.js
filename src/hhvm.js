@@ -61,10 +61,13 @@ define([
                 //TODO
             } else if (type === 'array') {
                 //TODO
-            } else {
-                // Fallback: get one byte
+            } else if (type === 'byte') {
+                // Get one byte (as an integer between 0 and 255)
                 arg = prog[pc + 1];
                 this.pc += 1;
+            } else {
+                this.fatal("Invalid argument type: " + type);
+                return;
             }
             
             return arg;
@@ -80,8 +83,8 @@ define([
                 return;
             }
             
-            // For each formal argument of the function, get one argument from the program
-            var args = _.map(_.range(instr.arity), _.bind(this.arg, this));
+            // For each argument of the function, get one argument from the program
+            var args = _.map(instr.spec, _.bind(this.arg, this));
             
             // Execute the instruction
             instr.apply(this, args);

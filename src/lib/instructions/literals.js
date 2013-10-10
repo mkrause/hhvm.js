@@ -15,17 +15,17 @@ define([
             NullUninit: function() {
                 this.stack.push(new Cell(undefined));
             },
-            Int: function() {
-                this.stack.push(new Cell(this.arg('int')));
+            Int: function(intValue) {
+                this.stack.push(new Cell(intValue));
             },
-            Double: function() {
-                this.stack.push(new Cell(this.arg('double')));
+            Double: function(dbl) {
+                this.stack.push(new Cell(dbl));
             },
-            String: function() {
-                this.stack.push(new Cell(this.arg('litstr')));
+            String: function(str) {
+                this.stack.push(new Cell(str));
             },
-            Array: function() {
-                this.stack.push(new Cell(this.arg('array')));
+            Array: function(arr) {
+                this.stack.push(new Cell(arr));
             },
             NewArray: function() {
                 this.stack.push(new Cell([]));
