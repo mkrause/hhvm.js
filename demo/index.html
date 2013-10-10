@@ -55,8 +55,14 @@ Jmp -12 # Jump to the start
             // Clear the output
             $('#output').val("");
             
-            var prog = assemble($('#input').val());
-            vm.program(prog);
+            var prog;
+            try {
+                prog = assemble($('#input').val());
+            } catch (e) {
+                $('#output').val("PARSE ERROR: " + e);
+            }
+            
+            vm.program(prog.units[0].bc);
             vm.run();
         });
         
