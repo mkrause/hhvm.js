@@ -70,7 +70,6 @@ define([
             });
             
             unit.bc = bytes;
-            console.log(program);
             return program;
         };
     }
