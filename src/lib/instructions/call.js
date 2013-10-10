@@ -5,11 +5,11 @@ define([
         var pushFunc = function(numParams, x){
             if(x instanceof String){
                 var y = this.getFunction(x);
-                if(y = undefined){
+                if(y === undefined){
                     this.fatal("No such function: " + x);
                 } else {
                     //TODO: push new FPI structure on stack
-                    this.FPIstack.push(new FPI(/*TODO*/))
+                    this.FPIstack.push(new FPI(/*TODO*/));
                 }
             } else if (x instanceof Object){
                 //TODO
