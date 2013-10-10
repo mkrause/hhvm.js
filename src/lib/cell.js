@@ -10,7 +10,7 @@ define([
         };
         
         Cell.prototype.clone = function() {
-            return this(JSON.parse(JSON.stringify(this.value)));
+            return new Cell(JSON.parse(JSON.stringify(this.value)));
         };
         
         Cell.prototype.toString = function() {
