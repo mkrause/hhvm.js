@@ -81,28 +81,38 @@ define([
 
             // 4. Control flow instructions
             { mnemonic: "Jmp" },
-            //TODO
+            //TODO: implement missing functions
             
             // 5. Get instructions
-            //TODO
+            //TODO: implmeent missing funtions
+            
             // 6. Isset, Empty and type querying instructions
-            //TODO
+            //TODO: implement missing functions
+            
             // 7. Mutator instructions
-            //TODO
+            //TODO: implement missing functions
+            
             // 8. Call instructions
-            //TODO
+            //TODO: implement missing functions
+            
             // 9. Member operations
-            //TODO
+            //TODO: implement missing functions
+            
             // 10. Member instructions
-            //TODO
+            //TODO: implement missing functions
+            
             // 11. Iterator instructions
-            //TODO
+            //TODO: implement missing functions
+            
             // 12. Include, eval, and define instructions
-            //TODO
+            //TODO: implement missing functions
+            
             // 13. Miscellaneous instructions
-            //TODO
+            //TODO: implement missing functions
+            
             // 14. Continuation creation and execution
-            //TODO
+            //TODO: implement missing functions
+            
       ];
     }
 );

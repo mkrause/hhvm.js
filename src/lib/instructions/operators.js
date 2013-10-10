@@ -2,7 +2,7 @@ define([
     ], function() {
         return {
             Concat: function() {
-                this.stack.push(this.stack.pop().toString() + this.stack.toString());
+                this.stack.push(new Cell(this.stack.pop().toString() + this.stack.toString()));
             },
             Abs: function() {
                 this.stack.push(Math.abs(this.stack.pop()));
