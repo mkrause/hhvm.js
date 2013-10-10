@@ -114,25 +114,26 @@ define([
                     this.stack.push(new Cell(clsConstant));
                 }
             },
-            ClsCnsD: function() {
-                var clsConstantRef = this.stack.pop();
-                var classRef = this.stack.pop();
-                var newClass = this.getClass(classRef);
-                if(newClass == undefined){
-                    newClass = this.loadClass(classRef);
-                }
+            ClsCnsD: function(litstrId, classId) {
+                var newClass = this.getClass(classId);
+                //TODO: make sure autoload is invoked when class is not defined yet.
                 if(newClass == undefined){
                     this.fatal("class could not be loaded by ClsCnsD");
                 } else {
-                    var clsConstant = this.classConstant(clsConstantRef);
+                    var clsConstant = this.classConstant(litstrId, newClass);
                     if(clsConstant == undefined){
                         this.fatal("class constant could not be loaded by ClsCnsD");
                     } else {
-                        this.stack.push(clsConstant);
+                        this.stack.push(new Cell(clsConstant));
                     }
                 }
             },
-            //TODO: implement File and Dir when we know what they should do.
+            File: function(){
+                this.stack.push(new Cell("__FILE__"));
+            },
+            Dir: function(){
+                this.stack.push(new Cell("__DIR__"));
+            }
         };
     }
 );
