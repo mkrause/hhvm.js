@@ -1,5 +1,7 @@
 define([
-    ], function() {
+        'lib/cell',
+        'lib/ref'
+    ], function(Cell, Ref) {
         return {
             Concat: function() {
                 this.stack.push(new Cell(this.stack.pop().value + this.stack.value));
