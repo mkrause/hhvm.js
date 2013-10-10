@@ -1,8 +1,10 @@
 define([
-    ], function() {
+        'lib/cell',
+        'lib/ref'
+    ], function(Cell, Ref) {
         return {
             Null: function() {
-                this.stack.push(null);
+                this.stack.push(new Cell(null));
             },
             True: function() {
                 this.stack.push(true);
@@ -13,8 +15,8 @@ define([
             NullUninit: function() {
                 this.stack.push(undefined);
             },
-            Int: function() {
-                this.stack.push(this.arg('int'));
+            Int: function(intValue) {
+                return [intValue];
             },
             Double: function() {
                 this.stack.push(this.arg('double'));

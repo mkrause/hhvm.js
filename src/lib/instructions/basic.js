@@ -17,7 +17,7 @@ define([
             },
             Box: function() {
                 var top = this.stack.pop();
-                this.stack.push(this.ref(top)); // TODO
+                this.stack.push(new Ref(top)); // TODO
             },
             Unbox: function() {
                 var top = this.stack.pop();

@@ -35,10 +35,10 @@ Jmp -11 # Jump to the start
         <button id="btn-stop" class="btn btn-danger btn-lg">Stop</button>
     </div>
     
-    <script src="scripts/vendor/jquery.js"></script>
     <script src="../src/vendor/require.js" data-main="../src/hhvm.js"></script>
+    <script src="scripts/vendor/jquery.js"></script>
     <script>
-    require(['hhvm', 'assemble'], function(Hhvm, assemble) {
+    require(['jquery', 'hhvm', 'assemble'], function($, Hhvm, assemble) {
         var vm = new Hhvm({
             outputHandler: function(str) {
                 var currentOutput = $('#output').val();
