@@ -21,7 +21,7 @@ define([
             { mnemonic: "Int", spec: ['int'] },
             { mnemonic: "Double", spec: [] },
             { mnemonic: "String", spec: [] },
-            { mnemonic: "Array", spec: [] },
+            { mnemonic: "Array", spec: ['array'] },
             { mnemonic: "NewArray", spec: [] },
             { mnemonic: "NewPackedArray", spec: [] },
             { mnemonic: "AddElemC", spec: [] },

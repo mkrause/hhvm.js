@@ -8,8 +8,10 @@ define([
         'vendor/underscore',
         'lib/util/binary',
         'lib/instruction_set',
-        'lib/stack'
-    ], function(_, binaryUtil, InstructionSet, Stack) {
+        'lib/stack',
+        'lib/frame',
+        'lib/fpi'
+    ], function(_, binaryUtil, InstructionSet, Stack, Frame, FPI) {
         var Hhvm = function(options) {
             this.options = _.defaults(options, {
                 // Default output handler: just append to an internal string
@@ -34,8 +36,22 @@ define([
             
             // Registers, memory
             this.prog = [];
-            this.pc = 0;
-            this.stack = new Stack();
+
+            // The call stack containing the activation frames.
+            this.callStack = new Stack();
+
+            // Alias for this.getCurrentFrame().stack (for now)
+            this.stack = null;
+        };
+        
+        // Get the top frame
+        Hhvm.prototype.getCurrentFrame = function() {
+            return this.callStack.peek();
+        };
+        
+        // Set the program counter
+        Hhvm.prototype.offsetPc = function(offset) {
+            this.getCurrentFrame().pc += offset;
         };
         
         // Set the program code to execute
@@ -47,16 +63,16 @@ define([
         Hhvm.prototype.arg = function(type) {
             var arg;
             var prog = this.prog;
-            var pc = this.pc;
+            var pc = this.getCurrentFrame().pc;
             
             if (type === 'int') {
                 var bytes8 = prog.slice(pc + 1, pc + 9);
                 arg = binaryUtil.decodeInt64(bytes8);
-                this.pc += 8;
+                this.offsetPc(8);
             } else if (type === 'double') {
                 var bytes8 = prog.slice(pc + 1, pc + 9);
                 arg = binaryUtil.decodeDouble(bytes8);
-                this.pc += 8;
+                this.offsetPc(8);
             } else if (type === 'litstr') {
                 //TODO
             } else if (type === 'array') {
@@ -64,7 +80,7 @@ define([
             } else if (type === 'byte') {
                 // Get one byte (as an integer between 0 and 255)
                 arg = prog[pc + 1];
-                this.pc += 1;
+                this.offsetPc(1);
             } else {
                 this.fatal("Invalid argument type: " + type);
                 return;
@@ -75,7 +91,7 @@ define([
         
         // Execute the next instruction
         Hhvm.prototype.step = function() {
-            var opcode = this.prog[this.pc];
+            var opcode = this.prog[this.getCurrentFrame().pc];
             
             var instr = this.hhbc.byOpcode(opcode);
             if (!instr) {
@@ -90,7 +106,7 @@ define([
             instr.apply(this, args);
             
             // Move the program counter to the next instruction
-            this.pc += 1;
+            this.offsetPc(1);
         };
         
         Hhvm.prototype.print = function(str) {
@@ -120,8 +136,7 @@ define([
             
             // Reset state
             this.running = false;
-            this.pc = 0;
-            this.stack = new Stack();
+            this.callStack = new Stack();
             
             // Call the exit handler
             this.exitHandler(statusCode);
@@ -133,6 +148,11 @@ define([
             }
             
             this.running = true;
+
+            // Push temporaily a main frame until the fpush* instructions are implemented
+            var frame = new Frame(new FPI("main"), []);
+            this.callStack.push(frame);
+            this.stack = frame.stack;
             
             // Step function: perform one execution step, then call a timeout to asynchronously
             // call itself again as soon as possible.
@@ -146,7 +166,7 @@ define([
                 
                 vm.step();
                 
-                if (vm.pc >= vm.prog.length) {
+                if (vm.callStack.isEmpty()) {
                     vm.stop();
                     return;
                 }
