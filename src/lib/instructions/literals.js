@@ -7,53 +7,53 @@ define([
                 this.stack.push(new Cell(null));
             },
             True: function() {
-                this.stack.push(true);
+                this.stack.push(new Cell(true));
             },
             False: function() {
-                this.stack.push(false);
+                this.stack.push(new Cell(false));
             },
             NullUninit: function() {
-                this.stack.push(undefined);
+                this.stack.push(new Cell(undefined));
             },
-            Int: function(intValue) {
-                return [intValue];
+            Int: function() {
+                this.stack.push(new Cell(this.arg('int')));
             },
             Double: function() {
-                this.stack.push(this.arg('double'));
+                this.stack.push(new Cell(this.arg('double')));
             },
             String: function() {
-                this.stack.push(this.arg('litstr'));
+                this.stack.push(new Cell(this.arg('litstr')));
             },
             Array: function() {
-                this.stack.push(this.arg('array'));
+                this.stack.push(new Cell(this.arg('array')));
             },
             NewArray: function() {
-                this.stack.push([]);
+                this.stack.push(new Cell([]));
             },
             NewPackedArray: function(numElems) {
                 var newArray = [];
                 for (var i = 0; i < numElems; i++){
                     newArray.push(this.stack.pop());
                 }
-                this.stack.push(newArray);
+                this.stack.push(new Cell(newArray));
             },
             AddElemC: function() {
                 var element = this.stack.pop();
                 var position = this.stack.pop();
                 var three = this.stack.pop();
-                if (three instanceof Array){
-                    three[position] = element;
+                if (three.value instanceof Array){
+                    three.value[position] = element;
                     this.stack.push(three);
                 } else {
                     this.fatal("Stack error when executing AddElemC");
                 }
             },
             AddElemV: function() {
-                var element = this.ref(this.stack.pop);
+                var element = new Ref(this.stack.pop());
                 var position = this.stack.pop();
                 var three = this.stack.pop();
-                if (three instanceof Array){
-                    three[position] = element;
+                if (three.value instanceof Array){
+                    three.value[position] = element;
                     this.stack.push(three);
                 } else {
                     this.fatal("Stack error when executing AddElemV");
@@ -61,60 +61,57 @@ define([
             },
             AddNewElemC: function() {
                 var value = this.stack.pop();
-                var array = this.stack.pop();
-                if(array instanceof Array){
-                    array.push(value);
-                    this.stack.push(array);
+                var arrayCell = this.stack.pop();
+                if(arrayCell.value instanceof Array){
+                    arrayCell.value.push(value);
+                    this.stack.push(arrayCell);
                 } else {
                     this.fatal("Stack error when executing AddNewElemC");
                 }
             },
             AddNewElemV: function() {
-                var value = this.ref(this.stack.pop());
-                var array = this.stack.pop();
-                if(array instanceof Array){
-                    array.push(value);
-                    this.stack.push(array);
+                var value = new Ref(this.stack.pop());
+                var arrayCell = this.stack.pop();
+                if(arrayCell.value instanceof Array){
+                    arrayCell.push(value);
+                    this.stack.push(arrayCell);
                 } else {
                     this.fatal("stack error when executing AddNewElemV");
                 }
             },
             //TODO: implement newCol, ColAddElemC, ColAddNewElemC when we have output from hhvm that shows what this is about.
-            Cns: function() {
-                var ref = this.stack.pop();
-                var constant = this.constant(ref);
+            Cns: function(litstrId) {
+                var constant = this.constant(litstrId);
                 if(constant == undefined){
                     this.notice("NOTICE: constant not found by Cns.");
-                    this.stack.push(ref);
+                    this.stack.push(new Cell(litstrId));
                 } else {
-                    this.stack.push(this.newCell(constant));
+                    this.stack.push(new Cell(constant));
                 }
             },
-            CnsE: function() {
-                var ref = this.stack.pop();
-                var constant = this.constant(ref);
+            CnsE: function(litstrId) {
+                var constant = this.constant(litstrId);
                 if(constant == undefined){
                     this.fatal("constant not found by CnsE.");
                 } else {
-                    this.stack.push(this.newCell(constant));
+                    this.stack.push(new Cell(constant));
                 }
             },
-            CnsU: function() {
-                var ref = this.stack.pop();
-                var constant = this.constant(ref);
+            CnsU: function(litstrId, litstrFallback) {
+                var constant = this.constant(litstrId);
                 if(constant == undefined){
-                    this.hhbc.Cns();
+                    this.hhbc.Cns(litstrFallback);
                 } else {
-                    this.stack.push(this.newCell(constant));
+                    this.stack.push(new Cell(constant));
                 }
             },
-            ClsCns: function() {
-                var ref = this.stack.pop();
-                var clsConstant = this.classConstant(ref);
+            ClsCns: function(litstrId) {
+                var clsClass = this.stack.pop().value;
+                var clsConstant = this.classConstant(litstrId, clsClass);
                 if(clsConstant == undefined){
                     this.fatal("class constant not found by ClsCns.");
                 } else {
-                    this.stack.push(clsConstant);
+                    this.stack.push(new Cell(clsConstant));
                 }
             },
             ClsCnsD: function() {

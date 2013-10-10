@@ -5,7 +5,7 @@ define([
                 this.stack.push(new Cell(this.stack.pop().toString() + this.stack.toString()));
             },
             Abs: function() {
-                this.stack.push(Math.abs(this.stack.pop()));
+                this.stack.push(new Cell(Math.abs(this.stack.pop())));
             },
             Add: function() {
                 var T1 = this.stack.pop();
@@ -203,8 +203,8 @@ define([
             },
             Clone: function() {
                 var value = this.stack.pop();
-                if(value instanceof Object){
-                    this.stack.push(JSON.parse(JSON.stringify(value)));
+                if(value.value() instanceof Object){
+                    this.stack.push(value.clone());
                 } else {
                     this. fatal("Clone not supported for non-objects");
                 }
