@@ -17,6 +17,10 @@ define([
             return this.stack.pop();
         };
         
+        Stack.prototype.isEmpty = function() {
+            return this.stack.length === 0;
+        };
+        
         Stack.prototype.toString = function() {
             return _.reduce(this.stack, function(stringRep, value) {
                 return stringRep + value + "\n";
