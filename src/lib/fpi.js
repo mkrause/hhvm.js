@@ -1,21 +1,16 @@
 define([
         'vendor/underscore'
     ], function(_) {
-        var FPI = function(functionName, numParams) {
+        var FPI = function(functionName, numParameters) {
             this.functionName = functionName;
             this.address = this.getByteCodeAddress();
-            this.numParameters = this.getNumParameters();
+            this.numParameters = numParameters;
 
             // Indicates whether each parameter is passed by value or pass by reference
             this.parameterTable = this.getParameterTable();
         };
         
         FPI.prototype.getByteCodeAddress = function() {
-            // TODO: Lookup in meta data of functionName
-            return 0;
-        };
-
-        FPI.prototype.getNumParameters = function() {
             // TODO: Lookup in meta data of functionName
             return 0;
         };

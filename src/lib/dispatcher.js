@@ -34,7 +34,7 @@ define([
         // Transfer control to new frame
         Dispatcher.prototype.functionCall = function() {
             var fpi = this.vm.FPIstack.peek();
-            var params = this.popParams(fpi.numParameters);
+            var params = this.popParameters(fpi.numParameters);
             var frame = new Frame(fpi, params);
             this.pushFrame(frame);
         };
@@ -47,10 +47,12 @@ define([
         };
         
         // Pop numParams parameters from the stack
-        Dispatcher.prototype.popParams = function(numParams) {
-            var params = new Array(numParams);
-            _(numParams).times(function(n){ params.push(this.vm.stack.pop()); });
-            return params.reverse();
+        Dispatcher.prototype.popParameters = function(numParameters) {
+            var parameters = new Array(numParameters);
+            _(numParameters).times(function(n) {
+                parameters.push(this.vm.stack.pop());
+            });
+            return parameters.reverse();
         };
         
         return Dispatcher;

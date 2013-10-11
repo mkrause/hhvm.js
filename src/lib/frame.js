@@ -26,10 +26,10 @@ define([
             this.FPIstack = new Stack();
 
             // Add parameters to local variable store
-            for (var i = 0; i < parameters.length; i++) {
+            _(parameters.length).times(function(i) {
                 var name = this.getLocalNameFromId(i);
-                this.localIteratorStore[name] = parameter;
-            }
+                this.localVarStore[name] = parameters[i];
+            });
         };
 
         Frame.prototype.getLocalNameFromId = function(id) {
