@@ -5,20 +5,12 @@ define([
                 this.offsetPc(offset);
             },
             RetC: function() {
-                var frame = this.popFrame();
-                var returnValue = frame.stack.pop();
-                this.stack.push(returnValue);
-
-                // TODO: assert that frame.stack is empty
-                // TODO: assert that returnValue is of type Cell
+                // TODO: assert that frame.stack.peek() is of type Cell
+                this.dispatcher.functionReturn();
             },
             RetV: function() {
-                var frame = this.popFrame();
-                var returnValue = frame.stack.pop();
-                this.stack.push(returnValue);
-
-                // TODO: assert that frame.stack is empty
-                // TODO: assert that returnValue is of type Ref
+                // TODO: assert that frame.stack.peek() is of type Ref
+                this.dispatcher.functionReturn();
             }
         };
     }

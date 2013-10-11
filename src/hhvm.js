@@ -9,9 +9,8 @@ define([
         'lib/util/binary_converter',
         'lib/instruction_set',
         'lib/stack',
-        'lib/frame',
-        'lib/fpi'
-    ], function(_, BinaryConverter, InstructionSet, Stack, Frame, FPI) {
+        'lib/dispatcher'
+    ], function(_, BinaryConverter, InstructionSet, Stack, Dispatcher) {
         var Hhvm = function(options) {
             this.options = _.defaults(options, {
                 // Default output handler: just append to an internal string
@@ -24,6 +23,9 @@ define([
             
             // Implementation of the HipHop bytecode instruction set
             this.hhbc = new InstructionSet(this);
+            
+            // The dispatcher that manages the activation frames
+            this.dispatcher = new Dispatcher(this);
 
             // A binary converter helper
             this.bConverter = new BinaryConverter();
@@ -47,23 +49,6 @@ define([
             // Points to the stack of the current frame (this.currentFrame.stack)
             this.stack = null;
             this.FPIstack = null;
-        };
-        
-        // Push new activation frame
-        Hhvm.prototype.pushFrame = function(frame) {
-            this.callStack.push(frame);
-            this.currentFrame = frame;
-            this.stack = frame.stack;
-            this.FPIstack = frame.FPIstack;
-        };
-        
-        // Pop top activation frame
-        Hhvm.prototype.popFrame = function() {
-            var prevFrame = this.callStack.pop();
-            this.currentFrame = this.callStack.peek();
-            this.stack = this.currentFrame.stack;
-            this.FPIstack = this.currentFrame.FPIstack;
-            return prevFrame;
         };
         
         // Set the program counter
@@ -168,10 +153,7 @@ define([
             }
             
             this.running = true;
-
-            // Push initial frames: application and pseudo-main frame
-            this.pushFrame(new Frame(new FPI("Application"), []));
-            this.pushFrame(new Frame(new FPI("Pseudo-main"), []));
+            this.dispatcher.initialize();
             
             // Step function: perform one execution step, then call a timeout to asynchronously
             // call itself again as soon as possible.
@@ -188,7 +170,7 @@ define([
                 // Loop until only the Application frame remains (containing the exit code on stack)
                 if (vm.callStack.length() === 1) {
                     var cell = vm.currentFrame.stack.pop();
-                    vm.stop(cell.value);
+                    vm.stop(cell === undefined ? 1 : cell.value);
                     return;
                 }
                 

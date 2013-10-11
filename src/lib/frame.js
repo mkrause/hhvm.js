@@ -49,12 +49,12 @@ define([
         };
         
         Frame.prototype.loadLocalVariableNames = function() {
-            // TODO: Lookup parameter names in data of functionName
+            // TODO: Lookup parameter names in meta data of functionName
             return [];
         };
         
         Frame.prototype.loadIteratorVariableNames = function() {
-            // TODO: Lookup parameter names in data of functionName
+            // TODO: Lookup parameter names in meta data of functionName
             return [];
         };
         
