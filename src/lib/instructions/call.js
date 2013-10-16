@@ -8,25 +8,31 @@ define([
                 if(y === undefined){
                     this.fatal("No such function: " + x);
                 } else {
-                    //TODO: push new FPI structure on stack
-                    this.FPIstack.push(new FPI(/*TODO*/));
+                    this.FPIstack.push(new FPI(y, numParams));
                 }
-            } else if (x instanceof Object){
-                //TODO
+            } else if (x instanceof Object && _.isFunction(x)){
+                this.FPIstack.push(new FPI(x, numParams));
             } else {
-                //TODO
+                this.fatal("No such function: " + x);
             }
         };
         
         return {
             FPushFunc: function(numParams) {
                 pushFunc(this.stack.pop().value);
-                //TODO
             },
             FPushFuncD: function(numParams, litstrId){
                 pushFunc(numParams, litstrId);
-                //TODO
-            }
+            },
+           //TODO: implement missing functions
+           FPassL: function(paramId, localVariableId) {
+               var parameterType = this.FPIstack.peek().getParameterTable[paramId];
+               if(parameterType == FPI.parameterType.PASS_BY_VALUE){
+                   this.hhbc.CGetL(localVariableId);
+               } else if(parameterType == FPI.parameterType.PASS_BY_REFERENCE){
+                   this.hhbc.VGetL(localVariableId);
+               }
+           }
            //TODO: implement missing functions
         };
     }

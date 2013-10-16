@@ -7,7 +7,7 @@ define([
             this.numParameters = numParameters;
 
             // Indicates whether each parameter is passed by value or pass by reference
-            this.parameterTable = this.getParameterTable();
+            this.parameterTable = this.initializeParameterTable();
         };
         
         FPI.prototype.getByteCodeAddress = function() {
@@ -15,9 +15,18 @@ define([
             return 0;
         };
 
-        FPI.prototype.getParameterTable = function() {
+        FPI.prototype.parameterType = {
+            PASS_BY_VALUE: 0,
+            PASS_BY_REFERENCE: 1
+        };
+        
+        FPI.prototype.initializeParameterTable = function() {
             // TODO: Lookup in meta data of functionName
             return {};
+        };
+        
+        FPI.prototype.getParameterTable = function () {
+            return this.parameterTable;
         };
         
         FPI.prototype.toString = function() {
