@@ -1,6 +1,6 @@
 define([
         'vendor/underscore',
-    ], function(_) {`
+    ], function(_) {
         return {
            //XXX: local variables are stored as cells
            SetL: function(localVariableId) {

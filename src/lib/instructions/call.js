@@ -32,7 +32,17 @@ define([
                } else if(parameterType == FPI.parameterType.PASS_BY_REFERENCE){
                    this.hhbc.VGetL(localVariableId);
                }
-           }
+           },
+           //TODO: implement missing functions
+           FCall: function(numParams) {
+               //TODO
+               var args = [];
+               for(var i = 0; i < numParams; i++){
+                   args.unshift(this.stack.pop());
+               }
+               currentFPI = this.FPIstack.pop();
+               this.hhbc.PushR(new Cell(this.dispatcher.callFunction(currentFPI.func, args)));
+           },
            //TODO: implement missing functions
         };
     }

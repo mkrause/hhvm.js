@@ -1,8 +1,8 @@
 define([
         'vendor/underscore'
     ], function(_) {
-        var FPI = function(functionName, numParameters) {
-            this.functionName = functionName;
+        var FPI = function(func, numParameters) {
+            this.func = func;
             this.address = this.getByteCodeAddress();
             this.numParameters = numParameters;
 
@@ -30,7 +30,7 @@ define([
         };
         
         FPI.prototype.toString = function() {
-            return "[FPI: " + this.functionName + "]";
+            return "[FPI: " + this.func + "]";
         };
 
         return FPI;

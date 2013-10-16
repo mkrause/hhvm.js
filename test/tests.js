@@ -39,7 +39,6 @@ define([
         // function f() { g($a, $b); }
         test("f2", function() {
             var vm = new hhvm();
-            //TODO: implement instructions
             var hbbc = 
                "FPushFuncD 2 \"g\"\
                 FPassL 0 0\
@@ -57,7 +56,6 @@ define([
         // function f() { return $a + $b; }
         test("f3", function() {
             var vm = new hhvm();
-            //TODO: implement instructions
             var hbbc = 
                "CGetL 1\
                 CGetL2 0\
@@ -84,9 +82,9 @@ define([
             checkVMState(vm, hbbc, 0, "");
         });
         
-        //TODO: implement missing instructions of tests below
         // function f($a) { return $a[0]++; }
         test("f5", function() {
+            //TODO: implement missing instructions
             var vm = new hhvm();
             var hbbc = 
                "Int 0\
@@ -97,7 +95,8 @@ define([
             //TODO: checkVMState
             checkVMState(vm, hbbc, 0, "");
         });
-        
+
+        //TODO: implement missing instructions of tests below        
         // function f($a, $b) { $a[4] = $b; }
         test("f6", function() {
             var vm = new hhvm();

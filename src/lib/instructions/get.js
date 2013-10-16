@@ -11,6 +11,11 @@ define([
                    this.stack.push(new Cell(local));
                }
            },
+           CGetL2: function(localVariableId) {
+               var top = this.stack.pop();
+               this.hhbc.CGetL(localVariableId);
+               this.stack.push(top);
+           },
            //TODO: implement missing functions
            VGetL: function(localVariableId) {
                var local = this.getLocal(localVariableId);
