@@ -10,8 +10,9 @@ var checkVMState = function(vm, hbbc, stackSize, output){
 };
 
 define([
-        'hhvm'
-    ], function(hhvm) {
+        'hhvm',
+        'assemble'
+    ], function(hhvm, assemble) {
         test("Nop", function() {
             var vm = new hhvm();
             var hhbc = "Nop";

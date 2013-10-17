@@ -135,6 +135,10 @@ define([
             this.stop(1);
         };
         
+        Hhvm.prototype.recoverable = function(message) {
+            this.print("ERROR: " + message);
+        };
+        
         Hhvm.prototype.stop = function(statusCode) {
             if (!this.running) {
                 return;
