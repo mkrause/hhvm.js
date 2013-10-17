@@ -1,6 +1,8 @@
 define([
         'vendor/underscore',
-    ], function(_) {
+        'lib/ref',
+        'lib/cell'
+    ], function(_, Ref, Cell) {
         return {
             Nop: function() {},
             PopC: function() {

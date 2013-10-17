@@ -1,0 +1,92 @@
+require.config({
+    baseUrl: '../src/',
+    shim: {
+        'vendor/underscore': { exports: '_' }
+    }
+});
+
+var checkVMState = function(vm, stackSize, output){
+    ok(!vm.running);
+    equal(vm.stack.length(), stackSize);
+    equal(vm.output, output);
+};
+
+define([
+        'lib/instruction_set',
+        'hhvm',
+        'lib/ref'
+    ], function(InstructionSet, hhvm, Ref) {
+    //Basic instructions
+        test("Nop", function() {
+            var vm = new hhvm();
+            vm.dispatcher.initialize();
+            var hhbc = new InstructionSet(vm);
+            
+            hhbc.Nop();
+            checkVMState(vm, 0, "");
+        });
+        test("PopC", function() {
+            var vm = new hhvm();
+            vm.dispatcher.initialize();
+            var hhbc = new InstructionSet(vm);
+            
+            hhbc.Null();
+            checkVMState(vm, 1, "");
+            equal(vm.stack.pop().value, null);
+            
+            hhbc.PopC();
+            checkVMState(vm, 0, "");
+        });
+        test("Dup", function(){
+            var vm = new hhvm();
+            vm.dispatcher.initialize();
+            var hhbc = new InstructionSet(vm);
+            
+            hhbc.Int(42);
+            checkVMState(vm, 1, "");
+            equal(vm.stack.peek().value, 42);
+            
+            hhbc.Dup();
+            checkVMState(vm, 2, "");
+            equal(vm.stack.pop().value, 42);
+            equal(vm.stack.pop().value, 42);
+            equal(vm.stack.length(), 0);
+        });
+        test("Box", function(){
+            var vm = new hhvm();
+            vm.dispatcher.initialize();
+            var hhbc = new InstructionSet(vm);
+            
+            hhbc.True();
+            checkVMState(vm, 1, "");
+            var original = vm.stack.peek();
+            ok(original.value);
+            
+            hhbc.Box();
+            checkVMState(vm, 1, "");
+            var newRef = vm.stack.pop();
+            ok(newRef instanceof Ref);
+            equal(newRef.cell.value, original.value);
+            notEqual(newRef.cell, original);
+        });
+        test("Unbox", function(){
+            var vm = new hhvm();
+            vm.dispatcher.initialize();
+            var hhbc = new InstructionSet(vm);
+            ok(false);
+        });
+        test("BoxR", function(){
+            var vm = new hhvm();
+            vm.dispatcher.initialize();
+            var hhbc = new InstructionSet(vm);
+            ok(false); 
+        });
+        test("UnboxR", function(){
+            var vm = new hhvm();
+            vm.dispatcher.initialize();
+            var hhbc = new InstructionSet(vm);
+            ok(false); 
+        });
+    //Literal instructions: are tested by other functions
+    }
+);

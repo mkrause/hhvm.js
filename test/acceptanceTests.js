@@ -4,9 +4,9 @@ require.config({
 
 var checkVMState = function(vm, hbbc, stackSize, output){
     ok(!vm.running);
-    ok(vm.pc == hbbc.split("\n").length);
-    ok(vm.stack.length == stackSize);
-    ok(vm.output == output);
+    equal(vm.pc, hbbc.split("\n").length);
+    equal(vm.stack.length, stackSize);
+    equal(vm.output, output);
 };
 
 define([
@@ -15,9 +15,10 @@ define([
     ], function(hhvm, assemble) {
         test("Nop", function() {
             var vm = new hhvm();
-            var hhbc = "Nop";
+            var hhbc = "Nop\nRetC";
             var prog = assemble(hhbc);
             vm.run(prog);
+            console.log(vm.callStack);
             checkVMState(vm, hhbc, prog.length, 0, "");
         });
         
