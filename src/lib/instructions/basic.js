@@ -22,7 +22,7 @@ define([
             },
             Unbox: function() {
                 var top = this.stack.pop();
-                this.stack.push(this.stack.pop().cell.clone());
+                this.stack.push(top.cell.clone());
             },
             BoxR: function() {
                 if (!(this.stack.peek() instanceof Ref)) {

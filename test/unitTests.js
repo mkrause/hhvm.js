@@ -73,7 +73,18 @@ define([
             var vm = new hhvm();
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
-            ok(false);
+            
+            hhbc.String("Hello World!");
+            hhbc.Box();
+            checkVMState(vm, 1, "");
+            var textRef = vm.stack.peek();
+            equal(textRef.cell.value, "Hello World!");
+            
+            hhbc.Unbox();
+            checkVMState(vm, 1, "");
+            var newCell = vm.stack.peek();
+            equal(newCell.value, textRef.cell.value);
+            notEqual(newCell, textRef.cell);
         });
         test("BoxR", function(){
             var vm = new hhvm();
