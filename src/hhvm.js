@@ -92,6 +92,9 @@ define([
                 this.offsetPc(8);
             } else if (type === 'array') {
                 //TODO
+            } else if (type === 'subop') {
+                arg = prog[pc + 1];
+                this.offsetPc(1);
             } else if (type === 'byte') {
                 // Get one byte (as an integer between 0 and 255)
                 arg = prog[pc + 1];
