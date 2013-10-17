@@ -24,7 +24,7 @@ define([
         test("Nop", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(0)
+                exitHandler: checkExitCode(1)
             });
             
             vm.program(assemble("Nop\nRetC"));

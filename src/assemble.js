@@ -73,8 +73,10 @@ define([
                 });
             });
             
-            unit.bc = bytes;
-            return program;
+            //TODO: cleanup
+            //unit.bc = bytes;
+            //return program;
+            return bytes;
         };
     }
 );
