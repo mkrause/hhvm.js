@@ -1,7 +1,9 @@
 define([
     ], function() {
       return [
+            // Boundary
             { mnemonic: "LowInvalid", spec: [] },
+
             // 1. Basic instructions
             { mnemonic: "Nop", spec: [] },
             { mnemonic: "PopC", spec: [] },
@@ -15,9 +17,9 @@ define([
 
             // 2. Literal and constant instructions
             { mnemonic: "Null", spec: [] },
+            { mnemonic: "NullUninit", spec: [] },
             { mnemonic: "True", spec: [] },
             { mnemonic: "False", spec: [] },
-            { mnemonic: "NullUninit", spec: [] },
             { mnemonic: "Int", spec: ['int'] },
             { mnemonic: "Double", spec: ['double'] },
             { mnemonic: "String", spec: ['string'] },
@@ -41,7 +43,6 @@ define([
 
             // 3. Operator instructions
             { mnemonic: "Concat", spec: [] },
-            { mnemonic: "Abs", spec: [] },
             { mnemonic: "Add", spec: [] },
             { mnemonic: "Sub", spec: [] },
             { mnemonic: "Mul", spec: [] },
@@ -64,8 +65,6 @@ define([
             { mnemonic: "BitNot", spec: [] },
             { mnemonic: "Shl", spec: [] },
             { mnemonic: "Shr", spec: [] },
-            { mnemonic: "Floor", spec: [] },
-            { mnemonic: "Ceil", spec: [] },
             { mnemonic: "CastBool", spec: [] },
             { mnemonic: "CastInt", spec: [] },
             { mnemonic: "CastDouble", spec: [] },
@@ -78,6 +77,10 @@ define([
             { mnemonic: "Clone", spec: [] },
             { mnemonic: "Exit", spec: [] },
             { mnemonic: "Fatal", spec: ['varInt'] },
+            // Abs: see 99. Other/Abs
+            // Ceil: see 99. Other/Abs
+            // Floor: see 99. Other/Abs
+            // Strlen: see 99. Other/Abs
 
             // 4. Control flow instructions
             { mnemonic: "Jmp", spec: ['byte'] },
@@ -91,36 +94,204 @@ define([
             { mnemonic: "Throw", spec: [] },
             
             // 5. Get instructions
-            { mnemonic: "CGetL", spec: ['int']},
-            //TODO: implmeent missing funtions
+            { mnemonic: "CGetL", spec: ['varId']},
+            { mnemonic: "CGetL2", spec: ['varId'] },
+            { mnemonic: "CGetL3", spec: ['varId'] },
+            { mnemonic: "CGetN", spec: [] },
+            { mnemonic: "CGetG", spec: [] },
+            { mnemonic: "CGetS", spec: [] },
+            { mnemonic: "CGetM", spec: ['memberVector'] },
+            { mnemonic: "VGetL", spec: ['varId'] },
+            { mnemonic: "VGetN", spec: [] },
+            { mnemonic: "VGetG", spec: [] },
+            { mnemonic: "VGetS", spec: [] },
+            { mnemonic: "VGetM", spec: ['memberVector'] },
+            { mnemonic: "AGetC", spec: [] },
+            { mnemonic: "AGetL", spec: ['varId'] },
+            { mnemonic: "AKExists", spec: [] },
             
             // 6. Isset, Empty and type querying instructions
-            //TODO: implement missing functions
+            // IssetC: deprecated?
+            { mnemonic: "IssetL", spec: ['varId'] },
+            { mnemonic: "IssetN", spec: [] },
+            { mnemonic: "IssetG", spec: [] },
+            { mnemonic: "IssetS", spec: [] },
+            { mnemonic: "IssetM", spec: ['memberVector'] },
+            { mnemonic: "EmptyL", spec: ['varId'] },
+            { mnemonic: "EmptyN", spec: [] },
+            { mnemonic: "EmptyG", spec: [] },
+            { mnemonic: "EmptyS", spec: [] },
+            { mnemonic: "EmptyM", spec: ['memberVector'] },
+            { mnemonic: "IsNullC", spec: [] },
+            { mnemonic: "IsBoolC", spec: [] },
+            { mnemonic: "IsIntC", spec: [] },
+            { mnemonic: "IsDoubleC", spec: [] },
+            { mnemonic: "IsStringC", spec: [] },
+            { mnemonic: "IsArrayC", spec: [] },
+            { mnemonic: "IsObjectC", spec: [] },
+            { mnemonic: "IsNullL", spec: ['varId'] },
+            { mnemonic: "IsBoolL", spec: ['varId'] },
+            { mnemonic: "IsIntL", spec: ['varId'] },
+            { mnemonic: "IsDoubleL", spec: ['varId'] },
+            { mnemonic: "IsStringL", spec: ['varId'] },
+            { mnemonic: "IsArrayL", spec: ['varId'] },
+            { mnemonic: "IsObjectL", spec: ['varId'] },
             
             // 7. Mutator instructions
-            { mnemonic: "SetL", spec: ['int']}
-            //TODO: implement missing functions
+            { mnemonic: "SetL", spec: ['varId'] },
+            { mnemonic: "SetN", spec: [] },
+            { mnemonic: "SetG", spec: [] },
+            { mnemonic: "SetS", spec: [] },
+            { mnemonic: "SetM", spec: ['memberVector'] },
+            { mnemonic: "SetWithRefLM", spec: ['memberVector', 'varId'] },
+            { mnemonic: "SetWithRefRM", spec: ['memberVector'] },
+            { mnemonic: "SetOpL", spec: ['varId', 'subop'] },
+            { mnemonic: "SetOpN", spec: ['subop'] },
+            { mnemonic: "SetOpG", spec: ['subop'] },
+            { mnemonic: "SetOpS", spec: ['subop'] },
+            { mnemonic: "SetOpM", spec: ['subop', 'memberVector'] },
+            { mnemonic: "IncDecL", spec: ['varId', 'subop'] },
+            { mnemonic: "IncDecN", spec: ['subop'] },
+            { mnemonic: "IncDecG", spec: ['subop'] },
+            { mnemonic: "IncDecS", spec: ['subop'] },
+            { mnemonic: "IncDecM", spec: ['subop', 'memberVector'] },
+            { mnemonic: "BindL", spec: ['varId'] },
+            { mnemonic: "BindN", spec: [] },
+            { mnemonic: "BindG", spec: [] },
+            { mnemonic: "BindS", spec: [] },
+            { mnemonic: "BindM", spec: ['memberVector'] },
+            { mnemonic: "UnsetL", spec: ['varId'] },
+            { mnemonic: "UnsetN", spec: [] },
+            { mnemonic: "UnsetG", spec: [] },
+            { mnemonic: "UnsetM", spec: ['memberVector'] },
             
             // 8. Call instructions
-            //TODO: implement missing functions
+            { mnemonic: "FPushFunc", spec: ['varInt'] },
+            { mnemonic: "FPushFuncD", spec: ['varInt', 'string'] },
+            { mnemonic: "FPushFuncU", spec: ['varInt', 'string', 'string'] },
+            { mnemonic: "FPushObjMethod", spec: ['varInt'] },
+            { mnemonic: "FPushObjMethodD", spec: ['varInt', 'string'] },
+            { mnemonic: "FPushClsMethod", spec: ['varInt'] },
+            { mnemonic: "FPushClsMethodF", spec: ['varInt'] },
+            { mnemonic: "FPushClsMethodD", spec: ['varInt', 'string', 'string'] },
+            { mnemonic: "FPushCtor", spec: ['varInt'] },
+            { mnemonic: "FPushCtorD", spec: ['varInt', 'string'] },
+            { mnemonic: "FPushCufIter", spec: ['varInt', 'iterId'] },
+            { mnemonic: "FPushCuf", spec: ['varInt'] },
+            { mnemonic: "FPushCufF", spec: ['varInt'] },
+            { mnemonic: "FPushCufSafe", spec: ['varInt'] },
+            { mnemonic: "FPassC", spec: ['varInt'] },
+            { mnemonic: "FPassCW", spec: ['varInt'] },
+            { mnemonic: "FPassCE", spec: ['varInt'] },
+            { mnemonic: "FPassV", spec: ['varInt'] },
+            { mnemonic: "FPassR", spec: ['varInt'] },
+            { mnemonic: "FPassL", spec: ['varInt', 'varId'] },
+            { mnemonic: "FPassN", spec: ['varInt'] },
+            { mnemonic: "FPassG", spec: ['varInt'] },
+            { mnemonic: "FPassS", spec: ['varInt'] },
+            { mnemonic: "FPassM", spec: ['varInt', 'memberVector'] },
+            { mnemonic: "FCall", spec: ['varInt'] },
+            { mnemonic: "FCallArray", spec: [] },
+            { mnemonic: "FCallBuiltin", spec: ['varInt', 'varInt', 'string'] },
+            { mnemonic: "CufSafeArray", spec: [] },
+            { mnemonic: "CufSafeReturn", spec: [] },
             
             // 9. Member operations
-            //TODO: implement missing functions
+            // Member operations are shared across the Member instructions. Operations are not
+            // considered instructions; they do not have opcodes associated with them.
             
             // 10. Member instructions
-            //TODO: implement missing functions
+            // CGetM: see 5. Get/CGetM
+            // VGetM: see 5. Get/VGetM
+            // FPassM: see 8. Call/FPassM
+            // IssetM: see 6. Isset/IssetM
+            // EmptyM: see 6. Isset/EmptyM
+            // SetM: see 7. Mutator/SetM
+            // SetWithRefLM: see 7. Mutator/SetWithRefLM
+            // SetWithRefRM: see 7. Mutator/SetWithRefRM
+            // SetOpM: see 7. Mutator/SetOpM
+            // IncDecM: see 7. Mutator/IncDecM
+            // BindM: see 7. Mutator/BindM
+            // UnsetM: see 7. Mutator/UnsetM
             
             // 11. Iterator instructions
-            //TODO: implement missing functions
+            { mnemonic: "IterInit", spec: ['iterId', 'byte', 'varId'] },
+            { mnemonic: "MIterInit", spec: ['iterId', 'byte', 'varId'] },
+            { mnemonic: "WIterInit", spec: ['iterId', 'byte', 'varId'] },
+            { mnemonic: "IterInitK", spec: ['iterId', 'byte', 'varId', 'varId'] },
+            { mnemonic: "MIterInitK", spec: ['iterId', 'byte', 'varId', 'varId'] },
+            { mnemonic: "WIterInitK", spec: ['iterId', 'byte', 'varId', 'varId'] },
+            { mnemonic: "IterNext", spec: ['iterId', 'byte', 'varId'] },
+            { mnemonic: "MIterNext", spec: ['iterId', 'byte', 'varId'] },
+            { mnemonic: "WIterNext", spec: ['iterId', 'byte', 'varId'] },
+            { mnemonic: "IterNextK", spec: ['iterId', 'byte', 'varId', 'varId'] },
+            { mnemonic: "MIterNextK", spec: ['iterId', 'byte', 'varId', 'varId'] },
+            { mnemonic: "WIterNextK", spec: ['iterId', 'byte', 'varId', 'varId'] },
+            { mnemonic: "DecodeCufIter", spec: ['iterId', 'byte'] },
+            { mnemonic: "IterFree", spec: ['iterId'] },
+            { mnemonic: "MIterFree", spec: ['iterId'] },
+            { mnemonic: "CIterFree", spec: ['iterId'] },
+            { mnemonic: "IterBreak", spec: ['iterVector', 'byte'] },
             
             // 12. Include, eval, and define instructions
-            //TODO: implement missing functions
+            { mnemonic: "Incl", spec: [] },
+            { mnemonic: "InclOnce", spec: [] },
+            { mnemonic: "Req", spec: [] },
+            { mnemonic: "ReqOnce", spec: [] },
+            { mnemonic: "ReqDoc", spec: [] },
+            { mnemonic: "Eval", spec: [] },
+            { mnemonic: "DefFunc", spec: ['varInt'] },
+            { mnemonic: "DefCls", spec: ['varInt'] },
+            { mnemonic: "DefCns", spec: ['string'] },
+            { mnemonic: "DefTypeAlias", spec: ['varInt'] },
             
             // 13. Miscellaneous instructions
-            //TODO: implement missing functions
+            { mnemonic: "This", spec: [] },
+            { mnemonic: "BareThis", spec: ['subop'] },
+            { mnemonic: "CheckThis", spec: [] },
+            { mnemonic: "InitThisLoc", spec: ['varInt'] },
+            { mnemonic: "StaticLoc", spec: ['varInt', 'string'] },
+            { mnemonic: "StaticLocInit", spec: ['varInt', 'string'] },
+            { mnemonic: "Catch", spec: [] },
+            { mnemonic: "ClassExists", spec: [] },
+            { mnemonic: "InterfaceExists", spec: [] },
+            { mnemonic: "TraitExists", spec: [] },
+            { mnemonic: "VerifyParamType", spec: ['varInt'] },
+            { mnemonic: "Self", spec: [] },
+            { mnemonic: "Parent", spec: [] },
+            { mnemonic: "LateBoundCls", spec: [] },
+            { mnemonic: "NativeImpl", spec: [] },
+            { mnemonic: "CreateCl", spec: ['varInt', 'string'] },
+            // IncStat: see 99. Other/IncStat
+            // AKExists: see 99. Other/AKExists
+            // ArrayIdx: see 99. Other/ArrayIdx
             
             // 14. Continuation creation and execution
-            //TODO: implement missing functions
+            { mnemonic: "CreateCont", spec: ['string'] },
+            { mnemonic: "CreateAsync", spec: ['string', 'varInt', 'varInt'] },
+            { mnemonic: "ContEnter", spec: [] },
+            { mnemonic: "UnpackCont", spec: [] },
+            { mnemonic: "ContSuspend", spec: ['varInt'] },
+            { mnemonic: "ContSuspendK", spec: ['varInt'] },
+            { mnemonic: "ContRetC", spec: [] },
+            { mnemonic: "ContCheck", spec: ['varInt'] },
+            { mnemonic: "ContRaise", spec: [] },
+            { mnemonic: "ContValid", spec: [] },
+            { mnemonic: "ContKey", spec: [] },
+            { mnemonic: "ContCurrent", spec: [] },
+            { mnemonic: "ContStopped", spec: [] },
+            { mnemonic: "ContHandle", spec: [] },
+
+            // 99. Other
+            { mnemonic: "Strlen", spec: [] },
+            { mnemonic: "IncStat", spec: ['varInt','varInt'] },
+            { mnemonic: "Abs", spec: [] },
+            { mnemonic: "ArrayIdx", spec: [] },
+            { mnemonic: "Floor", spec: [] },
+            { mnemonic: "Ceil", spec: [] },
+
+            // Boundary
+            { mnemonic: "HighInvalid", spec: [] },
             
       ];
     }

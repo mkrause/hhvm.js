@@ -79,7 +79,7 @@ define([
                 var bytes8 = prog.slice(pc + 1, pc + 9);
                 arg = this.bConverter.decodeDouble(bytes8);
                 this.offsetPc(8);
-            } else if (type === 'varInt') {
+            } else if (type === 'varInt' || type === 'varId' || type === 'iteratorId') {
                 var bytes4 = prog.slice(pc + 1, pc + 5);
                 var varInt = this.bConverter.decodeVarInt(bytes4);
                 arg = varInt.value;
