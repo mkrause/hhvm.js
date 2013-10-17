@@ -11,7 +11,6 @@ define([
         Dispatcher.prototype.initialize = function() {
             this.pushFrame(new Frame(new FPI("Application"), []));
             this.pushFrame(new Frame(new FPI("Pseudo-main"), []));
-            // TODO: implement frame above as static vars in FPI file?
         };
         
         // Push new activation frame
@@ -58,7 +57,7 @@ define([
         Dispatcher.prototype.callFunction = function(func, args) {
             //TODO: do some stuff with frame stacks etc...
             return func.apply(args);
-        }
+        };
         
         return Dispatcher;
     }
