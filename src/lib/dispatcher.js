@@ -55,7 +55,7 @@ define([
             return parameters.reverse();
         };
         
-        Dispatcher.prototype.callFunction(func, args){
+        Dispatcher.prototype.callFunction = function(func, args) {
             //TODO: do some stuff with frame stacks etc...
             return func.apply(args);
         }
