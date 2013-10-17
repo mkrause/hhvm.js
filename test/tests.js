@@ -96,10 +96,10 @@ define([
             checkVMState(vm, hbbc, 0, "");
         });
 
-        //TODO: implement missing instructions of tests below        
         // function f($a, $b) { $a[4] = $b; }
         test("f6", function() {
             var vm = new hhvm();
+            //TODO: implement missing functions
             var hbbc = 
                "Int 4\
                 CGetL 1\
@@ -116,6 +116,7 @@ define([
         // function f($a, $b, $i) { $a[$i] = $b; }
         test("f7", function() {
             var vm = new hhvm();
+            //TODO: implement missing instructions
             var hbbc = 
                "CGetL 1\
                 SetM <L:0 EL:2>\
@@ -131,6 +132,7 @@ define([
         // function f($a, $b) { return $a[4] = $b; }
         test("f8", function() {
             var vm = new hhvm();
+            //TODO: implement missing instructions
             var hbbc = 
                "Int 4\
                 CGetL 1\
@@ -145,6 +147,7 @@ define([
         // function f($a, $b) { return $a[4][5] = $b[6]; }
         test("f9", function() {
             var vm = new hhvm();
+            //TODO: implement missing instructions
             var hbbc = 
                "Int 4\
                 Int 5\
@@ -160,6 +163,7 @@ define([
         
         // function f($a, $b, $i) { return $a[$i][5] = $b[6]; }
         test("f10", function() {
+            //TODO: implement missing instructions
             var vm = new hhvm();
             var hbbc = 
                "Int 5\
@@ -176,6 +180,7 @@ define([
         // function f($a, $b) { $a->prop = $b; }
         test("f11", function() {
             var vm = new hhvm();
+            //TODO: implement missing instructions
             var hbbc = 
                "String \"prop\"\
                 CGetL 1\
@@ -216,6 +221,7 @@ define([
         // function f($cls) { return $cls::FOO; }
         test("f14", function() {
             var vm = new hhvm();
+            //TODO: implement missing instructions
             var hbbc = 
                "AGetL 0\
                 ClsCns \"FOO\"\
