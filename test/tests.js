@@ -2,7 +2,7 @@ require.config({
     baseUrl: '../src/'
 });
 
-var checkVMState(vm, hbbc, stackSize, output){
+var checkVMState = function(vm, hbbc, stackSize, output){
     ok(!vm.running);
     ok(vm.pc == hbbc.split("\n").length);
     ok(vm.stack.length == stackSize);

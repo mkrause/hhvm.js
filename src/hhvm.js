@@ -12,6 +12,7 @@ define([
         'lib/dispatcher'
     ], function(_, BinaryConverter, InstructionSet, Stack, Dispatcher) {
         var Hhvm = function(options) {
+            options = options || {};
             this.options = _.defaults(options, {
                 // Default output handler: just append to an internal string
                 outputHandler: function(str) {
