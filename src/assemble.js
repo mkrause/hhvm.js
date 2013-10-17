@@ -64,7 +64,7 @@ define([
                 });
             });
             
-            return bytes;
+            return { units: [ { bc: bytes } ] };
         };
     }
 );
