@@ -90,7 +90,22 @@ define([
             var vm = new hhvm();
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
-            ok(false); 
+            
+            hhbc.False();
+            checkVMState(vm, 1, "");
+            var originalCell = vm.stack.peek();
+            ok(!originalCell.value);
+            
+            hhbc.BoxR();
+            checkVMState(vm, 1, "");
+            var newRef = vm.stack.peek();
+            ok(newRef instanceof Ref);
+            equal(newRef.cell.value, originalCell.value);
+            notEqual(newRef.cell, originalCell);
+            
+            hhbc.BoxR();
+            checkVMState(vm, 1, "");
+            equal(vm.stack.pop(), newRef);
         });
         test("UnboxR", function(){
             var vm = new hhvm();
