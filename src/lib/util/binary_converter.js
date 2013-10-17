@@ -49,6 +49,40 @@ define([
             return this.parser.decodeFloat(bytes, 52, 11);
         };
 
+        BinaryConverter.prototype.encodeVarInt = function(num) {
+            // Check if it fits in 7 bits
+            if (num >= -64 && num <= 63) {
+                return [ (num & 127) << 1 ];
+            }
+
+            // Return 4 bytes
+            var bytes = [
+                (num & 127) << 1 & 1, // add flag
+                num >> 7 & 255,
+                num >> 15 & 255,
+                num >> 23 & 255
+            ];
+            return bytes;
+        };
+
+        BinaryConverter.prototype.decodeVarInt = function(bytes) {
+            var varInt = {};
+
+            // To determine which size the immediate is, examine the first byte where
+            // the immediate is expected, and examine its low-order bit. If it is zero,
+            // it's a 1-byte immediate; otherwise, it's 4 bytes.
+            varInt.length = (bytes[0] & 1) ? 4 : 1;
+
+            // The immediate has to be logical-shifted to the right by one to
+            // get rid of the flag bit.
+            if (varInt.length === 1) {
+                varInt.value = bytes[0] >> 1;
+            } else {
+                varInt.value = bytes[0] >> 1 | bytes[1] << 7 | bytes[2] << 15 | bytes[3] << 23;
+            }
+            return varInt;
+        };
+
         return BinaryConverter;
     }
 );
