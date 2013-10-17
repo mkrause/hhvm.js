@@ -111,7 +111,22 @@ define([
             var vm = new hhvm();
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
-            ok(false); 
+            
+            hhbc.NullUninit();
+            checkVMState(vm, 1, "");
+            var originalCell = vm.stack.peek();
+            equal(originalCell.value, undefined);
+            
+            hhbc.Box();
+            hhbc.UnboxR();
+            checkVMState(vm, 1, "");
+            var newCell = vm.stack.peek();
+            equal(newCell.value, originalCell.value);
+            notEqual(newCell, originalCell);
+            
+            hhbc.UnboxR();
+            checkVMState(vm, 1, "");
+            equal(vm.stack.pop(), newCell);
         });
     //Literal instructions: are tested by other functions
     }
