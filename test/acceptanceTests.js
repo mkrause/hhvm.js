@@ -2,11 +2,19 @@ require.config({
     baseUrl: '../src/'
 });
 
-var checkVMState = function(vm, hbbc, stackSize, output){
+var checkVMState = function(vm, output){
     ok(!vm.running);
-    equal(vm.pc, hbbc.split("\n").length);
-    equal(vm.stack.length, stackSize);
+    equal(vm.callStack.length(), 0);
+    equal(vm.currentFrame, null);
+    equal(vm.stack, null);
+    equal(vm.fpiStack, null);
     equal(vm.output, output);
+};
+
+var checkExitCode = function(expected) {
+    return function(exitCode){
+        equal(exitCode, expected);
+    };
 };
 
 define([
@@ -14,12 +22,14 @@ define([
         'assemble'
     ], function(hhvm, assemble) {
         test("Nop", function() {
-            var vm = new hhvm();
-            var hhbc = "Nop\nRetC";
-            var prog = assemble(hhbc);
-            vm.run(prog);
-            console.log(vm.callStack);
-            checkVMState(vm, hhbc, prog.length, 0, "");
+            var vm = new hhvm({
+                blocking: true,
+                exitHandler: checkExitCode(0)
+            });
+            
+            vm.program(assemble("Nop\nRetC"));
+            vm.run();
+            checkVMState(vm, "");
         });
         
         

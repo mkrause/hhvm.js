@@ -185,12 +185,16 @@ define([
                 }
 
                 // Program counter out of bounds
-                if (vm.currentFrame.pc >= vm.prog.length || vm.currentFrame.pc < 0) {
+                if (vm.running && (vm.currentFrame.pc >= vm.prog.length || vm.currentFrame.pc < 0)) {
                     vm.fatal("Illegal program counter (" + vm.currentFrame.pc + ")");
                     return;
                 }
                 
-                setTimeout(performStep, 0);
+                if(vm.options.blocking){
+                    performStep();
+                } else {
+                    setTimeout(performStep, 0);
+                }
             })();
         };
         
