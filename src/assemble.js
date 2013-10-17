@@ -6,15 +6,7 @@ define([
     ], function(_, instructions, opcodes, BinaryConverter) {
         // Very basic assembler
         return function(as) {
-            var program = {
-                units: [
-                    {
-                        bc: []
-                    }
-                ]
-            };
             var binary = new BinaryConverter();
-            var unit = program.units[0];
             var bytes = [];
             
             _.each(as.split("\n"), function(line) {
@@ -67,15 +59,11 @@ define([
                         }
                         
                         // Add the array to the metadata and push the ID
-                        unit.arrays.push(arr);
                         bytes.push(unit.arrays.length - 1);
                     }
                 });
             });
             
-            //TODO: cleanup
-            //unit.bc = bytes;
-            //return program;
             return bytes;
         };
     }
