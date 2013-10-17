@@ -18,9 +18,15 @@
         </div>
         
         <div id="editor" class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-4 col-xs-4">
+                <h2>PHP</h2>
+                <textarea id="input-php" class="form-control" rows="10">
+&lt;php
+</textarea><br>
+            </div>
+            <div class="col-md-4 col-xs-4">
                 <h2>HipHop bytecode</h2>
-                <textarea id="input" class="form-control" rows="10">
+                <textarea id="input-hhbc" class="form-control" rows="10">
 Double 42.0
 Print
 PopC
@@ -29,11 +35,12 @@ Int 0 # Exit code
 RetC
 </textarea><br>
             </div>
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-4 col-xs-4">
                 <h2>Output</h2>
                 <textarea id="output" class="form-control" rows="10" readonly></textarea>
             </div>
         </div>
+        <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
         <button id="btn-run" class="btn btn-primary btn-lg">Run</button>
         <button id="btn-stop" class="btn btn-danger btn-lg">Stop</button>
     </div>
@@ -42,6 +49,21 @@ RetC
     <script src="scripts/vendor/jquery.js"></script>
     <script>
     require(['jquery', 'hhvm', 'assemble'], function($, Hhvm, assemble) {
+        function run(vm) {
+            // Clear the output
+            $('#output').val("");
+            
+            var prog;
+            try {
+                prog = assemble($('#input-hhbc').val());
+            } catch (e) {
+                $('#output').val("PARSE ERROR: " + e);
+            }
+            
+            vm.program(prog.units[0].bc);
+            vm.run();
+        }
+        
         var vm = new Hhvm({
             outputHandler: function(str) {
                 var currentOutput = $('#output').val();
@@ -54,20 +76,12 @@ RetC
             }
         });
         
-        $('#btn-run').click(function() {
-            // Clear the output
-            $('#output').val("");
-            
-            var prog;
-            try {
-                prog = assemble($('#input').val());
-            } catch (e) {
-                $('#output').val("PARSE ERROR: " + e);
-            }
-            
-            vm.program(prog.units[0].bc);
-            vm.run();
+        $('#btn-compile').click(function() {
+            var script = $('#input-php').text();
+            //TODO: send to server to compile
         });
+        
+        $('#btn-run').click(function() { run(vm); });
         
         $('#btn-stop').click(function() {
             vm.stop();
