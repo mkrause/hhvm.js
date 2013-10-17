@@ -2,15 +2,15 @@ define([
         'vendor/underscore',
     ], function(_) {
         
-        var pushFunc = function(numParams, x){
-            if(x instanceof String){
-                var y = this.getFunction(x);
-                if(y === undefined){
+        var pushFunc = function(numParams, x) {
+            if(x instanceof String) {
+                var fpi = this.getFPI(x, numParams);
+                if(fpi === undefined) {
                     this.fatal("No such function: " + x);
                 } else {
-                    this.FPIstack.push(new FPI(y, numParams));
+                    this.FPIstack.push(fpi);
                 }
-            } else if (x instanceof Object && _.isFunction(x)){
+            } else if (x instanceof Object && _.isFunction(x)) {
                 this.FPIstack.push(new FPI(x, numParams));
             } else {
                 this.fatal("No such function: " + x);
@@ -19,34 +19,35 @@ define([
         
         return {
             FPushFunc: function(numParams) {
-                pushFunc(this.stack.pop().value);
+                var name = String(this.stack.pop().value);
+                pushFunc(numParams, name);
             },
-            FPushFuncD: function(numParams, litstrId){
-                pushFunc(numParams, litstrId);
+            FPushFuncD: function(numParams, name) {
+                pushFunc(numParams, name);
             },
-           //TODO: implement missing functions
-           FPassC: function(paramId) {
-               this.stack.push(new Cell(this.stack.pop()));
-           },
-           FPassL: function(paramId, localVariableId) {
-               var parameterType = this.FPIstack.peek().getParameterTable[paramId].parameterType;
-               if(parameterType == FPI.parameterType.PASS_BY_VALUE){
-                   this.hhbc.CGetL(localVariableId);
-               } else if(parameterType == FPI.parameterType.PASS_BY_REFERENCE){
-                   this.hhbc.VGetL(localVariableId);
-               }
-           },
-           //TODO: implement missing functions
-           FCall: function(numParams) {
-               //TODO
-               var args = [];
-               for(var i = 0; i < numParams; i++){
-                   args.unshift(this.stack.pop());
-               }
-               currentFPI = this.FPIstack.pop();
-               this.hhbc.PushR(new Cell(this.dispatcher.callFunction(currentFPI.func, args)));
-           },
-           //TODO: implement missing functions
+            //TODO: implement missing functions
+            FPassC: function(paramId) {
+                this.stack.push(new Cell(this.stack.pop()));
+            },
+            FPassL: function(paramId, localVariableId) {
+                var parameterType = this.FPIstack.peek().getParameterTable[paramId].parameterType;
+                if(parameterType == FPI.parameterType.PASS_BY_VALUE){
+                    this.hhbc.CGetL(localVariableId);
+                } else if(parameterType == FPI.parameterType.PASS_BY_REFERENCE){
+                    this.hhbc.VGetL(localVariableId);
+                }
+            },
+            //TODO: implement missing functions
+            FCall: function(numParams) {
+                var parameters = [];
+                _(numParams).times(function(n) {
+                    parameters.unshift(this.stack.pop());
+                });
+
+                var fpi = this.FPIstack.pop();
+                this.dispatcher.functionCall(fpi, parameters);
+            },
+            //TODO: implement missing functions
         };
     }
 );

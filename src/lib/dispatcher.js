@@ -31,11 +31,8 @@ define([
         };
         
         // Transfer control to new frame
-        Dispatcher.prototype.functionCall = function() {
-            var fpi = this.vm.FPIstack.peek();
-            var params = this.popParameters(fpi.numParameters);
-            var frame = new Frame(fpi, params);
-            this.pushFrame(frame);
+        Dispatcher.prototype.functionCall = function(fpi, parameters) {
+            this.pushFrame(new Frame(fpi, parameters));
         };
         
         // Transfer control back to previous frame
@@ -44,19 +41,10 @@ define([
             this.vm.stack.push(frame.stack.pop());
             // TODO: assert that frame.stack is empty
         };
-        
-        // Pop numParams parameters from the stack
-        Dispatcher.prototype.popParameters = function(numParameters) {
-            var parameters = new Array(numParameters);
-            _(numParameters).times(function(n) {
-                parameters.push(this.vm.stack.pop());
-            });
-            return parameters.reverse();
-        };
-        
-        Dispatcher.prototype.callFunction = function(func, args) {
-            //TODO: do some stuff with frame stacks etc...
-            return func.apply(args);
+
+        Dispatcher.prototype.getFPI = function(func, numParameters) {
+          // TODO: check if function exists in meta data
+          return new FPI(func, numParameters);
         };
         
         return Dispatcher;

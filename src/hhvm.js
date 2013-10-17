@@ -42,6 +42,9 @@ define([
             
             // Registers, memory
             this.prog = [];
+            this.heap = {};
+            this.globalVarStore = {};
+            this.globalVarNames = this.loadGlobalVariableNames();
 
             // The call stack containing the activation frames.
             this.callStack = new Stack();
@@ -81,8 +84,12 @@ define([
                 var varInt = this.bConverter.decodeVarInt(bytes4);
                 arg = varInt.value;
                 this.offsetPc(varInt.length);
-            } else if (type === 'litstr') {
-                //TODO
+            } else if (type === 'string') {
+                var bytes8 = prog.slice(pc + 1, pc + 9);
+                var id = this.bConverter.decodeInt64(bytes8);
+                //TODO: lookup string with litstr id
+                // arg = this.meta.litstr[id];
+                this.offsetPc(8);
             } else if (type === 'array') {
                 //TODO
             } else if (type === 'byte') {
@@ -196,6 +203,44 @@ define([
                     setTimeout(performStep, 0);
                 }
             })();
+        };
+
+        Hhvm.prototype.loadGlobalVariableNames = function() {
+            // TODO: Lookup global var names in meta data
+            return [];
+        };
+
+        /* Local variable getter and setters */
+        Hhvm.prototype.getGlobalVarById = function(id) {
+            return this.getGlobalVarByName(this.getGlobalNameFromId(id));
+        };
+
+        Hhvm.prototype.getGlobalVarByName = function(name) {
+            return this.globalVarStore[name];
+        };
+
+        Hhvm.prototype.setGlobalVarById = function(id, value) {
+            this.setGlobalVarByName(this.getGlobalNameFromId(id), value);
+        };
+
+        Hhvm.prototype.setGlobalVarByName = function(name, value) {
+            this.globalVarStore[name] = value;
+        };
+
+        Hhvm.prototype.unsetGlobalVarById = function(id) {
+            this.unsetGlobalVarByName(this.getGlobalNameFromId(id));
+        };
+
+        Hhvm.prototype.unsetGlobalVarByName = function(name) {
+            delete this.globalVarStore[name];
+        };
+
+        Hhvm.prototype.getGlobalNameFromId = function(id) {
+            return this.globalVarNames[id];
+        };
+
+        Hhvm.prototype.getGlobalIdFromName = function(name) {
+            return this.globalVarNames.indexOf(name);
         };
         
         return Hhvm;
