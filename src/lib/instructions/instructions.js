@@ -78,9 +78,9 @@ define([
             { mnemonic: "Exit", spec: [] },
             { mnemonic: "Fatal", spec: ['varInt'] },
             // Abs: see 99. Other/Abs
-            // Ceil: see 99. Other/Abs
-            // Floor: see 99. Other/Abs
-            // Strlen: see 99. Other/Abs
+            // Ceil: see 99. Other/Ceil
+            // Floor: see 99. Other/Floor
+            // Strlen: see 99. Other/Strlen
 
             // 4. Control flow instructions
             { mnemonic: "Jmp", spec: ['byte'] },
