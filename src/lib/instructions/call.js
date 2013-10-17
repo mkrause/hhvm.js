@@ -25,8 +25,11 @@ define([
                 pushFunc(numParams, litstrId);
             },
            //TODO: implement missing functions
+           FPassC: function(paramId) {
+               this.stack.push(new Cell(this.stack.pop()));
+           },
            FPassL: function(paramId, localVariableId) {
-               var parameterType = this.FPIstack.peek().getParameterTable[paramId];
+               var parameterType = this.FPIstack.peek().getParameterTable[paramId].parameterType;
                if(parameterType == FPI.parameterType.PASS_BY_VALUE){
                    this.hhbc.CGetL(localVariableId);
                } else if(parameterType == FPI.parameterType.PASS_BY_REFERENCE){

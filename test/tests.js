@@ -7,22 +7,73 @@ var checkVMState(vm, hbbc, stackSize, output){
     ok(vm.pc == hbbc.split("\n").length);
     ok(vm.stack.length == stackSize);
     ok(vm.output == output);
-}
+};
 
 define([
         'hhvm'
     ], function(hhvm) {
         test("Nop", function() {
             var vm = new hhvm();
-            var prog = assemble("Nop");
+            var hhbc = "Nop";
+            var prog = assemble(hhbc);
             vm.run(prog);
-            checkVMState(vm, prog.length, 0, "");
+            checkVMState(vm, hhbc, prog.length, 0, "");
         });
+        
+        
+        //First example test script parsed by server
+        /*
+         Pseudo-main at 0 (ID 0)
+          // line 16
+            0: FPushFuncD 0 "foo"
+            6: FCall 0
+            8: PopR # i0:t=Null
+          // line 17
+            9: FPushFuncD 0 "foobar"
+           15: FCall 0
+           17: UnboxR # Nop
+           18: SetL 0 # i0:t=Int64*
+           20: PopC
+          // line 18
+           21: FPushFuncD 1 "bar"
+           27: CGetL 0
+           29: FPassC 0 # Nop
+           31: FCall 1
+           33: PopR # i0:t=Int64*
+           34: Int 1
+           43: RetC
+        
+        Function (leaf) foo at 44 (ID 1)
+          // line 4
+           44: Null
+           45: RetC
+        
+        Function (leaf) bar at 46 (ID 2)
+          // line 10
+           46: VerifyParamType 0
+          // line 7
+           48: Int 42
+           57: CGetL2 0
+           59: Add
+          // line 8
+           60: Int 2
+           69: Mul
+          // line 9
+           70: RetC
+        
+        Function (leaf) foobar at 71 (ID 3)
+          // line 13
+           71: Int 42
+           80: RetC
+
+         */
+        
         
         /*
          * Example programs from https://github.com/facebook/hiphop-php/blob/master/hphp/doc/bytecode.specification#L3936
          */
         
+        /*
         // function f() {return $a = $b}
         test("f1", function() {
             var vm = new hhvm();
@@ -242,6 +293,7 @@ define([
             //TODO: checkVMState
             checkVMState(vm, hbbc, 0, "");
         });
+        */
         
     }
 );
