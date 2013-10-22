@@ -21,6 +21,7 @@ define([
         'hhvm',
         'assemble'
     ], function(hhvm, assemble) {
+        
         test("Nop", function() {
             var vm = new hhvm({
                 blocking: true,
@@ -44,6 +45,7 @@ define([
             vm.program(assemble([
                 //Pseudo-main at 0 (ID 0)
                 //Line 16
+                
                 'FPushFuncD 0 "foo"',
                 'FCall 0',
                 'PopR # i0:t=Null',
@@ -51,7 +53,7 @@ define([
                 'FPushFuncD 0 "foobar"',
                 'FCall 0',
                 'UnboxR # Nop',
-                'SetL 0 i0:t=Int64*',
+                'SetL 0 # i0:t=Int64*',
                 'PopC',
                 //Line 18
                 'FPushFuncD 1 "bar"',
@@ -69,7 +71,7 @@ define([
                 
                 //Function (leaf) bar at 46 (ID 2)
                 //line 10
-                'VerigyParamType 0',
+                'VerifyParamType 0',
                 //Line 7
                 'Int 42',
                 'CGetL2 0',

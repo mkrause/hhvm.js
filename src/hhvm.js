@@ -62,7 +62,6 @@ define([
         
         // Set the program code to execute
         Hhvm.prototype.program = function(program) {
-            console.log("program inserted: " + JSON.stringify(program));
             this.prog = program;
         };
         
@@ -111,12 +110,12 @@ define([
         // Execute the next instruction
         Hhvm.prototype.step = function() {
             var opcode = this.prog[this.currentFrame.pc];
-            console.log("looking for opcode based on pc: " + this.currentFrame.pc);
-            console.log("opcode in hhvm step(): " + opcode)
             
+            console.log("requesting instr for opcode " + opcode)
             var instr = this.hhbc.byOpcode(opcode);
             if (!instr) {
-                this.error("No such opcode: " + opcode);
+                console.log("No such opcode found: " + opcode + " : " + JSON.stringify(instr));
+                this.fatal("No such opcode: " + opcode);
                 return;
             }
             
@@ -138,18 +137,13 @@ define([
             this.print("\nWARNING: " + message);
         };
         
-        Hhvm.prototype.error = function(message) {
-            this.print("\nERROR: " + message);
-            this.stop(1);
-        };
-        
         Hhvm.prototype.fatal = function(message) {
             this.print("\nFATAL ERROR: " + message);
             this.stop(1);
         };
         
         Hhvm.prototype.recoverable = function(message) {
-            this.print("ERROR: " + message);
+            this.print("\nERROR: " + message);
         };
         
         Hhvm.prototype.stop = function(statusCode) {

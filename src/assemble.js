@@ -27,11 +27,13 @@ define([
                 var opcode = opcodes[mnemonic];
                 var instr = instructions[opcode];
                 
+                //console.log("opcode: " + opcode + " instr: " + JSON.stringify(instr));
+                
                 // Push the opcode of the instruction
                 bytes.push(opcode);
                 
                 if (instr.spec.length !== args.length) {
-                    throw "Invalid amount of arguments";
+                    throw "Invalid amount of arguments for instruction " + instr.mnemonic + ": " + instr.spec.length + " expected, but " + args.length + " supplied.";
                 }
                 
                 // For each of the arguments the instruction expects, get one argument
