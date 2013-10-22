@@ -43,6 +43,7 @@ define([
         };
         
         InstructionSet.prototype.byOpcode = function(opcode) {
+            console.log("opcode: " + opcode);
             if (!opcodeToInstr[opcode]) {
                 return undefined;
             }

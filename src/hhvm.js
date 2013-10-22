@@ -62,6 +62,7 @@ define([
         
         // Set the program code to execute
         Hhvm.prototype.program = function(program) {
+            console.log("program inserted: " + JSON.stringify(program));
             this.prog = program;
         };
         
@@ -110,6 +111,8 @@ define([
         // Execute the next instruction
         Hhvm.prototype.step = function() {
             var opcode = this.prog[this.currentFrame.pc];
+            console.log("looking for opcode based on pc: " + this.currentFrame.pc);
+            console.log("opcode in hhvm step(): " + opcode)
             
             var instr = this.hhbc.byOpcode(opcode);
             if (!instr) {

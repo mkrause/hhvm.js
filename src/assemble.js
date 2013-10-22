@@ -9,7 +9,8 @@ define([
             var binary = new BinaryConverter();
             var bytes = [];
             
-            _.each(as.split("\n"), function(line) {
+            as = as instanceof String ? as.split("\n") : as;
+            _.each(as, function(line) {
                 // Remove comments
                 line = line.replace(/#.+/, '');
                 
