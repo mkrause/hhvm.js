@@ -2,28 +2,28 @@ define([
         'vendor/underscore',
     ], function(_) {
         
-        var pushFunc = function(numParams, x) {
+        var pushFunc = function(vm, numParams, x) {
             if(x instanceof String) {
-                var fpi = this.getFPI(x, numParams);
+                var fpi = vm.getFPI(x, numParams);
                 if(fpi === undefined) {
-                    this.fatal("No such function: " + x);
+                    vm.fatal("No such function: " + x);
                 } else {
-                    this.FPIstack.push(fpi);
+                    vm.FPIstack.push(fpi);
                 }
             } else if (x instanceof Object && _.isFunction(x)) {
-                this.FPIstack.push(new FPI(x, numParams));
+                vm.FPIstack.push(new FPI(x, numParams));
             } else {
-                this.fatal("No such function: " + x);
+                vm.fatal("No such function: " + x);
             }
         };
         
         return {
             FPushFunc: function(numParams) {
                 var name = String(this.stack.pop().value);
-                pushFunc(numParams, name);
+                pushFunc(this, numParams, name);
             },
             FPushFuncD: function(numParams, name) {
-                pushFunc(numParams, name);
+                pushFunc(this, numParams, name);
             },
             //TODO: implement missing functions
             FPassC: function(paramId) {

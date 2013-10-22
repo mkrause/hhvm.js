@@ -111,7 +111,6 @@ define([
         Hhvm.prototype.step = function() {
             var opcode = this.prog[this.currentFrame.pc];
             
-            console.log("requesting instr for opcode " + opcode)
             var instr = this.hhbc.byOpcode(opcode);
             if (!instr) {
                 console.log("No such opcode found: " + opcode + " : " + JSON.stringify(instr));
@@ -125,8 +124,10 @@ define([
             // Execute the instruction
             instr.apply(this, args);
             
-            // Move the program counter to the next instruction
-            this.offsetPc(1);
+            if(this.running){
+                // Move the program counter to the next instruction
+                this.offsetPc(1);
+            }
         };
         
         Hhvm.prototype.print = function(str) {
