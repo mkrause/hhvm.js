@@ -1,10 +1,11 @@
 define([
         'vendor/underscore',
-    ], function(_) {
+        'lib/fpi'
+    ], function(_, FPI) {
         
         var pushFunc = function(vm, numParams, x) {
             if(x instanceof String) {
-                var fpi = vm.getFPI(x, numParams);
+                var fpi = new FPI(x, numParams);
                 if(fpi === undefined) {
                     vm.fatal("No such function: " + x);
                 } else {
@@ -13,7 +14,7 @@ define([
             } else if (x instanceof Object && _.isFunction(x)) {
                 vm.FPIstack.push(new FPI(x, numParams));
             } else {
-                vm.fatal("No such function: " + x);
+                vm.fatal("Supplied function not a String or Object: " + x);
             }
         };
         

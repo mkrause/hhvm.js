@@ -205,7 +205,7 @@ define([
                 }
             })();
         };
-
+        
         Hhvm.prototype.loadGlobalVariableNames = function() {
             // TODO: Lookup global var names in meta data
             return [];
