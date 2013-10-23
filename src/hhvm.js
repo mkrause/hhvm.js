@@ -122,6 +122,10 @@ define([
             
             // Execute the instruction
             instr.apply(this, args);
+
+            if (!this.running) {
+                return;
+            }
             
             // Move the program counter to the next instruction
             this.offsetPc(1);

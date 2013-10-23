@@ -1,6 +1,8 @@
 define([
         'vendor/underscore',
-    ], function(_) {
+        'lib/cell',
+        'lib/ref'
+    ], function(_, Cell, Ref) {
         return {
             CGetL: function(id) {
                 var value = this.currentFrame.getLocalVarById(id);

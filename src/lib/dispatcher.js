@@ -44,7 +44,8 @@ define([
 
         Dispatcher.prototype.getFPI = function(func, numParameters) {
           // TODO: check if function exists in meta data
-          return new FPI(func, numParameters);
+          //var fpi = new FPI(func, numParameters);
+          return undefined;
         };
         
         return Dispatcher;
