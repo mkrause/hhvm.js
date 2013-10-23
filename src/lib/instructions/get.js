@@ -5,11 +5,10 @@ define([
     ], function(_, Cell, Ref) {
         return {
             CGetL: function(id) {
-                var value = this.currentFrame.getLocalVarById(id);
+                var value = this.currentFrame.localVars.getById(id);
                 if(value === undefined) {
                     this.warning("Could not find variable " + id);
-                    this.stack.push(new Cell(null));
-                    return;
+                    value = new Cell(null);
                 }
                 this.stack.push(value);
             },
@@ -27,21 +26,19 @@ define([
             },
             CGetN: function() {
                 var name = String(this.stack.pop().value);
-                var value = this.currentFrame.getLocalVarByName(name);
+                var value = this.currentFrame.localVars.getByName(name);
                 if(value === undefined) {
                     this.warning("Could not find variable " + name);
-                    this.stack.push(new Cell(null));
-                    return;
+                    value = new Cell(null);
                 }
                 this.stack.push(value);
             },
             CGetG: function() {
                 var name = String(this.stack.pop().value);
-                var value = this.getGlobalVarByName(name);
+                var value = this.globalVars.getByName(name);
                 if(value === undefined) {
                     this.warning("Could not find global variable " + name);
-                    this.stack.push(new Cell(null));
-                    return;
+                    value = new Cell(null);
                 }
                 this.stack.push(value);
             },
@@ -49,10 +46,10 @@ define([
                 //TODO: implement
             },
             VGetL: function(id) {
-                var value = this.currentFrame.getLocalVarById(id);
+                var value = this.currentFrame.localVars.getById(id);
                 if(value === undefined) {
                     value = new Cell(null);
-                    this.currentFrame.setLocalVarById(id, value);
+                    this.currentFrame.localVars.setById(id, value);
                 }
 
                 // Box if necessary and push on stack
@@ -60,10 +57,10 @@ define([
             },
             VGetN: function() {
                 var name = String(this.stack.pop().value);
-                var value = this.currentFrame.getLocalVarByName(name);
+                var value = this.currentFrame.localVars.getByName(name);
                 if(value === undefined) {
                     value = new Cell(null);
-                    this.currentFrame.setLocalVarByName(name, value);
+                    this.currentFrame.localVars.setByName(name, value);
                 }
 
                 // Box if necessary and push on stack
@@ -71,10 +68,10 @@ define([
             },
             VGetG: function() {
                 var name = String(this.stack.pop().value);
-                var value = this.getGlobalVarByName(name);
+                var value = this.globalVars.getByName(name);
                 if(value === undefined) {
                     value = new Cell(null);
-                    this.setGlobalVarByName(name, value);
+                    this.globalVars.setByName(name, value);
                 }
 
                 // Box if necessary and push on stack

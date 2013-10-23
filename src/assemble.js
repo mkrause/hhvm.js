@@ -65,7 +65,20 @@ define([
                 });
             });
             
-            return { units: [ { bc: bytes } ] };
+            var prog = {
+                units: [
+                    {
+                        bc: bytes,
+                        functions: [
+                            {
+                                "name": "",
+                                "localNames": []
+                            }
+                        ]
+                    }
+                ]
+            };
+            return prog;
         };
     }
 );
