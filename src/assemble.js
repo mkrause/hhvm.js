@@ -49,7 +49,7 @@ define([
                     } else if (argType === 'double') {
                         var dbl = Number(arg); // Parse as double
                         bytes.push.apply(bytes, binary.encodeDouble(dbl));
-                    }  else if (argType === 'varInt') {
+                    }  else if (argType === 'varInt' || argType === 'varId' || argType === 'iteratorId') {
                         var varInt = Number(arg); // Parse as variable sized integer
                         bytes.push.apply(bytes, binary.encodeVarInt(varInt));
                     } else if (argType === 'array') {
