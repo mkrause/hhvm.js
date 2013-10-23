@@ -9,7 +9,7 @@ define([
             var binary = new BinaryConverter();
             var bytes = [];
             
-            as = as instanceof String ? as.split("\n") : as;
+            as = _.isString(as) ? as.split("\n") : as;
             _.each(as, function(line) {
                 // Remove comments
                 line = line.replace(/#.+/, '');
@@ -26,8 +26,6 @@ define([
                 
                 var opcode = opcodes[mnemonic];
                 var instr = instructions[opcode];
-                
-                //console.log("opcode: " + opcode + " instr: " + JSON.stringify(instr));
                 
                 // Push the opcode of the instruction
                 bytes.push(opcode);

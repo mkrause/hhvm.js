@@ -1,3 +1,5 @@
+// TODO: shouldn't the test cases be in binary format? We are now using the assembler, but we cannot create an 100% covering assembler (Erik)
+
 require.config({
     baseUrl: '../src/'
 });

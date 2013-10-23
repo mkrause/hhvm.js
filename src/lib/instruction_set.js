@@ -52,7 +52,6 @@ define([
         
         InstructionSet.prototype.byOpcode = function(opcode) {
             if (!opcodeToInstr[opcode]) {
-                //console.log("NO INSTR FOUND FOR OPCODE " + opcode + " " + JSON.stringify(opcodeToInstr[opcode]));
                 return undefined;
             }
 
