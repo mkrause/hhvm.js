@@ -57,7 +57,9 @@ define([
         
         // Set the program counter
         Hhvm.prototype.offsetPc = function(offset) {
-            this.currentFrame.pc += offset;
+            if (this.currentFrame !== null) {
+                this.currentFrame.pc += offset;
+            }
         };
         
         // Set the program code to execute
@@ -122,10 +124,6 @@ define([
             
             // Execute the instruction
             instr.apply(this, args);
-
-            if (!this.running) {
-                return;
-            }
             
             // Move the program counter to the next instruction
             this.offsetPc(1);
@@ -178,15 +176,8 @@ define([
             // call itself again as soon as possible.
             // Note that we don't just loop since that would hang up the browser.
             var vm = this;
-            (function performStep() {
-                // We may have stopped in the mean time, in which case we just return
-                if (!vm.running) {
-                    return;
-                }
-                
-                vm.step();
-                
-                // Loop until only the Application frame remains (containing the exit code on stack)
+            var performStep = function() {
+                // Stop when only the Application frame remains (containing the exit code on stack)
                 if (vm.callStack.length() === 1) {
                     var cell = vm.currentFrame.stack.pop();
                     vm.stop(cell === undefined ? 1 : cell.value);
@@ -194,17 +185,29 @@ define([
                 }
 
                 // Program counter out of bounds
-                if (vm.running && (vm.currentFrame.pc >= vm.prog.length || vm.currentFrame.pc < 0)) {
+                if (vm.currentFrame.pc >= vm.prog.length || vm.currentFrame.pc < 0) {
                     vm.fatal("Illegal program counter (" + vm.currentFrame.pc + ")");
                     return;
                 }
-                
-                if(vm.options.blocking){
+
+                // Execute current instruction
+                vm.step();
+            };
+
+            // Run in blocking mode
+            if(vm.options.blocking) {
+                while (vm.running) {
                     performStep();
-                } else {
-                    setTimeout(performStep, 0);
                 }
-            })();
+            // Run in non-blocking mode
+            } else {
+                (function async() {
+                    performStep();
+                    if (vm.running) {
+                        setTimeout(async, 0);
+                    }
+                })();
+            }
         };
         
         Hhvm.prototype.loadGlobalVariableNames = function() {
