@@ -7,10 +7,14 @@ define([
             this.vm = vm;
         };
 
-        // Push initial frames: application and pseudo-main frame
+        // Push initial frames
         Dispatcher.prototype.initialize = function() {
-            this.pushFrame(new Frame(new FPI("Application"), []));
-            this.pushFrame(new Frame(new FPI("Pseudo-main"), []));
+            // Push application frame
+            var appmeta = { name: "Application", base: 0, localNames: [] };
+            this.pushFrame(new Frame(new FPI(appmeta)));
+
+            // Push pseudo-main frame
+            this.pushFrame(new Frame(this.getFPI("", 0)));
         };
         
         // Push new activation frame
@@ -42,10 +46,14 @@ define([
             // TODO: assert that frame.stack is empty
         };
 
-        Dispatcher.prototype.getFPI = function(func, numParameters) {
-          // TODO: check if function exists in meta data
-          //var fpi = new FPI(func, numParameters);
-          return undefined;
+        Dispatcher.prototype.getFPI = function(functionName, numParameters) {
+            // TODO: retrieve metadata from program
+            //var meta = this.vm.prog.getFunctionByName(funcName);
+            //if (meta === undefined)
+            //    return undefined;
+            var meta = { name: functionName, base: 0, localNames: [] };
+
+            return new FPI(meta, numParameters);
         };
         
         return Dispatcher;

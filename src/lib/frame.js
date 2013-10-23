@@ -9,14 +9,12 @@ define([
 
             // Header info
             this.functionName = fpi.functionName;
-            this.numParameters = fpi.numParameters;
 
             // Program counter
             this.pc = fpi.address;
 
             // Local variable store
-            var localNames = []; // TODO: read from metadata
-            this.localVars = new VariableStore(localNames);
+            this.localVars = new VariableStore(fpi.localNames);
 
             // Iterator variable store
             this.iteratorVars = new VariableStore();
