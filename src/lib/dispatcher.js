@@ -14,7 +14,7 @@ define([
             this.pushFrame(new Frame(new FPI(appmeta)));
 
             // Push pseudo-main frame
-            this.pushFrame(new Frame(this.createFPI("", 0)));
+            this.pushFrame(new Frame(this.createFPI(0)));
         };
         
         // Push new activation frame
@@ -36,7 +36,9 @@ define([
         
         // Transfer control to new frame
         Dispatcher.prototype.functionCall = function(fpi, parameters) {
-            this.pushFrame(new Frame(fpi, parameters));
+            var frame = new Frame(fpi, parameters);
+            this.pushFrame(frame);
+            frame.pc--;
         };
         
         // Transfer control back to previous frame
@@ -46,12 +48,16 @@ define([
             // TODO: assert that frame.stack is empty
         };
 
-        Dispatcher.prototype.createFPI = function(functionName, numParameters) {
-            // TODO: retrieve metadata from program
-            //var meta = this.vm.prog.getFunctionByName(funcName);
-            //if (meta === undefined)
-            //    return undefined;
-            var meta = { name: functionName, base: 0, localNames: [] };
+        Dispatcher.prototype.createFPI = function(functionNameOrId, numParameters) {
+            var meta;
+            if (_.isString(functionNameOrId)) {
+                meta = this.vm.prog.getFunctionByName(functionNameOrId);
+            } else {
+                meta = this.vm.prog.getFunctionById(functionNameOrId);
+            }
+
+            if (meta === undefined)
+                return undefined;
 
             return new FPI(meta, numParameters);
         };

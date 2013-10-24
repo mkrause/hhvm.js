@@ -1,23 +1,21 @@
 define([
         'vendor/underscore',
-        'lib/fpi'
-    ], function(_, FPI) {
+        'lib/fpi',
+        'lib/cell'
+    ], function(_, FPI, Cell) {
         
         var pushFunc = function(vm, numParams, x) {
-            switch(typeof(x)){
-                case 'string':
-                    var fpi = vm.dispatcher.createFPI(x, numParams);
-                    if(fpi === undefined) {
-                        throw new Error("No such function" + x);
-                    } else {
-                        vm.FPIstack.push(fpi);
-                    }
-                    break;
-                case 'function':
-                    vm.FPIstack.push(new FPI(x, numParams));
-                    break;
-                default:
-                    throw new Error("Supplied function not a String or Object: " + typeof(x) + " " + JSON.stringify(x));
+            if(_.isString(x)) {
+                var fpi = vm.dispatcher.createFPI(x, numParams);
+                if(fpi === undefined) {
+                    throw new Error("No such function" + x);
+                } else {
+                    vm.FPIstack.push(fpi);
+                }
+            } else if (x instanceof Object && _.isFunction(x)) {
+                vm.FPIstack.push(new FPI(x, numParams));
+            } else {
+                throw new Error("Supplied function not a String or Object: " + typeof(x) + " " + JSON.stringify(x));
             }
         };
         
@@ -31,7 +29,9 @@ define([
             },
             //TODO: implement missing functions
             FPassC: function(paramId) {
-                this.stack.push(new Cell(this.stack.pop()));
+                var cell = this.stack.pop();
+                cell = (cell instanceof Cell) ? cell : new Cell(cell);
+                this.stack.push(cell);
             },
             FPassL: function(paramId, localVariableId) {
                 var parameterType = this.FPIstack.peek().parameterTable[paramId].parameterType;
@@ -46,7 +46,7 @@ define([
                 var parameters = [];
                 _(numParams).times(function(n) {
                     parameters.unshift(this.stack.pop());
-                });
+                }, this);
 
                 var fpi = this.FPIstack.pop();
                 this.dispatcher.functionCall(fpi, parameters);

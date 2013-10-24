@@ -111,7 +111,8 @@ define([
         // Execute the next instruction
         Hhvm.prototype.step = function() {
             var bc = this.prog.getByteCode();
-            var opcode = bc[this.currentFrame.pc];
+            var pc = this.currentFrame.pc;
+            var opcode = bc[pc];
             
             var instr = this.hhbc.byOpcode(opcode);
             if (!instr) {

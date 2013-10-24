@@ -18,11 +18,11 @@ define([
             return this.data.units[this.currentUnit].litStrs[id];
         };
 
-        Program.prototype.functionById = function(id) {
+        Program.prototype.getFunctionById = function(id) {
             return this.data.units[this.currentUnit].functions[id];
         };
 
-        Program.prototype.functionByName = function(name) {
+        Program.prototype.getFunctionByName = function(name) {
             return _.find(this.data.units[this.currentUnit].functions, function(func) {
                 return func.name === name;
             });

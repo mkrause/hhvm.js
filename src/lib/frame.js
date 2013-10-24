@@ -28,7 +28,7 @@ define([
             // Add parameters to local variable store
             _(parameters.length).times(function(i) {
                 this.localVars.setById(i, parameters[i]);
-            });
+            }, this);
         };
         
         Frame.prototype.toString = function() {
