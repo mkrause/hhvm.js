@@ -166,7 +166,7 @@ define([
                 'RetC'
             ]));
             vm.run();
-            checkVMState(vm, "Hello world \n");
+            checkVMState(vm, "Hello World\n");
         });
         
         // function f($a) { return $a[0]++; }
