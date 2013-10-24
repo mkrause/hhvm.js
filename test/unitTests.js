@@ -14,11 +14,18 @@ var checkVMState = function(vm, stackSize, output){
 define([
         'lib/instruction_set',
         'hhvm',
-        'lib/ref'
-    ], function(InstructionSet, hhvm, Ref) {
+        'lib/ref',
+        'lib/program'
+    ], function(InstructionSet, hhvm, Ref, Program) {
+    // Program
+    var pseudoMain = { name: "", localNames: [], base: 0 };
+    var data = { units: [ { bc: [], functions: [ pseudoMain ], litStrs: [] } ] };
+    var program = new Program(data);
+
     //Basic instructions
         test("Nop", function() {
             var vm = new hhvm();
+            vm.program(program);
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
             
@@ -27,6 +34,7 @@ define([
         });
         test("PopC", function() {
             var vm = new hhvm();
+            vm.program(program);
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
             
@@ -39,6 +47,7 @@ define([
         });
         test("Dup", function(){
             var vm = new hhvm();
+            vm.program(program);
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
             
@@ -54,6 +63,7 @@ define([
         });
         test("Box", function(){
             var vm = new hhvm();
+            vm.program(program);
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
             
@@ -71,6 +81,7 @@ define([
         });
         test("Unbox", function(){
             var vm = new hhvm();
+            vm.program(program);
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
             
@@ -88,6 +99,7 @@ define([
         });
         test("BoxR", function(){
             var vm = new hhvm();
+            vm.program(program);
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
             
@@ -109,6 +121,7 @@ define([
         });
         test("UnboxR", function(){
             var vm = new hhvm();
+            vm.program(program);
             vm.dispatcher.initialize();
             var hhbc = new InstructionSet(vm);
             

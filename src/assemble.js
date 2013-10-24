@@ -107,7 +107,8 @@ define([
                 });
             });
             
-            var data = { units: [ { bc: bytes, functions: [], litStrs: litStrs } ] };
+            var pseudoMain = { name: "", localNames: [], base: 0 };
+            var data = { units: [ { bc: bytes, functions: [ pseudoMain ], litStrs: litStrs } ] };
             return new Program(data);
         };
     }
