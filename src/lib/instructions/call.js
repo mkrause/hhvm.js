@@ -34,7 +34,7 @@ define([
                 this.stack.push(new Cell(this.stack.pop()));
             },
             FPassL: function(paramId, localVariableId) {
-                var parameterType = this.FPIstack.peek().getParameterTable[paramId].parameterType;
+                var parameterType = this.FPIstack.peek().parameterTable[paramId].parameterType;
                 if(parameterType == FPI.parameterType.PASS_BY_VALUE){
                     this.hhbc.CGetL(localVariableId);
                 } else if(parameterType == FPI.parameterType.PASS_BY_REFERENCE){

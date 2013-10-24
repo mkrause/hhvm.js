@@ -126,7 +126,7 @@ define([
                 // Execute the instruction
                 instr.apply(this, args);
             } catch (e) {
-                this.fatal(e)
+                this.fatal(e);
             }
             
             // Move the program counter to the next instruction
@@ -144,7 +144,7 @@ define([
         Hhvm.prototype.fatal = function(e) {
             this.print(e);
             this.stop(0);
-            this.options.onError(e)
+            this.options.onError(e);
         };
         
         Hhvm.prototype.recoverable = function(message) {

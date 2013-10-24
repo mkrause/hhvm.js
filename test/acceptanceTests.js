@@ -31,7 +31,8 @@ define([
         test("Nop", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -107,7 +108,8 @@ define([
         test("f1", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -123,7 +125,8 @@ define([
         test("f2", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -143,7 +146,8 @@ define([
         test("f3", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -160,7 +164,8 @@ define([
         test("f4", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -178,7 +183,8 @@ define([
         test("f5", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -194,7 +200,8 @@ define([
         test("f6", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -214,7 +221,8 @@ define([
         test("f7", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -233,7 +241,8 @@ define([
         test("f8", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -251,7 +260,8 @@ define([
         test("f9", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -271,7 +281,8 @@ define([
         test("f10", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -290,7 +301,8 @@ define([
         test("f11", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -310,7 +322,8 @@ define([
         test("f12", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -325,7 +338,8 @@ define([
         test("f13", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
@@ -340,7 +354,8 @@ define([
         test("f14", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([
