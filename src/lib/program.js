@@ -27,6 +27,16 @@ define([
                 return func.name === name;
             });
         };
+
+        Program.prototype.getConstantByName = function(name) {
+            // TODO: implement
+            return undefined;
+        };
+
+        Program.prototype.getClassByName = function(name) {
+            // TODO: implement
+            return undefined;
+        };
         
         return Program;
     }

@@ -11,20 +11,24 @@ define([
             } else {
                 throw "Ref type: given a value of incorrect type";
             }
-            
+
             this.cell = cell;
         };
-        
+
         // Cast to primitive value
         Ref.prototype.valueOf = function() {
             return this.cell.valueOf();
         };
-        
+
+        Ref.prototype.clone = function() {
+            return new Ref(this.cell);
+        };
+
         // Cast to string
         Ref.prototype.toString = function() {
             return "[Ref: " + this.cell + "]";
         };
-        
+
         return Ref;
     }
 );

@@ -8,7 +8,7 @@ define([
             if(_.isString(x)) {
                 var fpi = vm.dispatcher.createFPI(x, numParams);
                 if(fpi === undefined) {
-                    throw new Error("No such function" + x);
+                    throw new Error("No such function " + x);
                 } else {
                     vm.FPIstack.push(fpi);
                 }

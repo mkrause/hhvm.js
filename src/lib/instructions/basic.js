@@ -25,12 +25,12 @@ define([
                 this.stack.push(top.cell.clone());
             },
             BoxR: function() {
-                if (!(this.stack.peek() instanceof Ref)) {
+                if (this.stack.peek() instanceof Cell) {
                     this.hhbc.Box();
                 }
             },
             UnboxR: function() {
-                if (!(this.stack.peek() instanceof Cell)) {
+                if (this.stack.peek() instanceof Ref) {
                     this.hhbc.Unbox();
                 }
             }

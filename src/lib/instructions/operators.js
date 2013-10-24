@@ -4,71 +4,89 @@ define([
     ], function(Cell, Ref) {
         return {
             Concat: function() {
-                var c1 = this.stack.pop();
-                var c2 = this.stack.pop();
-                this.stack.push(new Cell(c2.value + c1.value));
+                var val1 = this.stack.pop().value;
+                var val2 = this.stack.pop().value;
+                this.stack.push(new Cell("" + val2 + val1));
             },
             Abs: function() {
                 this.stack.push(new Cell(Math.abs(this.stack.pop().value)));
             },
             Add: function() {
-                var T1 = this.stack.pop().value;
-                var T2 = this.stack.pop().value;
-                if(T1 instanceof Array && T2 instanceof Array){
-                    var newArray = [];
-                    newArray.concat(T1, T2);
-                    this.stack.push(new Cell(newArray));
-                } else if(T1 instanceof Array || T2 instanceof Array){
+                var val1 = this.stack.pop().value;
+                var val2 = this.stack.pop().value;
+                if(_.isArray(val1) && _.isArray(val2)) {
+                    var array = [];
+                    array.concat(val1, val2);
+                    this.stack.push(new Cell(array));
+                } else if(_.isArray(val1) || _.isArray(val2)) {
                     throw new Error("error when executing Add");
                 } else {
-                    this.stack.push(new Cell(T1 + T2));
+                    this.stack.push(new Cell(val1 + val2));
                 }
             },
             Sub: function() {
-                var T1 = this.stack.pop().value;
-                var T2 = this.stack.pop().value;
-                if(T1 instanceof Array || T2 instanceof Array){
+                var val1 = this.stack.pop().value;
+                var val2 = this.stack.pop().value;
+                if(_.isArray(val1) || _.isArray(val2)) {
                     throw new Error("error when substracting in Sub");
                 } else {
-                    this.stack.push(new Cell(T2 - T1));
+                    this.stack.push(new Cell(val2 - val1));
                 }
             },
             Mul: function() {
-                var T1 = this.stack.pop().value;
-                var T2 = this.stack.pop().value;
-                if(T1 instanceof Array || T2 instanceof Array){
+                var val1 = this.stack.pop().value;
+                var val2 = this.stack.pop().value;
+                if(_.isArray(val1) || _.isArray(val2)) {
                     throw new Error("error when substracting in Mul");
                 } else {
-                    this.stack.push(new Cell(T2 * T1));
+                    this.stack.push(new Cell(val2 * val1));
                 }
             },
             Div: function() {
-                var T1 = this.stack.pop().value;
-                var T2 = this.stack.pop().value;
-                if(T1 instanceof Array || T2 instanceof Array){
+                var val1 = this.stack.pop().value;
+                var val2 = this.stack.pop().value;
+                if(_.isArray(val1) || _.isArray(val2)) {
                     throw new Error("error when substracting in Div");
                 } else {
-                    this.stack.push(new Cell(T2 / T1));
+                    this.stack.push(new Cell(val2 / val1));
                 }
             },
             Mod: function() {
-                var T1 = this.stack.pop().value;
-                var T2 = this.stack.pop().value;
-                if(!isNan(parseFloat(T1)) && isFinite(T1) && !isNaN(parseFloat(T2)) && isFinite(T2)){
-                    this.stack.push(new Cell(Math.floor(T2) % Math.floor(T1)));
+                var val1 = parseInt(this.stack.pop().value, 10);
+                var val2 = parseInt(this.stack.pop().value, 10);
+                if(!_.isNaN(val1) && !_.isNaN(val2)) {
+                    this.stack.push(new Cell(val2 % val1));
                 } else {
-                    this.stack.push(new Cell(false));
+                    this.hhbc.False();
                 }
             },
             Sqrt: function() {
                 var value = this.stack.pop().value;
-                if(value < 0){
+                if(value < 0) {
                     this.stack.push(new Cell(NaN));
-                } else if(value == undefined || value instanceof boolean || value instanceof int || value instanceof double || !isNaN(parseFloat(value))){
-                    this.stack.push(new Cell(Math.sqrt(value)));
-                } else {
+                } else if(value === null) {
+                    this.hhbc.Null();
+                } else if(_.isBoolean(value)) {
+                    value = value ? 1 : 0;
+                } else if(_.isFinite(parseFloat(value, 10))) {
+                    value = parseFloat(value, 10);
+                } else if (!_.isFinite(value)) {
                     this.warning("cannot take sqrt of a negative number in Sqrt");
+                    this.hhbc.Null();
+                    return;
                 }
+                this.stack.push(new Cell(Math.sqrt(value)));
+            },
+            Strlen: function() {
+                var string = this.stack.pop().value;
+                if (_.isArray(string)) {
+                    this.warning("Argument is an array instead of a string");
+                    this.hhbc.Null();
+                    return;
+                } else if (!_.isString(string)) {
+                    string = string.toString();
+                }
+                this.stack.push(new Cell(string.length));
             },
             Xor: function() {
                 var val1 = this.stack.pop().value;
@@ -76,20 +94,28 @@ define([
                 this.stack.push(new Cell(val2 && !val1 || !val2 && val1));
             },
             Not: function() {
-                this.stack.push(new Cell(!this.stack.pop().value));
+                var val1 = this.stack.pop().value;
+                this.stack.push(new Cell(!val1));
             },
             Same: function() {
-                this.stack.push(new Cell(this.stack.pop().value === this.stack.pop().value));
+                var val1 = this.stack.pop().value;
+                var val2 = this.stack.pop().value;
+                this.stack.push(new Cell(val2 === val1));
             },
             NSame: function() {
-                this.stack.push(new Cell(this.stack.pop().value !== this.stack.pop().value));
-                this.stack.push(this.stack.pop() !== this.stack.pop());
+                var val1 = this.stack.pop().value;
+                var val2 = this.stack.pop().value;
+                this.stack.push(new Cell(val2 !== val1));
             },
             Eq: function() {
-                this.stack.push(new Cell(this.stack.pop().value == this.stack.pop().value));
+                var val1 = this.stack.pop().value;
+                var val2 = this.stack.pop().value;
+                this.stack.push(new Cell(val2 == val1));
             },
             Neq: function() {
-                this.stack.push(new Cell(this.stack.pop().value != this.stack.pop().value));
+                var val1 = this.stack.pop().value;
+                var val2 = this.stack.pop().value;
+                this.stack.push(new Cell(val2 != val1));
             },
             Lt: function() {
                 var val1 = this.stack.pop().value;
@@ -114,8 +140,15 @@ define([
             BitAnd: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if(!(val1 instanceof String) && val1 instanceof Object || !(val2 instanceof String) && val2 instanceof Object){
+                if (_.isObject(val1) || _.isObject(val2)) {
                     throw new Error("BitAnd not supported for Objects");
+                } else if (_.isString(val1) && _.isString(val2)) {
+                    var str = "";
+                    var len = Math.min(val1.length, val2.length);
+                    _.times(len, function(i) {
+                        str += String.fromCharCode(val1.charCodeAt(i) & val2.charCodeAt(i));
+                    });
+                    this.stack.push(new Cell(str));
                 } else {
                     this.stack.push(new Cell(val2 & val1));
                 }
@@ -123,8 +156,15 @@ define([
             BitOr: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if(!(val1 instanceof String) && val1 instanceof Object || !(val2 instanceof String) && val2 instanceof Object){
+                if (_.isObject(val1) || _.isObject(val2)) {
                     throw new Error("BitOr not supported for Objects");
+                } else if (_.isString(val1) && _.isString(val2)) {
+                    var str = "";
+                    var len = Math.min(val1.length, val2.length);
+                    _.times(len, function(i) {
+                        str += String.fromCharCode(val1.charCodeAt(i) | val2.charCodeAt(i));
+                    });
+                    this.stack.push(new Cell(str));
                 } else {
                     this.stack.push(new Cell(val2 | val1));
                 }
@@ -132,16 +172,29 @@ define([
             BitXor: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if(!(val1 instanceof String) && val1 instanceof Object || !(val2 instanceof String) && val2 instanceof Object){
+                if (_.isObject(val1) || _.isObject(val2)) {
                     throw new Error("BitXor not supported for Objects");
+                } else if (_.isString(val1) && _.isString(val2)) {
+                    var str = "";
+                    var len = Math.min(val1.length, val2.length);
+                    _.times(len, function(i) {
+                        str += String.fromCharCode(val1.charCodeAt(i) ^ val2.charCodeAt(i));
+                    });
+                    this.stack.push(new Cell(str));
                 } else {
                     this.stack.push(new Cell(val2 ^ val1));
                 }
             },
             BitNot: function() {
                 var value = this.stack.pop().value;
-                if(!(value instanceof String) && !(value instanceof Array) && value instanceof Object){
-                    throw new Error("BitNot not supported for Objects");
+                if (value === null || _.isBoolean(value) || _.isArray(value) || _.isObject(value)) {
+                    throw new Error("BitXor not supported");
+                } else if (_.isString(value)) {
+                    var str = "";
+                    _.times(value.length, function(i) {
+                        str += String.fromCharCode(~value.charCodeAt(i));
+                    });
+                    this.stack.push(new Cell(str));
                 } else {
                     this.stack.push(new Cell(~value));
                 }
@@ -157,28 +210,33 @@ define([
                 this.stack.push(new Cell(val2 >> val1));
             },
             Floor: function() {
-                this.stack.push(new Cell(Math.floor(this.stack.pop().value)));
+                var value = parseInt(this.stack.pop().value, 10);
+                this.stack.push(new Cell(Math.floor(value)));
             },
             Ceil: function(){
-                this.stack.push(new Cell(Math.ceil(this.stack.pop())));
+                var value = parseInt(this.stack.pop().value, 10);
+                this.stack.push(new Cell(Math.ceil(value)));
             },
             CastBool: function() {
                 var value = this.stack.pop().value;
-                if(value instanceof String){
-                    this.stack.push(new Cell(value.toLowerCase() == "true" || value.toLowerCase() == "1"));
+                if(_.isString(value)) {
+                    value = !(value === "" || value === "0");
                 } else {
-                    this.stack.push(new Cell(value ? true : false));
+                    value = !!value;
                 }
+                this.stack.push(new Cell(value));
             },
             CastInt: function() {
-                this.stack.push(new Cell(parseInt(this.stack.pop().value)));
+                var value = parseInt(this.stack.pop().value, 10);
+                this.stack.push(new Cell(value));
             },
             CastDouble: function() {
-                this.stack.push(new Cell(parseFloat(this.stack.pop().value)));
+                var value = parseFloat(this.stack.pop().value, 10);
+                this.stack.push(new Cell(value));
             },
             CastString: function() {
                 var value = this.stack.pop().value;
-                if(value != null){
+                if(value !== null){
                     this.stack.push(new Cell(value.toString()));
                 } else {
                     throw new Error("Object does not implement toString. Needed for CastString.");
@@ -193,22 +251,30 @@ define([
             InstanceOf: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if(val1 instanceof String){
-                    this.stack.push(new Cell(typeof val2 == val1));
-                } else if(val1 instanceof Object){
-                    this.stack.push(new Cell(typeof val1 == typeof val2));
+                var className = "";
+                if(_.isString(val1)) {
+                    className = val1;
+                } else if(_.isObject(val1)) {
+                    className = typeof val1;
                 } else {
                     throw new Error("InstanceOf not supported for non-object");
                 }
+
+                var def = this.prog.getClassByName(className) !== undefined;
+                this.stack.push(new Cell(def && typeof val2 === className));
             },
-            //TODO: implement instanceOfD if we know what it should do
+            InstanceOfD: function(className) {
+                var value = this.stack.pop().value;
+                var def = this.prog.getClassByName(className) !== undefined;
+                this.stack.push(new Cell(def && typeof value === className));
+            },
             Print: function() {
                 this.print(this.stack.pop().value);
                 this.stack.push(new Cell(1));
             },
             Clone: function() {
                 var value = this.stack.pop().value;
-                if(value instanceof Object){
+                if(_.isObject(value)) {
                     this.stack.push(new Cell(JSON.parse(JSON.stringify(value))));
                 } else {
                     throw new Error("Clone not supported for non-objects");
@@ -216,24 +282,24 @@ define([
             },
             Exit: function() {
                 var value = this.stack.pop().value;
-                if(!isNaN(parseInt(value))){
-                    intValue = parseInt(value);
-                    this.stack.push(new Cell(null));
-                    this.stop(intValue);
-                } else {
+                var intValue = parseInt(value, 10);
+                if(isNaN(intValue)) {
                     this.print(value);
-                    this.stack.push(new Cell(null));
-                    this.stop(0);
+                    intValue = 0;
                 }
+                this.hhbc.Null();
+                this.stop(intValue);
             },
-            Fatal: function(){
+            Fatal: function(subop) {
                 var errorMessage = this.stack.pop().value;
-                if(errorMessage instanceof String){
+                if(_.isString(errorMessage)){
+                    // TODO: use subop
+                    // case 0: throw a runtime fatal error with a full backtrace.
+                    // case 1: throw a parse fatal error with a full backtrace.
+                    // case 2: throw a runtime fatal error with the backtrace omitting the top frame.
                     throw new Error(errorMessage);
                 } else {
-                    //TODO: if %1 is 0, include backtrace
-                    //TODO: if %1 is 1, include backtrace without topmost frame.
-                    throw new Error("(No String Error Mesage Provided): " + errorMessage);
+                    throw new Error("No string error mesage provided");
                 }
             }
         };
