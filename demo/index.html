@@ -21,7 +21,7 @@
             <div class="col-md-4 col-xs-4">
                 <h2>PHP</h2>
                 <textarea id="input-php" class="form-control" rows="10">
-&lt;php
+&lt;?php echo 42;
 </textarea><br>
             </div>
             <div class="col-md-4 col-xs-4">
@@ -60,7 +60,7 @@ RetC
                 $('#output').val("PARSE ERROR: " + e);
             }
             
-            vm.program(prog.units[0].bc);
+            vm.program(prog);
             vm.run();
         }
         

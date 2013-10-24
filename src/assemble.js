@@ -2,8 +2,9 @@ define([
         'vendor/underscore',
         'lib/instructions/instructions',
         'lib/instructions/opcodes',
-        'lib/util/binary_converter'
-    ], function(_, instructions, opcodes, BinaryConverter) {
+        'lib/util/binary_converter',
+        'lib/program'
+    ], function(_, instructions, opcodes, BinaryConverter, Program) {
         // Very basic assembler
         return function(as) {
             var binary = new BinaryConverter();
@@ -109,21 +110,8 @@ define([
                 });
             });
             
-            var prog = {
-                units: [
-                    {
-                        bc: bytes,
-                        functions: [
-                            {
-                                "name": "",
-                                "localNames": []
-                            }
-                        ],
-                        litStrs: litStrs
-                    }
-                ]
-            };
-            return prog;
+            var data = { units: [ { bc: bytes, functions: [], litStrs: litStrs } ] };
+            return new Program(data);
         };
     }
 );

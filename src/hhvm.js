@@ -42,7 +42,7 @@ define([
             this.exitHandler = _.bind(this.options.exitHandler, this);
             
             // Registers, memory
-            this.prog = [];
+            this.prog = null;
             this.heap = {};
             this.globalVars = null;
 
@@ -70,24 +70,24 @@ define([
         // Get the next instruction argument in the program, and increment the program counter
         Hhvm.prototype.arg = function(type) {
             var arg;
-            var prog = this.prog;
+            var bc = this.prog.getByteCode();
             var pc = this.currentFrame.pc;
             
             if (type === 'int') {
-                var bytes8 = prog.slice(pc + 1, pc + 9);
+                var bytes8 = bc.slice(pc + 1, pc + 9);
                 arg = this.bConverter.decodeInt64(bytes8);
                 this.offsetPc(8);
             } else if (type === 'double') {
-                var bytes8 = prog.slice(pc + 1, pc + 9);
+                var bytes8 = bc.slice(pc + 1, pc + 9);
                 arg = this.bConverter.decodeDouble(bytes8);
                 this.offsetPc(8);
             } else if (type === 'varInt' || type === 'varId' || type === 'iteratorId') {
-                var bytes4 = prog.slice(pc + 1, pc + 5);
+                var bytes4 = bc.slice(pc + 1, pc + 5);
                 var varInt = this.bConverter.decodeVarInt(bytes4);
                 arg = varInt.value;
                 this.offsetPc(varInt.length);
             } else if (type === 'string') {
-                var bytes8 = prog.slice(pc + 1, pc + 9);
+                var bytes8 = bc.slice(pc + 1, pc + 9);
                 var id = this.bConverter.decodeInt64(bytes8);
                 //TODO: lookup string with litstr id
                 // arg = this.meta.litstr[id];
@@ -95,11 +95,11 @@ define([
             } else if (type === 'array') {
                 //TODO
             } else if (type === 'subop') {
-                arg = prog[pc + 1];
+                arg = bc[pc + 1];
                 this.offsetPc(1);
             } else if (type === 'byte') {
                 // Get one byte (as an integer between 0 and 255)
-                arg = prog[pc + 1];
+                arg = bc[pc + 1];
                 this.offsetPc(1);
             } else {
                 this.fatal("Invalid argument type: " + type);
@@ -111,7 +111,8 @@ define([
         
         // Execute the next instruction
         Hhvm.prototype.step = function() {
-            var opcode = this.prog[this.currentFrame.pc];
+            var bc = this.prog.getByteCode();
+            var opcode = bc[this.currentFrame.pc];
             
             var instr = this.hhbc.byOpcode(opcode);
             if (!instr) {
@@ -171,8 +172,7 @@ define([
             
             this.running = true;
             this.dispatcher.initialize();
-            var globalVarNames = []; // TODO: read from metadata this.prog.units[0].functions[0].localNames;
-            this.globalVars = new VariableStore(globalVarNames);
+            this.globalVars = this.currentFrame.localVars;
             
             // Step function: perform one execution step, then call a timeout to asynchronously
             // call itself again as soon as possible.
@@ -187,7 +187,7 @@ define([
                 }
 
                 // Program counter out of bounds
-                if (vm.currentFrame.pc >= vm.prog.length || vm.currentFrame.pc < 0) {
+                if (vm.currentFrame.pc >= vm.prog.length() || vm.currentFrame.pc < 0) {
                     vm.fatal("Illegal program counter (" + vm.currentFrame.pc + ")");
                     return;
                 }
