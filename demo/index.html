@@ -18,28 +18,30 @@
         </div>
         
         <div id="editor" class="row">
-            <div class="col-md-4 col-xs-4">
+            <div class="php col-md-4 col-xs-4">
                 <h2>PHP</h2>
                 <textarea id="input-php" class="form-control" rows="10">
 &lt;?php echo 42;
 </textarea>
+                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="call">Function call</a></div>
                 <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
             </div>
-            <div class="col-md-4 col-xs-4">
+            <div class="hhbc col-md-4 col-xs-4">
                 <h2>HipHop bytecode</h2>
                 <textarea id="input-hhbc" class="form-control" rows="10">
-Double 42.0
+Int 42
 Print
 PopC
-# Jmp -13 # Jump to the start
 Int 0 # Exit code
 RetC
 </textarea>
+                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="loop">Loop</a></div>
                 <button id="btn-assemble" class="btn btn-primary btn-lg">Assemble</button>
             </div>
             <div class="col-md-4 col-xs-4">
                 <h2>Output</h2>
                 <textarea id="output" class="form-control" rows="10" readonly></textarea>
+                <div class="examples">&nbsp;</div>
                 <button id="btn-run" class="btn btn-success btn-lg">Run</button>
                 <button id="btn-stop" class="btn btn-danger btn-lg">Stop</button>
             </div>
@@ -72,6 +74,7 @@ RetC
             .error(function(jqXHR, textStatus, errorThrown) {
                 $('#output').val("Couldn't compile the program externally");
             });
+            $('#output').val("Compiling...");
         });
         
         $('#btn-assemble').click(function() {
@@ -92,6 +95,32 @@ RetC
         
         $('#btn-stop').click(function() {
             vm.stop();
+        });
+
+        // Examples
+
+        $('.php .examples .echo').click(function() {
+            $('#input-php').val("<?php echo 42;");
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .call').click(function() {
+            $('#input-php').val('<?php\necho foo("bar");\n\nfunction foo($x) {\n  return "foo" . $x;\n}');
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.hhbc .examples .echo').click(function() {
+            $('#input-hhbc').val("Int 42\nPrint\nPopC\nInt 0 # Exit code\nRetC");
+            $('#btn-assemble').click();
+            return false;
+        });
+
+        $('.hhbc .examples .loop').click(function() {
+            $('#input-hhbc').val("Int 42\nPrint\nPopC\nJmp -13 # Infinite loop\nInt 0 # Exit code\nRetC");
+            $('#btn-assemble').click();
+            return false;
         });
     });
     </script>
