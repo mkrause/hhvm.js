@@ -33,7 +33,7 @@ define([
             vm.program(assemble([
                 "Nop",
                 "RetC"
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -89,7 +89,7 @@ define([
                 'Int 42',
                 'RetC'
                 
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -109,7 +109,7 @@ define([
                 "CGetL 1",
                 "SetL 0",
                 "RetC"
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -129,7 +129,7 @@ define([
                 'PopR',
                 'Null',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -146,7 +146,7 @@ define([
                 'CGetL2 0',
                 'Add',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -164,7 +164,7 @@ define([
                 'PopC',
                 'Null',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "Hello world \n");
         });
@@ -180,7 +180,7 @@ define([
                 'Int 0',
                 'IncDecM PostInc <L:0 EC>',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -200,7 +200,7 @@ define([
                 'PopC',
                 'Null',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -219,7 +219,7 @@ define([
                 'PopC',
                 'Null',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -237,7 +237,7 @@ define([
                 'CGetL 1',
                 'SetM <L:0 EC>',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -257,7 +257,7 @@ define([
                 'CGetM <L:1 EC>',
                 'SetM <L:0 EC EC>',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -276,7 +276,7 @@ define([
                 'CGetM <L:1 EC>',
                 'SetM <L:0 EL:2 EC>',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -296,7 +296,7 @@ define([
                 'PopC',
                 'Null',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -311,7 +311,7 @@ define([
             vm.program(assemble([
                 'Cns "FOO"',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -326,7 +326,7 @@ define([
             vm.program(assemble([
                 'ClsCnsD "FOO" "c"',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -343,7 +343,7 @@ define([
                 'AGetL 0',
                 'ClsCns "FOO"',
                 'RetC'
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
@@ -357,7 +357,7 @@ define([
             
             vm.program(assemble([
                 //hbbc here
-            ]).units[0].bc);
+            ]));
             vm.run();
             checkVMState(vm, "");
         });
