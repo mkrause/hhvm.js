@@ -18,6 +18,10 @@ var checkExitCode = function(expected) {
         equal(exitCode, expected);
     };
 };
+var throwError = function(e) {
+    //console.log(e.stack);
+    throw e;
+};
 
 define([
         'hhvm',
@@ -41,7 +45,8 @@ define([
         test("HHVM1", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1)
+                exitHandler: checkExitCode(1),
+                onError: throwError
             });
             
             vm.program(assemble([

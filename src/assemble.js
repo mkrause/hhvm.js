@@ -32,8 +32,6 @@ define([
                 }
                 
                 var parts = splitOnSpace(line);
-                console.log("line: " + line);
-                console.log("Parts: " + JSON.stringify(parts));
                 var mnemonic = parts[0];
                 var args = parts[1];
                 
@@ -106,7 +104,6 @@ define([
                         var litStrIdBytes = binary.encodeInt32(litStrs.length - 1);
                         bytes.push.apply(bytes, litStrIdBytes);
                     }
-                    console.log("bytes: " + bytes);
                 });
             });
             

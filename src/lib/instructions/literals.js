@@ -45,7 +45,7 @@ define([
                     three.value[position] = element;
                     this.stack.push(three);
                 } else {
-                    this.fatal("Stack error when executing AddElemC");
+                    throw new Error("Stack error when executing AddElemC");
                 }
             },
             AddElemV: function() {
@@ -56,7 +56,7 @@ define([
                     three.value[position] = element;
                     this.stack.push(three);
                 } else {
-                    this.fatal("Stack error when executing AddElemV");
+                    throw new Error("Stack error when executing AddElemV");
                 }
             },
             AddNewElemC: function() {
@@ -66,7 +66,7 @@ define([
                     arrayCell.value.push(value);
                     this.stack.push(arrayCell);
                 } else {
-                    this.fatal("Stack error when executing AddNewElemC");
+                    throw new Error("Stack error when executing AddNewElemC");
                 }
             },
             AddNewElemV: function() {
@@ -76,7 +76,7 @@ define([
                     arrayCell.push(value);
                     this.stack.push(arrayCell);
                 } else {
-                    this.fatal("stack error when executing AddNewElemV");
+                    throw new Error("stack error when executing AddNewElemV");
                 }
             },
             //TODO: implement newCol, ColAddElemC, ColAddNewElemC when we have output from hhvm that shows what this is about.
@@ -92,7 +92,7 @@ define([
             CnsE: function(litstrId) {
                 var constant = this.getConstant(litstrId);
                 if(constant == undefined){
-                    this.fatal("constant not found by CnsE.");
+                    throw new Error("constant not found by CnsE.");
                 } else {
                     this.stack.push(new Cell(constant));
                 }
@@ -109,7 +109,7 @@ define([
                 var clsClass = this.stack.pop().value;
                 var clsConstant = this.getClassConstant(litstrId, clsClass);
                 if(clsConstant == undefined){
-                    this.fatal("class constant not found by ClsCns.");
+                    throw new Error("class constant not found by ClsCns.");
                 } else {
                     this.stack.push(new Cell(clsConstant));
                 }
@@ -118,11 +118,11 @@ define([
                 var newClass = this.getClass(classId);
                 //TODO: make sure autoload is invoked when class is not defined yet.
                 if(newClass == undefined){
-                    this.fatal("class could not be loaded by ClsCnsD");
+                    throw new Error("class could not be loaded by ClsCnsD");
                 } else {
                     var clsConstant = this.classConstant(litstrId, newClass);
                     if(clsConstant == undefined){
-                        this.fatal("class constant could not be loaded by ClsCnsD");
+                        throw new Error("class constant could not be loaded by ClsCnsD");
                     } else {
                         this.stack.push(new Cell(clsConstant));
                     }

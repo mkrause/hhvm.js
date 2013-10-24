@@ -4,17 +4,20 @@ define([
     ], function(_, FPI) {
         
         var pushFunc = function(vm, numParams, x) {
-            if(x instanceof String) {
-                var fpi = vm.dispatcher.createFPI(x, numParams);
-                if(fpi === undefined) {
-                    vm.fatal("No such function: " + x);
-                } else {
-                    vm.FPIstack.push(fpi);
-                }
-            } else if (x instanceof Object && _.isFunction(x)) {
-                vm.FPIstack.push(new FPI(x, numParams));
-            } else {
-                vm.fatal("Supplied function not a String or Object: " + x);
+            switch(typeof(x)){
+                case 'string':
+                    var fpi = vm.dispatcher.createFPI(x, numParams);
+                    if(fpi === undefined) {
+                        throw new Error("No such function" + x);
+                    } else {
+                        vm.FPIstack.push(fpi);
+                    }
+                    break;
+                case 'function':
+                    vm.FPIstack.push(new FPI(x, numParams));
+                    break;
+                default:
+                    throw new Error("Supplied function not a String or Object: " + typeof(x) + " " + JSON.stringify(x));
             }
         };
         

@@ -17,7 +17,7 @@ define([
                     newArray.concat(T1, T2);
                     this.stack.push(new Cell(newArray));
                 } else if(T1 instanceof Array || T2 instanceof Array){
-                    this.fatal("error when executing Add");
+                    throw new Error("error when executing Add");
                 } else {
                     this.stack.push(new Cell(T1 + T2));
                 }
@@ -26,7 +26,7 @@ define([
                 var T1 = this.stack.pop().value;
                 var T2 = this.stack.pop().value;
                 if(T1 instanceof Array || T2 instanceof Array){
-                    this.fatal("error when substracting in Sub");
+                    throw new Error("error when substracting in Sub");
                 } else {
                     this.stack.push(new Cell(T2 - T1));
                 }
@@ -35,7 +35,7 @@ define([
                 var T1 = this.stack.pop().value;
                 var T2 = this.stack.pop().value;
                 if(T1 instanceof Array || T2 instanceof Array){
-                    this.fatal("error when substracting in Mul");
+                    throw new Error("error when substracting in Mul");
                 } else {
                     this.stack.push(new Cell(T2 * T1));
                 }
@@ -44,7 +44,7 @@ define([
                 var T1 = this.stack.pop().value;
                 var T2 = this.stack.pop().value;
                 if(T1 instanceof Array || T2 instanceof Array){
-                    this.fatal("error when substracting in Div");
+                    throw new Error("error when substracting in Div");
                 } else {
                     this.stack.push(new Cell(T2 / T1));
                 }
@@ -113,7 +113,7 @@ define([
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
                 if(!(val1 instanceof String) && val1 instanceof Object || !(val2 instanceof String) && val2 instanceof Object){
-                    this.fatal("BitAnd not supported for Objects");
+                    throw new Error("BitAnd not supported for Objects");
                 } else {
                     this.stack.push(new Cell(val2 & val1));
                 }
@@ -122,7 +122,7 @@ define([
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
                 if(!(val1 instanceof String) && val1 instanceof Object || !(val2 instanceof String) && val2 instanceof Object){
-                    this.fatal("BitOr not supported for Objects");
+                    throw new Error("BitOr not supported for Objects");
                 } else {
                     this.stack.push(new Cell(val2 | val1));
                 }
@@ -131,7 +131,7 @@ define([
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
                 if(!(val1 instanceof String) && val1 instanceof Object || !(val2 instanceof String) && val2 instanceof Object){
-                    this.fatal("BitXor not supported for Objects");
+                    throw new Error("BitXor not supported for Objects");
                 } else {
                     this.stack.push(new Cell(val2 ^ val1));
                 }
@@ -139,7 +139,7 @@ define([
             BitNot: function() {
                 var value = this.stack.pop().value;
                 if(!(value instanceof String) && !(value instanceof Array) && value instanceof Object){
-                    this.fatal("BitNot not supported for Objects");
+                    throw new Error("BitNot not supported for Objects");
                 } else {
                     this.stack.push(new Cell(~value));
                 }
@@ -179,7 +179,7 @@ define([
                 if(value != null){
                     this.stack.push(new Cell(value.toString()));
                 } else {
-                    this.fatal("Object does not implement toString. Needed for CastString.");
+                    throw new Error("Object does not implement toString. Needed for CastString.");
                 }
             },
             CastArray: function() {
@@ -196,7 +196,7 @@ define([
                 } else if(val1 instanceof Object){
                     this.stack.push(new Cell(typeof val1 == typeof val2));
                 } else {
-                    this.fatal("InstanceOf not supported for non-object");
+                    throw new Error("InstanceOf not supported for non-object");
                 }
             },
             //TODO: implement instanceOfD if we know what it should do
@@ -209,7 +209,7 @@ define([
                 if(value instanceof Object){
                     this.stack.push(new Cell(JSON.parse(JSON.stringify(value))));
                 } else {
-                    this. fatal("Clone not supported for non-objects");
+                    throw new Error("Clone not supported for non-objects");
                 }
             },
             Exit: function() {
@@ -227,11 +227,11 @@ define([
             Fatal: function(){
                 var errorMessage = this.stack.pop().value;
                 if(errorMessage instanceof String){
-                    this.fatal(errorMessage);
+                    throw new Error(errorMessage);
                 } else {
                     //TODO: if %1 is 0, include backtrace
                     //TODO: if %1 is 1, include backtrace without topmost frame.
-                    this.fatal("(No String Error Mesage Provided): " + errorMessage);
+                    throw new Error("(No String Error Mesage Provided): " + errorMessage);
                 }
             }
         };

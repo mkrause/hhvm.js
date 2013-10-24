@@ -101,7 +101,7 @@ define([
                 arg = bc[pc + 1];
                 this.offsetPc(1);
             } else {
-                this.fatal("Invalid argument type: " + type);
+                this.fatal(new Error("Invalid argument type: " + type));
                 return;
             }
             
@@ -115,15 +115,19 @@ define([
             
             var instr = this.hhbc.byOpcode(opcode);
             if (!instr) {
-                this.fatal("No such opcode: " + opcode);
+                this.fatal(new Error("No such opcode: " + opcode));
                 return;
             }
             
             // For each argument of the function, get one argument from the program
             var args = _.map(instr.spec, _.bind(this.arg, this));
             
-            // Execute the instruction
-            instr.apply(this, args);
+            try {
+                // Execute the instruction
+                instr.apply(this, args);
+            } catch (e) {
+                this.fatal(e)
+            }
             
             // Move the program counter to the next instruction
             this.offsetPc(1);
@@ -137,9 +141,10 @@ define([
             this.print("\nWARNING: " + message);
         };
         
-        Hhvm.prototype.fatal = function(message) {
-            this.print("\nFATAL ERROR: " + message);
+        Hhvm.prototype.fatal = function(e) {
+            this.print(e);
             this.stop(0);
+            this.options.onError(e)
         };
         
         Hhvm.prototype.recoverable = function(message) {
@@ -187,7 +192,7 @@ define([
 
                 // Program counter out of bounds
                 if (vm.currentFrame.pc >= vm.prog.length() || vm.currentFrame.pc < 0) {
-                    vm.fatal("Illegal program counter (" + vm.currentFrame.pc + ")");
+                    vm.fatal(new Error("Illegal program counter (" + vm.currentFrame.pc + ")"));
                     return;
                 }
 
