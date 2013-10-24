@@ -139,7 +139,7 @@ define([
         
         Hhvm.prototype.fatal = function(message) {
             this.print("\nFATAL ERROR: " + message);
-            this.stop(1);
+            this.stop(0);
         };
         
         Hhvm.prototype.recoverable = function(message) {
@@ -151,7 +151,7 @@ define([
                 return;
             }
             
-            statusCode = statusCode || 0;
+            statusCode = statusCode || 1;
             
             // Reset state
             this.running = false;
