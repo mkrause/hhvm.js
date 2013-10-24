@@ -87,11 +87,10 @@ define([
                 arg = varInt.value;
                 this.offsetPc(varInt.length);
             } else if (type === 'string') {
-                var bytes8 = bc.slice(pc + 1, pc + 9);
-                var id = this.bConverter.decodeInt64(bytes8);
-                //TODO: lookup string with litstr id
-                // arg = this.meta.litstr[id];
-                this.offsetPc(8);
+                var bytes4 = bc.slice(pc + 1, pc + 5);
+                var id = this.bConverter.decodeInt32(bytes4);
+                arg = this.prog.getLiteralString(id);
+                this.offsetPc(4);
             } else if (type === 'array') {
                 //TODO
             } else if (type === 'subop') {

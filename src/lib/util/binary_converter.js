@@ -45,6 +45,10 @@ define([
         // representation of the operand, so negative numbers work as expected.
         // (http://stackoverflow.com/questions/2373791)
         BinaryConverter.prototype.decodeInt64 = function(bytes) {
+            return this.decodeInt32(bytes);
+        };
+
+        BinaryConverter.prototype.decodeInt32 = function(bytes) {
             var num = bytes[0]
                 | bytes[1] << 8
                 | bytes[2] << 16
