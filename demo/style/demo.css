@@ -4,13 +4,13 @@
 
 #editor textarea {
     font-family: monospace;
+    margin-bottom: 20px;
+}
+
+.btn {
+    width: 120px;
 }
 
 #btn-run {
-    width: 100px;
-}
-
-#btn-stop {
     margin-left: 10px;
-    width: 100px;
 }

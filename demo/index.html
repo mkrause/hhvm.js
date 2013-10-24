@@ -22,7 +22,8 @@
                 <h2>PHP</h2>
                 <textarea id="input-php" class="form-control" rows="10">
 &lt;?php echo 42;
-</textarea><br>
+</textarea>
+                <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
             </div>
             <div class="col-md-4 col-xs-4">
                 <h2>HipHop bytecode</h2>
@@ -33,37 +34,22 @@ PopC
 # Jmp -13 # Jump to the start
 Int 0 # Exit code
 RetC
-</textarea><br>
+</textarea>
+                <button id="btn-assemble" class="btn btn-primary btn-lg">Assemble</button>
             </div>
             <div class="col-md-4 col-xs-4">
                 <h2>Output</h2>
                 <textarea id="output" class="form-control" rows="10" readonly></textarea>
+                <button id="btn-run" class="btn btn-success btn-lg">Run</button>
+                <button id="btn-stop" class="btn btn-danger btn-lg">Stop</button>
             </div>
         </div>
-        <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
-        <button id="btn-run" class="btn btn-primary btn-lg">Run</button>
-        <button id="btn-stop" class="btn btn-danger btn-lg">Stop</button>
     </div>
     
     <script src="../src/vendor/require.js" data-main="../src/hhvm.js"></script>
     <script src="scripts/vendor/jquery.js"></script>
     <script>
-    require(['jquery', 'hhvm', 'assemble'], function($, Hhvm, assemble) {
-        function run(vm) {
-            // Clear the output
-            $('#output').val("");
-            
-            var prog;
-            try {
-                prog = assemble($('#input-hhbc').val());
-            } catch (e) {
-                $('#output').val("PARSE ERROR: " + e);
-            }
-            
-            vm.program(prog);
-            vm.run();
-        }
-        
+    require(['jquery', 'hhvm', 'assemble', 'lib/program'], function($, Hhvm, assemble, Program) {
         var vm = new Hhvm({
             outputHandler: function(str) {
                 var currentOutput = $('#output').val();
@@ -77,11 +63,29 @@ RetC
         });
         
         $('#btn-compile').click(function() {
-            var script = $('#input-php').text();
-            //TODO: send to server to compile
+            $.post("http://146.185.138.111", { script: $('#input-php').text() })
+            .done(function(data) {
+                var prog = new Program(data);
+                vm.program(prog);
+                $('#output').val("Program externally compiled");
+            });
         });
         
-        $('#btn-run').click(function() { run(vm); });
+        $('#btn-assemble').click(function() {
+            try {
+                var prog = assemble($('#input-hhbc').val());
+                vm.program(prog);
+                $('#output').val("Program assembled");
+            } catch (e) {
+                $('#output').val("PARSE ERROR: " + e);
+            }
+        });
+        
+        $('#btn-run').click(function() {
+            // Clear the output
+            $('#output').val("");
+            vm.run();
+        });
         
         $('#btn-stop').click(function() {
             vm.stop();
