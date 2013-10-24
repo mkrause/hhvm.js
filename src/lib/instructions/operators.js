@@ -4,7 +4,9 @@ define([
     ], function(Cell, Ref) {
         return {
             Concat: function() {
-                this.stack.push(new Cell(this.stack.pop().value + this.stack.value));
+                var c1 = this.stack.pop();
+                var c2 = this.stack.pop();
+                this.stack.push(new Cell(c2.value + c1.value));
             },
             Abs: function() {
                 this.stack.push(new Cell(Math.abs(this.stack.pop().value)));
