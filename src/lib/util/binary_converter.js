@@ -8,6 +8,17 @@ define([
             this.parser = new BinaryParser(this.bigEndian, false);
         };
 
+        // Encode the given number as a 32 bit integer in little endian order.
+        BinaryConverter.prototype.encodeInt32 = function(num) {
+            var bytes = [
+                num & 255,
+                num >> 8 & 255,
+                num >> 16 & 255,
+                num >> 24 & 255
+            ];
+            return bytes;
+        };
+        
         // Encode the given number as a 64 bit integer in little endian order.
         // Since JS doubles can't represent 64 bit integers exactly, we only support
         // 32 bits for now.

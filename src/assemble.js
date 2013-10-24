@@ -102,7 +102,7 @@ define([
                         var arg = args.substring(0, endPos);
                         args = args.substring(endPos + 2, args.length); //chop off quote and space after string argument
                         litStrs.push(arg);
-                        var litStrIdBytes = binary.encodeVarInt(litStrs.length - 1);
+                        var litStrIdBytes = binary.encodeInt32(litStrs.length - 1);
                         bytes.push.apply(bytes, litStrIdBytes);
                     }
                     console.log("bytes: " + bytes);
