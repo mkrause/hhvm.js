@@ -63,11 +63,14 @@ RetC
         });
         
         $('#btn-compile').click(function() {
-            $.post("http://146.185.138.111", { script: $('#input-php').text() })
+            $.post("http://146.185.138.111", { script: $('#input-php').val() })
             .done(function(data) {
                 var prog = new Program(data);
                 vm.program(prog);
                 $('#output').val("Program externally compiled");
+            })
+            .error(function(jqXHR, textStatus, errorThrown) {
+                $('#output').val("Couldn't compile the program externally");
             });
         });
         
