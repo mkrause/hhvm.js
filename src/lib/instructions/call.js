@@ -5,7 +5,7 @@ define([
         
         var pushFunc = function(vm, numParams, x) {
             if(x instanceof String) {
-                var fpi = vm.dispatcher.getFPI(x, numParams);
+                var fpi = vm.dispatcher.createFPI(x, numParams);
                 if(fpi === undefined) {
                     vm.fatal("No such function: " + x);
                 } else {

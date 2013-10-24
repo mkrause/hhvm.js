@@ -14,7 +14,7 @@ define([
             this.pushFrame(new Frame(new FPI(appmeta)));
 
             // Push pseudo-main frame
-            this.pushFrame(new Frame(this.getFPI("", 0)));
+            this.pushFrame(new Frame(this.createFPI("", 0)));
         };
         
         // Push new activation frame
@@ -46,7 +46,7 @@ define([
             // TODO: assert that frame.stack is empty
         };
 
-        Dispatcher.prototype.getFPI = function(functionName, numParameters) {
+        Dispatcher.prototype.createFPI = function(functionName, numParameters) {
             // TODO: retrieve metadata from program
             //var meta = this.vm.prog.getFunctionByName(funcName);
             //if (meta === undefined)
