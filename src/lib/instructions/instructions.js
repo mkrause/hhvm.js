@@ -83,9 +83,9 @@ define([
             // Strlen: see 99. Other/Strlen
 
             // 4. Control flow instructions
-            { mnemonic: "Jmp", spec: ['byte'] },
-            { mnemonic: "JmpZ", spec: ['byte'] },
-            { mnemonic: "JmpNZ", spec: ['byte'] },
+            { mnemonic: "Jmp", spec: ['byteOffset'] },
+            { mnemonic: "JmpZ", spec: ['byteOffset'] },
+            { mnemonic: "JmpNZ", spec: ['byteOffset'] },
             { mnemonic: "Switch", spec: ['byteVector', 'int', 'varInt'] },
             { mnemonic: "SSwitch", spec: ['stringVector'] },
             { mnemonic: "RetC", spec: [] },
@@ -215,23 +215,23 @@ define([
             // UnsetM: see 7. Mutator/UnsetM
             
             // 11. Iterator instructions
-            { mnemonic: "IterInit", spec: ['iterId', 'byte', 'varId'] },
-            { mnemonic: "MIterInit", spec: ['iterId', 'byte', 'varId'] },
-            { mnemonic: "WIterInit", spec: ['iterId', 'byte', 'varId'] },
-            { mnemonic: "IterInitK", spec: ['iterId', 'byte', 'varId', 'varId'] },
-            { mnemonic: "MIterInitK", spec: ['iterId', 'byte', 'varId', 'varId'] },
-            { mnemonic: "WIterInitK", spec: ['iterId', 'byte', 'varId', 'varId'] },
-            { mnemonic: "IterNext", spec: ['iterId', 'byte', 'varId'] },
-            { mnemonic: "MIterNext", spec: ['iterId', 'byte', 'varId'] },
-            { mnemonic: "WIterNext", spec: ['iterId', 'byte', 'varId'] },
-            { mnemonic: "IterNextK", spec: ['iterId', 'byte', 'varId', 'varId'] },
-            { mnemonic: "MIterNextK", spec: ['iterId', 'byte', 'varId', 'varId'] },
-            { mnemonic: "WIterNextK", spec: ['iterId', 'byte', 'varId', 'varId'] },
-            { mnemonic: "DecodeCufIter", spec: ['iterId', 'byte'] },
+            { mnemonic: "IterInit", spec: ['iterId', 'byteOffset', 'varId'] },
+            { mnemonic: "MIterInit", spec: ['iterId', 'byteOffset', 'varId'] },
+            { mnemonic: "WIterInit", spec: ['iterId', 'byteOffset', 'varId'] },
+            { mnemonic: "IterInitK", spec: ['iterId', 'byteOffset', 'varId', 'varId'] },
+            { mnemonic: "MIterInitK", spec: ['iterId', 'byteOffset', 'varId', 'varId'] },
+            { mnemonic: "WIterInitK", spec: ['iterId', 'byteOffset', 'varId', 'varId'] },
+            { mnemonic: "IterNext", spec: ['iterId', 'byteOffset', 'varId'] },
+            { mnemonic: "MIterNext", spec: ['iterId', 'byteOffset', 'varId'] },
+            { mnemonic: "WIterNext", spec: ['iterId', 'byteOffset', 'varId'] },
+            { mnemonic: "IterNextK", spec: ['iterId', 'byteOffset', 'varId', 'varId'] },
+            { mnemonic: "MIterNextK", spec: ['iterId', 'byteOffset', 'varId', 'varId'] },
+            { mnemonic: "WIterNextK", spec: ['iterId', 'byteOffset', 'varId', 'varId'] },
+            { mnemonic: "DecodeCufIter", spec: ['iterId', 'byteOffset'] },
             { mnemonic: "IterFree", spec: ['iterId'] },
             { mnemonic: "MIterFree", spec: ['iterId'] },
             { mnemonic: "CIterFree", spec: ['iterId'] },
-            { mnemonic: "IterBreak", spec: ['iterVector', 'byte'] },
+            { mnemonic: "IterBreak", spec: ['iterVector', 'byteOffset'] },
             
             // 12. Include, eval, and define instructions
             { mnemonic: "Incl", spec: [] },

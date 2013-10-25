@@ -96,10 +96,10 @@ define([
             } else if (type === 'subop') {
                 arg = bc[pc + 1];
                 this.offsetPc(1);
-            } else if (type === 'byte') {
-                // Get one byte (as an integer between 0 and 255)
-                arg = bc[pc + 1];
-                this.offsetPc(1);
+            } else if (type === 'byteOffset') {
+                var bytes4 = bc.slice(pc + 1, pc + 5);
+                arg = this.bConverter.decodeInt32(bytes4);
+                this.offsetPc(4);
             } else {
                 this.fatal(new Error("Invalid argument type: " + type));
                 return;
@@ -145,7 +145,9 @@ define([
         Hhvm.prototype.fatal = function(e) {
             this.print(e);
             this.stop(0);
-            this.options.onError(e);
+            if (this.options.onError !== undefined) {
+                this.options.onError(e);
+            }
         };
         
         Hhvm.prototype.recoverable = function(message) {

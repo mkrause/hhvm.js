@@ -2,6 +2,9 @@ define([
     ], function() {
         return {
             Jmp: function(offset) {
+                // Compensate because the offset is relative to the beginning of the instruction
+                // Add parameter length + compensate pc incremention
+                offset -= 4 + 1;
                 this.offsetPc(offset);
             },
             RetC: function() {

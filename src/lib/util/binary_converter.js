@@ -3,6 +3,10 @@ define([
         'lib/util/binary_parser'
     ], function(BinaryParser) {
 
+        var extendSign = function(byte) {
+            return (byte & 128) ? 255 : 0;
+        }
+
         var BinaryConverter = function() {
             this.bigEndian = false;
             this.parser = new BinaryParser(this.bigEndian, false);
@@ -91,9 +95,15 @@ define([
             // The immediate has to be logical-shifted to the right by one to
             // get rid of the flag bit.
             if (varInt.length === 1) {
-                varInt.value = bytes[0] >> 1;
+                varInt.value = bytes[0] >> 1
+                    | extendSign(bytes[0]) << 7
+                    | extendSign(bytes[0]) << 15
+                    | extendSign(bytes[0]) << 23;
             } else {
-                varInt.value = bytes[0] >> 1 | bytes[1] << 7 | bytes[2] << 15 | bytes[3] << 23;
+                varInt.value = bytes[0] >> 1
+                    | bytes[1] << 7
+                    | bytes[2] << 15
+                    | bytes[3] << 23;
             }
             return varInt;
         };

@@ -43,14 +43,14 @@ define([
                 
                 // For each of the arguments the instruction expects, get one argument
                 _.each(instr.spec, function(argType) {
-                    if (argType === 'byte') {
+                    if (argType === 'byteOffset') {
                         //Parse argument from line
                         var argParts = splitOnSpace(args);
                         var arg = argParts[0];
                         args = argParts[1];
                         
                         var intValue = parseInt(arg, 10);
-                        bytes.push(intValue);
+                        bytes.push.apply(bytes, binary.encodeInt32(intValue));
                     } else if (argType === 'int') {
                         //Parse argument from line
                         var argParts = splitOnSpace(args);
