@@ -42,8 +42,8 @@ RetC
                 <h2>Output</h2>
                 <textarea id="output" class="form-control" rows="10" readonly></textarea>
                 <div class="examples">&nbsp;</div>
-                <button id="btn-run" class="btn btn-success btn-lg">Run</button>
-                <button id="btn-stop" class="btn btn-danger btn-lg">Stop</button>
+                <button id="btn-run" class="btn btn-success btn-lg" disabled="disabled">Run</button>
+                <button id="btn-stop" class="btn btn-danger btn-lg" disabled="disabled">Stop</button>
             </div>
         </div>
     </div>
@@ -61,35 +61,57 @@ RetC
                 var msg = "\n-----\nDone, exited with status code " + statusCode;
                 var currentOutput = $('#output').val();
                 $('#output').val(currentOutput + msg);
+                changeState(false);
+            },
+            onError: function(errorMessage) {
+                changeState(false);
             }
         });
-        
+
+        var changeState = function(state) {
+            if (state === "all") {
+                $("#editor button").prop("disabled", true);
+                return;
+            }
+
+            $("#editor button").prop("disabled", state);
+            $("#btn-stop").prop("disabled", !state);
+        }
+
         $('#btn-compile').click(function() {
+            changeState("all");
             $.post("http://146.185.138.111", { script: $('#input-php').val() })
             .done(function(data) {
                 var prog = new Program(data);
                 vm.program(prog);
                 $('#output').val("Program externally compiled");
             })
-            .error(function(jqXHR, textStatus, errorThrown) {
+            .fail(function(jqXHR, textStatus, errorThrown) {
                 $('#output').val("Couldn't compile the program externally");
+            })
+            .always(function() {
+                changeState(false);
             });
             $('#output').val("Compiling...");
         });
         
         $('#btn-assemble').click(function() {
+            changeState("all");
             try {
                 var prog = assemble($('#input-hhbc').val());
                 vm.program(prog);
                 $('#output').val("Program assembled");
             } catch (e) {
                 $('#output').val("PARSE ERROR: " + e);
+            } finally {
+                changeState(false);
             }
         });
         
         $('#btn-run').click(function() {
             // Clear the output
             $('#output').val("");
+            changeState(true);
             vm.run();
         });
         
@@ -112,7 +134,7 @@ RetC
         });
 
         $('.php .examples .loop').click(function() {
-            $('#input-php').val('<?php\nwhile (true) {\n  echo foo("bar");\n}\n\nfunction foo($x) {\n  return "foo" . $x;\n}');
+            $('#input-php').val('<?php\nwhile (true) {\n  echo 42;\n}');
             $('#btn-compile').click();
             return false;
         });

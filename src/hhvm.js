@@ -15,12 +15,15 @@ define([
         var Hhvm = function(options) {
             options = options || {};
             this.options = _.defaults(options, {
+                blocking: false,
                 // Default output handler: just append to an internal string
                 outputHandler: function(str) {
                     this.output += str;
                 },
                 // Default exit handler
-                exitHandler: function(statusCode) {}
+                exitHandler: function(statusCode) {},
+                // Default error handler
+                onError: function(errorMessage) {}
             });
             
             // Implementation of the HipHop bytecode instruction set
@@ -40,6 +43,7 @@ define([
             // Events
             this.outputHandler = _.bind(this.options.outputHandler, this);
             this.exitHandler = _.bind(this.options.exitHandler, this);
+            this.errorHandler = _.bind(this.options.onError, this);
             
             // Registers, memory
             this.prog = null;
@@ -144,10 +148,8 @@ define([
         
         Hhvm.prototype.fatal = function(e) {
             this.print(e);
+            this.errorHandler(e);
             this.stop(0);
-            if (this.options.onError !== undefined) {
-                this.options.onError(e);
-            }
         };
         
         Hhvm.prototype.recoverable = function(message) {
