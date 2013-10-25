@@ -23,7 +23,7 @@
                 <textarea id="input-php" class="form-control" rows="10">
 &lt;?php echo 42;
 </textarea>
-                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="call">Function call</a></div>
+                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="call">Function call</a>, <a href="#" class="loop">Loop</a></div>
                 <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
             </div>
             <div class="hhbc col-md-4 col-xs-4">
@@ -100,7 +100,7 @@ RetC
         // Examples
 
         $('.php .examples .echo').click(function() {
-            $('#input-php').val("<?php echo 42;");
+            $('#input-php').val('<?php echo 42;');
             $('#btn-compile').click();
             return false;
         });
@@ -111,14 +111,20 @@ RetC
             return false;
         });
 
+        $('.php .examples .loop').click(function() {
+            $('#input-php').val('<?php\nwhile (true) {\n  echo foo("bar");\n}\n\nfunction foo($x) {\n  return "foo" . $x;\n}');
+            $('#btn-compile').click();
+            return false;
+        });
+
         $('.hhbc .examples .echo').click(function() {
-            $('#input-hhbc').val("Int 42\nPrint\nPopC\nInt 0 # Exit code\nRetC");
+            $('#input-hhbc').val('Int 42\nPrint\nPopC\nInt 0 # Exit code\nRetC');
             $('#btn-assemble').click();
             return false;
         });
 
         $('.hhbc .examples .loop').click(function() {
-            $('#input-hhbc').val("Int 42\nPrint\nPopC\nJmp -11 # Infinite loop\nInt 0 # Exit code\nRetC");
+            $('#input-hhbc').val('Int 42\nPrint\nPopC\nJmp -11 # Infinite loop\nInt 0 # Exit code\nRetC');
             $('#btn-assemble').click();
             return false;
         });
