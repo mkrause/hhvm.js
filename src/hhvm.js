@@ -159,21 +159,25 @@ define([
                 return;
             }
             
-            statusCode = statusCode || 1;
-            
-            // Reset state
             this.running = false;
-            this.callStack = new Stack();
-            this.currentFrame = null;
-            this.stack = null;
-            this.fpiStack = null;
+            statusCode = statusCode || 1;
 
             // Call the exit handler
             this.exitHandler(statusCode);
         };
+
+        Hhvm.prototype.reset = function() {
+            // Reset state
+            this.callStack = new Stack();
+            this.currentFrame = null;
+            this.stack = null;
+            this.fpiStack = null;
+            this.heap = {};
+            this.globalVars = null;
+        };
         
         Hhvm.prototype.run = function() {
-            if (this.running) {
+            if (this.prog === null || this.running) {
                 return;
             }
             
@@ -208,12 +212,15 @@ define([
                 while (vm.running) {
                     performStep();
                 }
+                vm.reset();
             // Run in non-blocking mode
             } else {
                 (function async() {
                     performStep();
                     if (vm.running) {
                         setTimeout(async, 0);
+                    } else {
+                        vm.reset();
                     }
                 })();
             }
