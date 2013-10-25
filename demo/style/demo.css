@@ -2,15 +2,19 @@
     font-size: 16px;
 }
 
-#editor textarea {
-    font-family: monospace;
-    margin-bottom: 10px;
-}
-
 .examples {
     margin-bottom: 10px;
 }
 
 .btn {
     width: 120px;
+}
+
+#input-php,
+#input-hhbc,
+#output
+{
+    height: 220px;
+    font-family: monospace;
+    margin-bottom: 10px;
 }
