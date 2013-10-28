@@ -20,19 +20,19 @@
         <div id="editor" class="row">
             <div class="php col-md-4 col-xs-4">
                 <h2>PHP</h2>
-                <div id="input-php" class="form-control">&lt;?php echo 42;</div>
+                <div id="input-php" class="form-control">&lt;?php echo 42;
+</div>
                 <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="call">Function call</a>, <a href="#" class="loop">Loop</a></div>
                 <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
             </div>
             <div class="hhbc col-md-4 col-xs-4">
                 <h2>HipHop bytecode</h2>
-                <textarea id="input-hhbc" class="form-control">
-Int 42
+                <div id="input-hhbc" class="form-control">Int 42
 Print
 PopC
 Int 0 # Exit code
 RetC
-</textarea>
+</div>
                 <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="loop">Loop</a></div>
                 <button id="btn-assemble" class="btn btn-primary btn-lg">Assemble</button>
             </div>
@@ -51,11 +51,17 @@ RetC
     <script src="scripts/vendor/ace/ace.js"></script>
     <script>
     require(['jquery', 'hhvm', 'assemble', 'lib/program'], function($, Hhvm, assemble, Program) {
-        var editor = ace.edit("input-php");
-        editor.setTheme("ace/theme/tomorrow");
-        editor.getSession().setMode("ace/mode/php");
-        editor.setShowPrintMargin(false);
-        editor.setFontSize(14);
+        var createEditor = function(id, mode) {
+            var editor = ace.edit(id);
+            editor.setTheme("ace/theme/tomorrow");
+            editor.getSession().setMode("ace/mode/" + mode);
+            editor.setShowPrintMargin(false);
+            editor.setFontSize(14);
+            return editor;
+        }
+        
+        var phpEditor = createEditor("input-php", "php");
+        var hhbcEditor = createEditor("input-hhbc", "hhbc");
 
         var vm = new Hhvm({
             outputHandler: function(str) {
@@ -85,7 +91,7 @@ RetC
 
         $('#btn-compile').click(function() {
             changeState("all");
-            $.post("http://146.185.138.111", { script: editor.getValue() })
+            $.post("http://146.185.138.111", { script: phpEditor.getValue() })
             .done(function(data) {
                 var prog = new Program(data);
                 vm.program(prog);
@@ -103,7 +109,7 @@ RetC
         $('#btn-assemble').click(function() {
             changeState("all");
             try {
-                var prog = assemble($('#input-hhbc').val());
+                var prog = assemble(hhbcEditor.getValue());
                 vm.program(prog);
                 $('#output').val("Program assembled");
             } catch (e) {
@@ -127,34 +133,36 @@ RetC
         // Examples
 
         $('.php .examples .echo').click(function() {
-            editor.setValue('<?php echo 42;');
-            editor.clearSelection();
+            phpEditor.setValue('<?php echo 42;');
+            phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .call').click(function() {
-            editor.setValue('<?php\necho foo("bar");\n\nfunction foo($x) {\n  return "foo" . $x;\n}');
-            editor.clearSelection();
+            phpEditor.setValue('<?php\necho foo("bar");\n\nfunction foo($x) {\n  return "foo" . $x;\n}');
+            phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .loop').click(function() {
-            editor.setValue('<?php\nwhile (true) {\n  echo 42;\n}');
-            editor.clearSelection();
+            phpEditor.setValue('<?php\nwhile (true) {\n  echo 42;\n}');
+            phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.hhbc .examples .echo').click(function() {
-            $('#input-hhbc').val('Int 42\nPrint\nPopC\nInt 0 # Exit code\nRetC');
+            hhbcEditor.setValue('Int 42\nPrint\nPopC\nInt 0 # Exit code\nRetC');
+            hhbcEditor.clearSelection();
             $('#btn-assemble').click();
             return false;
         });
 
         $('.hhbc .examples .loop').click(function() {
-            $('#input-hhbc').val('Int 42\nPrint\nPopC\nJmp -11 # Infinite loop\nInt 0 # Exit code\nRetC');
+            hhbcEditor.setValue('Int 42\nPrint\nPopC\nJmp -11 # Infinite loop\nInt 0 # Exit code\nRetC');
+            hhbcEditor.clearSelection();
             $('#btn-assemble').click();
             return false;
         });
