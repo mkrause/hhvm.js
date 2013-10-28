@@ -146,6 +146,10 @@ define([
             this.print("\nWARNING: " + message);
         };
         
+        Hhvm.prototype.notify = function(message) {
+            this.print("\nNOTE: " + message);
+        };
+        
         Hhvm.prototype.fatal = function(e) {
             this.print(e);
             this.errorHandler(e);

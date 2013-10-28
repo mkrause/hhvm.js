@@ -108,7 +108,7 @@ define([
             Cns: function(name) {
                 var value = this.prog.getConstantByName(name);
                 if(value === undefined) {
-                    this.notice("No constant named '" + name +"'");
+                    this.notify("No constant named '" + name +"'");
                     value = name;
                 }
                 this.stack.push(new Cell(value));
