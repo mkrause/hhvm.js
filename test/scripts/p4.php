@@ -2,7 +2,7 @@
 
 function doubleAndAdd($number, $add){
     $result = doubleNumber($number);
-    result += $add;
+    $result += $add;
     return $result;
 }
 

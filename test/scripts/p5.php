@@ -9,7 +9,7 @@ function multiplyBelow100($number) {
 }
 
 $i = 1;
-while($i <= 4)
+while($i <= 4){
     echo "result of round " + $i + ": " + multiplyBelow100($i);
     $i++;
 }
