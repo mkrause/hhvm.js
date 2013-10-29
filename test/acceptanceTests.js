@@ -23,10 +23,32 @@ var throwError = function(e) {
     throw e;
 };
 
+var checkOpcodes = function(vm){
+    var instructionSet = vm.hhbc;
+    var data = vm.prog.data;
+    for(var i = 0; i < data.units.length; i++){
+        var unit = data.units[i];
+        for(var k = 0; k < unit.bc.length; k++){
+            var bc = unit.bc[k];
+            if(bc != 0 && instructionSet.byOpcode(bc) == undefined){
+                console.log("Unimplemented opcode: " + bc);
+            }
+        }
+    }
+};
+
 define([
         'hhvm',
-        'assemble'
-    ], function(hhvm, assemble) {
+        'assemble',
+        'lib/program',
+        'lib/instruction_set',
+        '../test/scripts/p1',
+        '../test/scripts/p2',
+        '../test/scripts/p3',
+        '../test/scripts/p4',
+        '../test/scripts/p5',
+        '../test/scripts/p6',
+    ], function(hhvm, assemble, Program, instructionSet, p1, p2, p3, p4, p5, p6) {
         
         test("Nop", function() {
             var vm = new hhvm({
@@ -43,345 +65,83 @@ define([
             checkVMState(vm, "");
         });
         
-        test("HHVM1", function() {
+        //Test scripts
+        test("p1", function() {
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(1),
                 onError: throwError
             });
             
-            vm.program(assemble([
-                //Pseudo-main at 0 (ID 0)
-                //Line 16
-                
-                'FPushFuncD 0 "foo"',
-                'FCall 0',
-                'PopR # i0:t=Null',
-                //Line 17
-                'FPushFuncD 0 "foobar"',
-                'FCall 0',
-                'UnboxR # Nop',
-                'SetL 0 # i0:t=Int64*',
-                'PopC',
-                //Line 18
-                'FPushFuncD 1 "bar"',
-                'CGetL 0',
-                'FPassC 0 # Nop',
-                'FCall 1',
-                'PopR # i0:t=Int64*',
-                'Int 1',
-                'RetC',
-                
-                //Function (leaf) foo at 44 (ID 1)
-                //Line 4
-                'Null',
-                'RetC',
-                
-                //Function (leaf) bar at 46 (ID 2)
-                //line 10
-                'VerifyParamType 0',
-                //Line 7
-                'Int 42',
-                'CGetL2 0',
-                'Add',
-                //Line 8
-                'Int 2',
-                'Mul',
-                //Line 9
-                'RetC',
-                
-                //Function (leaf) foorbar at 71 (ID 3)
-                //Lin 13
-                'Int 42',
-                'RetC'
-                
-            ]));
+            vm.program(new Program(p1));
+            checkOpcodes(vm);
             vm.run();
-            checkVMState(vm, "");
+            checkVMState(vm, "Hello World");
         });
         
-        /*
-         * Example programs from https://github.com/facebook/hiphop-php/blob/master/hphp/doc/bytecode.specification#L3936
-         */
-        
-        //function f() { return $a = $b; }
-        test("f1", function() {
+        test("p2", function() {
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(1),
                 onError: throwError
             });
             
-            vm.program(assemble([
-                "CGetL 1",
-                "SetL 0",
-                "RetC"
-            ]));
+            vm.program(new Program(p2));
+            checkOpcodes(vm);
             vm.run();
             checkVMState(vm, "");
         });
         
-        //function f() { g($a, $b); }
-        test("f2", function() {
+        test("p3", function() {
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(1),
                 onError: throwError
             });
             
-            vm.program(assemble([
-                'FPushFuncD 2 "g"',
-                'FPassL 0 0',
-                'FPassL 1 1',
-                'FCall 2',
-                'PopR',
-                'Null',
-                'RetC'
-            ]));
+            vm.program(new Program(p3));
+            checkOpcodes(vm);
             vm.run();
             checkVMState(vm, "");
         });
-
-        //function f() { return $a + $b; }
-        test("f3", function() {
+        
+        test("p4", function() {
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(1),
                 onError: throwError
             });
             
-            vm.program(assemble([
-                'CGetL 1',
-                'CGetL2 0',
-                'Add',
-                'RetC'
-            ]));
+            vm.program(new Program(p4));
+            checkOpcodes(vm);
             vm.run();
             checkVMState(vm, "");
         });
         
-        //function f() { echo "Hello world\n"; }
-        test("f4", function() {
+        test("p5", function() {
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(1),
                 onError: throwError
             });
             
-            vm.program(assemble([
-                'String "Hello World\n"',
-                'Print',
-                'PopC',
-                'Null',
-                'RetC'
-            ]));
+            vm.program(new Program(p5));
+            checkOpcodes(vm);
             vm.run();
-            checkVMState(vm, "Hello World\n");
+            checkVMState(vm, "");
         });
         
-        // function f($a) { return $a[0]++; }
-        test("f5", function() {
+        test("p6", function() {
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(1),
                 onError: throwError
             });
             
-            vm.program(assemble([
-                'Int 0',
-                'IncDecM PostInc <L:0 EC>',
-                'RetC'
-            ]));
+            vm.program(new Program(p6));
+            checkOpcodes(vm);
             vm.run();
             checkVMState(vm, "");
         });
-        
-        // function f($a, $b) { $a[4] = $b; }
-        test("f6", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1),
-                onError: throwError
-            });
-            
-            vm.program(assemble([
-                //TODO: implement missing instructions
-                'Int 4',
-                'CGetL 1',
-                'SetM <L:0 EC>',
-                'PopC',
-                'Null',
-                'RetC'
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        
-        // function f($a, $b, $i) { $a[$i] = $b; }
-        test("f7", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1),
-                onError: throwError
-            });
-            
-            vm.program(assemble([
-                //TODO: implement missing instructions
-                'CGetL 1',
-                'SetM <L:0 EL:2>',
-                'PopC',
-                'Null',
-                'RetC'
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        
-        // function f($a, $b) { return $a[4] = $b; }
-        test("f8", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1),
-                onError: throwError
-            });
-            
-            vm.program(assemble([
-                //TODO: implement missing instructions
-                'Int 4',
-                'CGetL 1',
-                'SetM <L:0 EC>',
-                'RetC'
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        
-        // function f($a, $b) { return $a[4][5] = $b[6]; }
-        test("f9", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1),
-                onError: throwError
-            });
-            
-            vm.program(assemble([
-                //TODO: implement missing instructions
-                'Int 4',
-                'Int 5',
-                'Int 6',
-                'CGetM <L:1 EC>',
-                'SetM <L:0 EC EC>',
-                'RetC'
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        
-        // function f($a, $b, $i) { return $a[$i][5] = $b[6]; }
-        test("f10", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1),
-                onError: throwError
-            });
-            
-            vm.program(assemble([
-                //TODO: implement missing instructions
-                'Int 5',
-                'Int 6',
-                'CGetM <L:1 EC>',
-                'SetM <L:0 EL:2 EC>',
-                'RetC'
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        
-        // function f($a, $b) { $a->prop = $b; }
-        test("f11", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1),
-                onError: throwError
-            });
-            
-            vm.program(assemble([
-                //TODO: implement missing instructions
-                'String "prop"',
-                'CGetL 1',
-                'SetM <L:0 PC>',
-                'PopC',
-                'Null',
-                'RetC'
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        
-        // function f() { return FOO; }
-        test("f12", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1),
-                onError: throwError
-            });
-            
-            vm.program(assemble([
-                'Cns "FOO"',
-                'RetC'
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        
-        // function f() { return c::FOO; }
-        test("f13", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1),
-                onError: throwError
-            });
-            
-            vm.program(assemble([
-                'ClsCnsD "FOO" "c"',
-                'RetC'
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        
-        // function f($cls) { return $cls::FOO; }
-        test("f14", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1),
-                onError: throwError
-            });
-            
-            vm.program(assemble([
-                //TODO: implement missing instructions
-                'AGetL 0',
-                'ClsCns "FOO"',
-                'RetC'
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        
-        /* 
-        test("f", function() {
-            var vm = new hhvm({
-                blocking: true,
-                exitHandler: checkExitCode(1)
-            });
-            
-            vm.program(assemble([
-                //hbbc here
-            ]));
-            vm.run();
-            checkVMState(vm, "");
-        });
-        */
-        
     }
 );
