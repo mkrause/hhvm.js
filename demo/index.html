@@ -149,7 +149,7 @@
         });
 
         $('.php .examples .operators').click(function() {
-            phpEditor.setValue('<?php\n// Concat 4 and "1"\n$x  = 4;\n$x .= "1";\n// Increment "41"\n$x++;\n// Ouput\necho $x;\n');
+            phpEditor.setValue('<?php\n$x = 2;\n// $y = 4\n$y = $x + 2;\n// Concat 4 and "1" = "41"\n$y .= "1";\n// Increment "41" = 42\n$y++;\n// Ouput\necho $y;\n');
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;

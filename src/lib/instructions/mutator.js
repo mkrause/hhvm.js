@@ -26,9 +26,8 @@ define([
                 // TODO: implement
             },
             SetOpL: function(id, op) {
-                var x = this.currentFrame.localVars.getById(id);
                 var mnemonic = subopcodes.SetOp.getMnemonic(op);
-                this.stack.push(x);
+                this.hhbc.CGetL2(id);
                 this.hhbc[mnemonic]();
                 this.currentFrame.localVars.setById(id, this.stack.peek());
             },
