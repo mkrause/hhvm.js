@@ -7,6 +7,12 @@ define([
                 offset -= 4 + 1;
                 this.offsetPc(offset);
             },
+            JmpZ: function(offset) {
+                var value = this.stack.pop();
+                if(value == 0 || value === false){
+                    this.hhbc.Jmp();
+                }
+            },
             RetC: function() {
                 // TODO: assert that frame.stack.peek() is of type Cell
                 this.dispatcher.functionReturn();
