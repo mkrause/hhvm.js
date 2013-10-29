@@ -2,6 +2,7 @@ define([
         'vendor/underscore',
     ], function(_) {
         return {
+            //TODO: implement missing functions
             SetL: function(id) {
                 var value = this.stack.pop();
                 this.currentFrame.localVars.setById(id, value);
@@ -22,7 +23,38 @@ define([
             SetS: function() {
                 // TODO: implement
             },
-            //TODO: implement missing functions
+            IncDecL: function(localVarId, op){
+                var value = this.currentFrame.localVars.getById(localVarId);
+                if(value == undefined){
+                    value = null;
+                    this.currentFrame.localVars.setById(localVarId, value);
+                }
+                switch(op){
+                    case "PreInc":
+                        value++;
+                        this.currentFrame.localVars.setById(localVarId, value);
+                        this.stack.push(new Cell(value));
+                        break;
+                    case "PostInc":
+                        this.stack.push(new Cell(value));
+                        value++;
+                        this.currentFrame.localVars.setById(localVarId, value);
+                        break;
+                    case "PreDec":
+                        if(value != null){
+                            value--;
+                        }
+                        this.currentFrame.localVars.setById(localVarId, value);
+                        this.stack.push(new Cell(value));
+                        break;
+                    case "PostDec":
+                        this.stack.push(new Cell(value));
+                        if(value != null){
+                            value--;
+                        }
+                        this.currentFrame.localVars.setById(localVarId, value);
+                }
+            },
             UnsetL: function(id) {
                 this.currentFrame.localVars.unsetById(id);
             },
