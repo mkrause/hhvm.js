@@ -23,11 +23,22 @@ define([
             SetS: function() {
                 // TODO: implement
             },
+            SetOpL: function(id, op) {
+                var x = this.currentFrame.localVars.getById(id);
+                //use impelemted instructions
+                //TODO: test if this works for all instructions
+                var value1 = this.stack.pop();
+                this.stack.push(x);
+                this.stack.push(value1);
+                this.hhbc[op]();
+                this.currentFrame.localVars.setById(id, this.stack.peek());
+            },
             IncDecL: function(localVarId, op){
                 var value = this.currentFrame.localVars.getById(localVarId);
                 if(value == undefined){
                     value = null;
                     this.currentFrame.localVars.setById(localVarId, value);
+                    this.warning("Local variable with id " + localVarId + " was not set yet. Now set to null.");
                 }
                 switch(op){
                     case "PreInc":
