@@ -89,7 +89,7 @@ define([
             vm.program(new Program(p2));
             checkOpcodes(vm);
             vm.run();
-            checkVMState(vm, "");
+            checkVMState(vm, "43");
         });
         
         test("p3", function() {
@@ -102,7 +102,7 @@ define([
             vm.program(new Program(p3));
             checkOpcodes(vm);
             vm.run();
-            checkVMState(vm, "");
+            checkVMState(vm, "84");
         });
         
         test("p4", function() {
@@ -115,7 +115,7 @@ define([
             vm.program(new Program(p4));
             checkOpcodes(vm);
             vm.run();
-            checkVMState(vm, "");
+            checkVMState(vm, "Result: 92");
         });
         
         test("p5", function() {
@@ -128,7 +128,7 @@ define([
             vm.program(new Program(p5));
             checkOpcodes(vm);
             vm.run();
-            checkVMState(vm, "");
+            checkVMState(vm, "result of round 1: 128\nresult of round 2: 128\nresult of round 3: 192\nresult of round 4: 128\n");
         });
         
         test("p6", function() {

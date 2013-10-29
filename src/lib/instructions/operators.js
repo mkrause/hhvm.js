@@ -16,12 +16,12 @@ define([
                 var val2 = this.stack.pop().value;
                 if(_.isArray(val1) && _.isArray(val2)) {
                     var array = [];
-                    array.concat(val1, val2);
+                    array.concat(val2, val1);
                     this.stack.push(new Cell(array));
                 } else if(_.isArray(val1) || _.isArray(val2)) {
                     throw new Error("error when executing Add");
                 } else {
-                    this.stack.push(new Cell(val1 + val2));
+                    this.stack.push(new Cell(val2 + val1));
                 }
             },
             Sub: function() {
