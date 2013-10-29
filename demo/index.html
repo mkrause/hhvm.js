@@ -20,26 +20,20 @@
         <div id="editor" class="row">
             <div class="php col-md-4 col-xs-4">
                 <h2>PHP</h2>
-                <div id="input-php" class="form-control">&lt;?php echo 42;
-</div>
-                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="call">Function call</a>, <a href="#" class="loop">Loop</a></div>
+                <div id="input-php" class="form-control"></div>
+                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="operators">Operators</a>, <a href="#" class="call">Function call</a>, <a href="#" class="loop">Loop</a></div>
                 <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
             </div>
             <div class="hhbc col-md-4 col-xs-4">
                 <h2>HipHop bytecode</h2>
-                <div id="input-hhbc" class="form-control">Int 42
-Print
-PopC
-Int 0 # Exit code
-RetC
-</div>
-                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="loop">Loop</a></div>
+                <div id="input-hhbc" class="form-control"></div>
+                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="loop">Loop</a><br />&nbsp;</div>
                 <button id="btn-assemble" class="btn btn-primary btn-lg">Assemble</button>
             </div>
             <div class="col-md-4 col-xs-4">
                 <h2>Output</h2>
                 <textarea id="output" class="form-control" readonly></textarea>
-                <div class="examples">&nbsp;</div>
+                <div class="examples">&nbsp;<br />&nbsp;</div>
                 <button id="btn-run" class="btn btn-success btn-lg" disabled>Run</button>
                 <button id="btn-stop" class="btn btn-danger btn-lg" disabled>Stop</button>
             </div>
@@ -134,39 +128,49 @@ RetC
         // Examples
 
         $('.php .examples .echo').click(function() {
-            phpEditor.setValue('<?php echo 42;');
+            phpEditor.setValue('<?php\necho 42;\n');
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .call').click(function() {
-            phpEditor.setValue('<?php\necho foo("bar");\n\nfunction foo($x) {\n  return "foo" . $x;\n}');
+            phpEditor.setValue('<?php\necho foo("bar");\n\nfunction foo($x) {\n  return "foo" . $x;\n}\n');
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .loop').click(function() {
-            phpEditor.setValue('<?php\nwhile (true) {\n  echo 42;\n}');
+            phpEditor.setValue('<?php\nwhile (true) {\n  echo 42;\n}\n');
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .operators').click(function() {
+            phpEditor.setValue('<?php\n// Concat 4 and "1"\n$x  = 4;\n$x .= "1";\n// Increment "41"\n$x++;\n// Ouput\necho $x;\n');
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.hhbc .examples .echo').click(function() {
-            hhbcEditor.setValue('Int 42\nPrint\nPopC\nInt 0 # Exit code\nRetC');
+            hhbcEditor.setValue('Int 42\nPrint\nPopC\nInt 0 # Exit code\nRetC\n');
             hhbcEditor.clearSelection();
             $('#btn-assemble').click();
             return false;
         });
 
         $('.hhbc .examples .loop').click(function() {
-            hhbcEditor.setValue('Int 42\nPrint\nPopC\nJmp -11 # Infinite loop\nInt 0 # Exit code\nRetC');
+            hhbcEditor.setValue('Int 42\nPrint\nPopC\nJmp -11 # Infinite loop\nInt 0 # Exit code\nRetC\n');
             hhbcEditor.clearSelection();
             $('#btn-assemble').click();
             return false;
         });
+
+        $('.hhbc .examples .echo').click();
+        $('.php .examples .echo').click();
     });
     </script>
 </body>

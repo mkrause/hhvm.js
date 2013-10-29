@@ -9,17 +9,17 @@ define([
             ],
 
             SetOp: [
-                { mnemonic: "PlusEqual" },
-                { mnemonic: "MinusEqual" },
-                { mnemonic: "MulEqual" },
-                { mnemonic: "ConcatEqual" },
-                { mnemonic: "DivEqual" },
-                { mnemonic: "ModEqual" },
-                { mnemonic: "AndEqual" },
-                { mnemonic: "OrEqual" },
-                { mnemonic: "XorEqual" },
-                { mnemonic: "SlEqual" },
-                { mnemonic: "SrEqual" }
+                { mnemonic: "Add" },
+                { mnemonic: "Sub" },
+                { mnemonic: "Mul" },
+                { mnemonic: "Concat" },
+                { mnemonic: "Div" },
+                { mnemonic: "Mod" },
+                { mnemonic: "BitAnd" },
+                { mnemonic: "BitOr" },
+                { mnemonic: "BitXor" },
+                { mnemonic: "Shl" },
+                { mnemonic: "Shr" }
             ]
       };
     }

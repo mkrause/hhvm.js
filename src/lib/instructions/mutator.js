@@ -1,6 +1,8 @@
 define([
         'vendor/underscore',
-    ], function(_) {
+        'lib/cell',
+        'lib/instructions/subopcodes'
+    ], function(_, Cell, subopcodes) {
         return {
             //TODO: implement missing functions
             SetL: function(id) {
@@ -25,45 +27,42 @@ define([
             },
             SetOpL: function(id, op) {
                 var x = this.currentFrame.localVars.getById(id);
-                //use impelemted instructions
-                //TODO: test if this works for all instructions
-                var value1 = this.stack.pop();
+                var mnemonic = subopcodes.IncDec.getMnemonic(op);
                 this.stack.push(x);
-                this.stack.push(value1);
-                this.hhbc[op]();
+                this.hhbc[mnemonic]();
                 this.currentFrame.localVars.setById(id, this.stack.peek());
             },
-            IncDecL: function(localVarId, op){
-                var value = this.currentFrame.localVars.getById(localVarId);
-                if(value == undefined){
-                    value = null;
-                    this.currentFrame.localVars.setById(localVarId, value);
-                    this.warning("Local variable with id " + localVarId + " was not set yet. Now set to null.");
+            IncDecL: function(id, op) {
+                var cell = this.currentFrame.localVars.getById(id);
+                var mnemonic = subopcodes.IncDec.getMnemonic(op);
+                if(cell === undefined) {
+                    cell = new Cell(null);
+                    this.currentFrame.localVars.setById(id, value);
+                    var name = this.currentFrame.localVars.getNameFromId(id);
+                    this.notify("Undefined variable: " + name);
                 }
-                switch(op){
+                var value = cell.value;
+                switch (mnemonic) {
                     case "PreInc":
                         value++;
-                        this.currentFrame.localVars.setById(localVarId, value);
+                        this.currentFrame.localVars.setById(id, new Cell(value));
                         this.stack.push(new Cell(value));
                         break;
                     case "PostInc":
                         this.stack.push(new Cell(value));
                         value++;
-                        this.currentFrame.localVars.setById(localVarId, value);
+                        this.currentFrame.localVars.setById(id, new Cell(value));
                         break;
                     case "PreDec":
-                        if(value != null){
-                            value--;
-                        }
-                        this.currentFrame.localVars.setById(localVarId, value);
+                        value--;
+                        this.currentFrame.localVars.setById(id, new Cell(value));
                         this.stack.push(new Cell(value));
                         break;
                     case "PostDec":
                         this.stack.push(new Cell(value));
-                        if(value != null){
-                            value--;
-                        }
-                        this.currentFrame.localVars.setById(localVarId, value);
+                        value--;
+                        this.currentFrame.localVars.setById(id, new Cell(value));
+                        break;
                 }
             },
             UnsetL: function(id) {

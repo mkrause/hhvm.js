@@ -6,6 +6,14 @@ define([
         var opcodes = {};
         opcodes.IncDec = {};
         opcodes.SetOp = {};
+
+        opcodes.IncDec.getMnemonic = function (opcode) {
+            return instructions.IncDec[opcode] ? instructions.IncDec[opcode].mnemonic : undefined;
+        };
+
+        opcodes.SetOp.getMnemonic = function (opcode) {
+            return instructions.SetOp[opcode] ? instructions.SetOp[opcode].mnemonic : undefined;
+        };
         
         _.each(instructions.IncDec, function(instr, key) {
             opcodes.IncDec[instr.mnemonic] = parseInt(key, 10);

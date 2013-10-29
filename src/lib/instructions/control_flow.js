@@ -8,9 +8,15 @@ define([
                 this.offsetPc(offset);
             },
             JmpZ: function(offset) {
-                var value = this.stack.pop();
-                if(value == 0 || value === false){
-                    this.hhbc.Jmp();
+                var value = this.stack.pop().value;
+                if (!value) {
+                    this.hhbc.Jmp(offset);
+                }
+            },
+            JmpNZ: function(offset) {
+                var value = this.stack.pop().value;
+                if (value) {
+                    this.hhbc.Jmp(offset);
                 }
             },
             RetC: function() {
