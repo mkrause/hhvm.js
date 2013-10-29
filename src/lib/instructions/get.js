@@ -3,14 +3,29 @@ define([
         'lib/cell',
         'lib/ref'
     ], function(_, Cell, Ref) {
+
+        var cGetHelper = function(vm, cell, name) {
+            if(cell === undefined) {
+                vm.warning("Undefined variable: " + name);
+                cell = new Cell(null);
+            }
+            vm.stack.push(cell);
+        };
+        var vGetHelper = function(vm, cell, name, store) {
+            if(cell === undefined) {
+                cell = new Cell(null);
+                store.setByName(name, cell);
+            }
+
+            // Box if necessary and push on stack
+            vm.stack.push((cell instanceof Ref) ? cell : new Ref(cell));
+        };
+
         return {
             CGetL: function(id) {
                 var value = this.currentFrame.localVars.getById(id);
-                if(value === undefined) {
-                    this.warning("Could not find variable " + id);
-                    value = new Cell(null);
-                }
-                this.stack.push(value);
+                var name = this.currentFrame.localVars.getNameFromId(id);
+                cGetHelper(this, value, name);
             },
             CGetL2: function(id) {
                 var top = this.stack.pop();
@@ -27,55 +42,30 @@ define([
             CGetN: function() {
                 var name = String(this.stack.pop().value);
                 var value = this.currentFrame.localVars.getByName(name);
-                if(value === undefined) {
-                    this.warning("Could not find variable " + name);
-                    value = new Cell(null);
-                }
-                this.stack.push(value);
+                cGetHelper(this, value, name);
             },
             CGetG: function() {
                 var name = String(this.stack.pop().value);
                 var value = this.globalVars.getByName(name);
-                if(value === undefined) {
-                    this.warning("Could not find global variable " + name);
-                    value = new Cell(null);
-                }
-                this.stack.push(value);
+                cGetHelper(this, value, name);
             },
             CGetS: function() {
                 //TODO: implement
             },
             VGetL: function(id) {
                 var value = this.currentFrame.localVars.getById(id);
-                if(value === undefined) {
-                    value = new Cell(null);
-                    this.currentFrame.localVars.setById(id, value);
-                }
-
-                // Box if necessary and push on stack
-                this.stack.push((value instanceof Ref) ? value : new Ref(value));
+                var name = this.currentFrame.localVars.getNameFromId(id);
+                vGetHelper(this, value, name, this.currentFrame.localVars);
             },
             VGetN: function() {
                 var name = String(this.stack.pop().value);
                 var value = this.currentFrame.localVars.getByName(name);
-                if(value === undefined) {
-                    value = new Cell(null);
-                    this.currentFrame.localVars.setByName(name, value);
-                }
-
-                // Box if necessary and push on stack
-                this.stack.push((value instanceof Ref) ? value : new Ref(value));
+                vGetHelper(this, value, name, this.currentFrame.localVars);
             },
             VGetG: function() {
                 var name = String(this.stack.pop().value);
                 var value = this.globalVars.getByName(name);
-                if(value === undefined) {
-                    value = new Cell(null);
-                    this.globalVars.setByName(name, value);
-                }
-
-                // Box if necessary and push on stack
-                this.stack.push((value instanceof Ref) ? value : new Ref(value));
+                vGetHelper(this, value, name, this.globalVars);
             },
             VGetS: function() {
                 //TODO: implement

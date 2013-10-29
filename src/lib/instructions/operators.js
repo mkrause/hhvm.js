@@ -2,6 +2,33 @@ define([
         'lib/cell',
         'lib/ref'
     ], function(Cell, Ref) {
+
+        var opBitAnd = function (a, b) { return a & b; };
+        var opBitOr  = function (a, b) { return a | b; };
+        var opBitXor = function (a, b) { return a ^ b; };
+        var opBitNot = function (a, b) { return ~a;    };
+
+        var checkArrayType = function (val1, val2) {
+            if(_.isArray(val1) || _.isArray(val2)) {
+                throw new Error("Argument is of type array");
+            }
+        };
+
+        var bitwiseHelper = function (val1, val2, op) {
+            if (_.isObject(val1) || _.isObject(val2)) {
+                throw new Error("Bitwise operation not supported on objects");
+            } else if (_.isString(val1) && _.isString(val2)) {
+                var str = "";
+                var len = Math.min(val1.length, val2.length);
+                _.times(len, function(i) {
+                    str += String.fromCharCode(op(val2.charCodeAt(i), val1.charCodeAt(i)));
+                });
+                this.stack.push(new Cell(str));
+            } else {
+                this.stack.push(new Cell(op(val2, val1)));
+            }
+        };
+
         return {
             Concat: function() {
                 var val1 = this.stack.pop().value;
@@ -18,38 +45,29 @@ define([
                     var array = [];
                     array.concat(val2, val1);
                     this.stack.push(new Cell(array));
-                } else if(_.isArray(val1) || _.isArray(val2)) {
-                    throw new Error("error when executing Add");
-                } else {
-                    this.stack.push(new Cell(val2 + val1));
+                    return;
                 }
+
+                checkArrayType(val2, val1);
+                this.stack.push(new Cell(val2 + val1));
             },
             Sub: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if(_.isArray(val1) || _.isArray(val2)) {
-                    throw new Error("error when substracting in Sub");
-                } else {
-                    this.stack.push(new Cell(val2 - val1));
-                }
+                checkArrayType(val2, val1);
+                this.stack.push(new Cell(val2 - val1));
             },
             Mul: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if(_.isArray(val1) || _.isArray(val2)) {
-                    throw new Error("error when substracting in Mul");
-                } else {
-                    this.stack.push(new Cell(val2 * val1));
-                }
+                checkArrayType(val2, val1);
+                this.stack.push(new Cell(val2 * val1));
             },
             Div: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if(_.isArray(val1) || _.isArray(val2)) {
-                    throw new Error("error when substracting in Div");
-                } else {
-                    this.stack.push(new Cell(val2 / val1));
-                }
+                checkArrayType(val2, val1);
+                this.stack.push(new Cell(val2 / val1));
             },
             Mod: function() {
                 var val1 = parseInt(this.stack.pop().value, 10);
@@ -71,7 +89,7 @@ define([
                 } else if(_.isFinite(parseFloat(value, 10))) {
                     value = parseFloat(value, 10);
                 } else if (!_.isFinite(value)) {
-                    this.warning("cannot take sqrt of a negative number in Sqrt");
+                    this.warning("Cannot take square root of a negative number");
                     this.hhbc.Null();
                     return;
                 }
@@ -80,7 +98,7 @@ define([
             Strlen: function() {
                 var string = this.stack.pop().value;
                 if (_.isArray(string)) {
-                    this.warning("Argument is an array instead of a string");
+                    this.warning("Argument type is array instead of string");
                     this.hhbc.Null();
                     return;
                 } else if (!_.isString(string)) {
@@ -140,64 +158,29 @@ define([
             BitAnd: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if (_.isObject(val1) || _.isObject(val2)) {
-                    throw new Error("BitAnd not supported for Objects");
-                } else if (_.isString(val1) && _.isString(val2)) {
-                    var str = "";
-                    var len = Math.min(val1.length, val2.length);
-                    _.times(len, function(i) {
-                        str += String.fromCharCode(val1.charCodeAt(i) & val2.charCodeAt(i));
-                    });
-                    this.stack.push(new Cell(str));
-                } else {
-                    this.stack.push(new Cell(val2 & val1));
-                }
+                var result = bitwiseHelper(val1, val2, opBitAnd);
+                this.stack.push(new Cell(result));
             },
             BitOr: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if (_.isObject(val1) || _.isObject(val2)) {
-                    throw new Error("BitOr not supported for Objects");
-                } else if (_.isString(val1) && _.isString(val2)) {
-                    var str = "";
-                    var len = Math.min(val1.length, val2.length);
-                    _.times(len, function(i) {
-                        str += String.fromCharCode(val1.charCodeAt(i) | val2.charCodeAt(i));
-                    });
-                    this.stack.push(new Cell(str));
-                } else {
-                    this.stack.push(new Cell(val2 | val1));
-                }
+                var result = bitwiseHelper(val1, val2, opBitOr);
+                this.stack.push(new Cell(result));
             },
             BitXor: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                if (_.isObject(val1) || _.isObject(val2)) {
-                    throw new Error("BitXor not supported for Objects");
-                } else if (_.isString(val1) && _.isString(val2)) {
-                    var str = "";
-                    var len = Math.min(val1.length, val2.length);
-                    _.times(len, function(i) {
-                        str += String.fromCharCode(val1.charCodeAt(i) ^ val2.charCodeAt(i));
-                    });
-                    this.stack.push(new Cell(str));
-                } else {
-                    this.stack.push(new Cell(val2 ^ val1));
-                }
+                var result = bitwiseHelper(val1, val2, opBitXor);
+                this.stack.push(new Cell(result));
             },
             BitNot: function() {
                 var value = this.stack.pop().value;
                 if (value === null || _.isBoolean(value) || _.isArray(value) || _.isObject(value)) {
-                    throw new Error("BitXor not supported");
-                } else if (_.isString(value)) {
-                    var str = "";
-                    _.times(value.length, function(i) {
-                        str += String.fromCharCode(~value.charCodeAt(i));
-                    });
-                    this.stack.push(new Cell(str));
-                } else {
-                    this.stack.push(new Cell(~value));
+                    throw new Error("Bitwise operation not supported");
                 }
+
+                var result = bitwiseHelper(value, value, opBitNot);
+                this.stack.push(new Cell(result));
             },
             Shl: function() {
                 var val1 = this.stack.pop().value;
