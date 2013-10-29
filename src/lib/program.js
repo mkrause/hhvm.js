@@ -28,6 +28,11 @@ define([
             });
         };
 
+        Program.prototype.getScalarArray = function(id) {
+            // TODO: implement
+            return undefined;
+        };
+
         Program.prototype.getConstantByName = function(name) {
             // TODO: implement
             return undefined;

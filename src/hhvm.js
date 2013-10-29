@@ -36,6 +36,7 @@ define([
             this.bConverter = new BinaryConverter();
             
             this.running = false;
+            this.statusCode = 1;
             
             // I/O
             this.output = "";
@@ -96,7 +97,10 @@ define([
                 arg = this.prog.getLiteralString(id);
                 this.offsetPc(4);
             } else if (type === 'array') {
-                //TODO
+                var bytes4 = bc.slice(pc + 1, pc + 5);
+                var id = this.bConverter.decodeInt32(bytes4);
+                arg = this.prog.getScalarArray(id);
+                this.offsetPc(4);
             } else if (type === 'subop') {
                 arg = bc[pc + 1];
                 this.offsetPc(1);
@@ -143,11 +147,11 @@ define([
         };
         
         Hhvm.prototype.warning = function(message) {
-            this.print("\nWARNING: " + message);
+            this.print("WARNING: " + message + "\n");
         };
         
         Hhvm.prototype.notify = function(message) {
-            this.print("\nNOTE: " + message);
+            this.print("NOTICE: " + message + "\n");
         };
         
         Hhvm.prototype.fatal = function(e) {
@@ -157,7 +161,7 @@ define([
         };
         
         Hhvm.prototype.recoverable = function(message) {
-            this.print("\nERROR: " + message);
+            this.print("ERROR: " + message + "\n");
         };
         
         Hhvm.prototype.stop = function(statusCode) {
@@ -166,20 +170,24 @@ define([
             }
             
             this.running = false;
-            statusCode = statusCode || 1;
-
-            // Call the exit handler
-            this.exitHandler(statusCode);
+            this.statusCode = statusCode || 1;
         };
 
         Hhvm.prototype.reset = function() {
             // Reset state
+            this.running = false;
             this.callStack = new Stack();
             this.currentFrame = null;
             this.stack = null;
             this.fpiStack = null;
             this.heap = {};
             this.globalVars = null;
+        };
+
+        Hhvm.prototype.exit = function() {
+            // Call the exit handler
+            this.exitHandler(this.statusCode);
+            this.reset();
         };
         
         Hhvm.prototype.run = function() {
@@ -218,7 +226,7 @@ define([
                 while (vm.running) {
                     performStep();
                 }
-                vm.reset();
+                vm.exit();
             // Run in non-blocking mode
             } else {
                 (function async() {
@@ -226,7 +234,7 @@ define([
                     if (vm.running) {
                         setTimeout(async, 0);
                     } else {
-                        vm.reset();
+                        vm.exit();
                     }
                 })();
             }
