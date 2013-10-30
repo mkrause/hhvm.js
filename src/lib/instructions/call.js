@@ -58,9 +58,6 @@ define([
                     // Nop
                 }
             },
-            FPassVNop: function(paramId) {
-                // Nop
-            },
             FPassR: function(paramId) {
                 var value = this.stack.peek();
                 if (value instanceof Cell) {
