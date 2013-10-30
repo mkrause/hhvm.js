@@ -33,7 +33,7 @@ define([
             Concat: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                this.stack.push(new Cell("" + val2 + val1));
+                this.stack.push(new Cell(val2.toString() + val1.toString()));
             },
             Abs: function() {
                 this.stack.push(new Cell(Math.abs(this.stack.pop().value)));
@@ -83,13 +83,13 @@ define([
                 if(value < 0) {
                     this.stack.push(new Cell(NaN));
                 } else if(value === null) {
-                    this.hhbc.Null();
+                    value = 0;
                 } else if(_.isBoolean(value)) {
                     value = value ? 1 : 0;
                 } else if(_.isFinite(parseFloat(value, 10))) {
                     value = parseFloat(value, 10);
                 } else if (!_.isFinite(value)) {
-                    this.warning("Cannot take square root of a negative number");
+                    this.warning("Cannot calculate square root of given value");
                     this.hhbc.Null();
                     return;
                 }
@@ -252,7 +252,7 @@ define([
                 this.stack.push(new Cell(def && typeof value === className));
             },
             Print: function() {
-                var message = this.stack.pop().value;
+                var message = this.stack.pop().toString();
                 this.print(message);
                 this.stack.push(new Cell(1));
             },

@@ -8,7 +8,7 @@ define([
             if(_.isString(x)) {
                 var fpi = vm.dispatcher.createFPI(x, numParams);
                 if(fpi === undefined) {
-                    throw new Error("No such function " + x);
+                    throw new Error("Undefined function: " + x);
                 } else {
                     vm.FPIstack.push(fpi);
                 }
@@ -52,6 +52,10 @@ define([
                 this.dispatcher.functionCall(fpi, parameters);
             },
             //TODO: implement missing functions
+            FCallBuiltin: function(totalParams, passedParams, funcName) {
+                // TODO: implement
+                throw new Error("Builtin function " + funcName + "() not supported (yet)");
+            }
         };
     }
 );

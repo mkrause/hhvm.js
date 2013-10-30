@@ -14,7 +14,12 @@ define([
         };
         
         Cell.prototype.toString = function() {
-            return "[Cell: " + this.value + "]";
+            if (this.value === null || this.value === false) {
+                return "";
+            } else if (this.value === true) {
+                return "1";
+            }
+            return "" + this.value;
         };
         
         return Cell;
