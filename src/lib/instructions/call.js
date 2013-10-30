@@ -29,9 +29,13 @@ define([
             },
             //TODO: implement missing functions
             FPassC: function(paramId) {
-                var cell = this.stack.pop();
-                cell = (cell instanceof Cell) ? cell : new Cell(cell);
-                this.stack.push(cell);
+                // No op
+            },
+            //TODO: implement missing functions
+            FPassV: function(paramId) {
+                var ref = this.stack.pop();
+                // TODO: check if param should be passed by value: unbox
+                this.stack.push(ref);
             },
             FPassL: function(paramId, localVariableId) {
                 var parameterType = this.FPIstack.peek().parameterTable[paramId].parameterType;

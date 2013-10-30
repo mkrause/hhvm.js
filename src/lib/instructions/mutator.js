@@ -17,6 +17,39 @@ define([
             store.setByName(name, vm.stack.peek());
         };
 
+        var incDecHelper = function(vm, store, name, op) {
+            var mnemonic = subopcodes.IncDec.getMnemonic(op);
+            var wasDefined = store.defineByName(name);
+
+            if (!wasDefined) {
+                vm.warning("Undefined variable: " + name);
+            }
+
+            var cell = store.getByName(name);
+            switch (mnemonic) {
+                case "PreInc":
+                    cell.value++;
+                    store.setByName(name, cell);
+                    vm.stack.push(cell.clone());
+                    break;
+                case "PostInc":
+                    vm.stack.push(cell.clone());
+                    cell.value++;
+                    store.setByName(name, cell);
+                    break;
+                case "PreDec":
+                    cell.value--;
+                    store.setByName(name, cell);
+                    vm.stack.push(cell.clone());
+                    break;
+                case "PostDec":
+                    vm.stack.push(cell.clone());
+                    cell.value--;
+                    store.setByName(name, cell);
+                    break;
+            }
+        };
+
         return {
             //TODO: implement missing functions
             SetL: function(id) {
@@ -68,38 +101,32 @@ define([
                 setOpHelper(this, this.globalVars, name, op, pushArguments);
             },
             IncDecL: function(id, op) {
-                var vars = this.currentFrame.localVars;
-                var cell = vars.getById(id);
-                var mnemonic = subopcodes.IncDec.getMnemonic(op);
-                if(cell === undefined) {
-                    cell = new Cell(null);
-                    vars.setById(id, value);
-                    var name = vars.getNameFromId(id);
-                    this.notify("Undefined variable: " + name);
-                }
-                var value = cell.value;
-                switch (mnemonic) {
-                    case "PreInc":
-                        value++;
-                        vars.setById(id, new Cell(value));
-                        this.stack.push(new Cell(value));
-                        break;
-                    case "PostInc":
-                        this.stack.push(new Cell(value));
-                        value++;
-                        vars.setById(id, new Cell(value));
-                        break;
-                    case "PreDec":
-                        value--;
-                        vars.setById(id, new Cell(value));
-                        this.stack.push(new Cell(value));
-                        break;
-                    case "PostDec":
-                        this.stack.push(new Cell(value));
-                        value--;
-                        vars.setById(id, new Cell(value));
-                        break;
-                }
+                var name = this.currentFrame.localVars.getNameFromId(id);
+                incDecHelper(this, this.currentFrame.localVars, name, op);
+            },
+            IncDecN: function(op) {
+                var name = this.stack.pop().toString();
+                incDecHelper(this, this.currentFrame.localVars, name, op);
+            },
+            IncDecG: function(op) {
+                var name = this.stack.pop().toString();
+                incDecHelper(this, this.globalVars, name, op);
+            },
+            BindL: function(id) {
+                var ref = this.stack.peek();
+                this.currentFrame.localVars.setById(id, ref);
+            },
+            BindN: function() {
+                var ref = this.stack.pop();
+                var name = this.stack.pop().toString();
+                this.currentFrame.localVars.setByName(name, ref);
+                this.stack.push(ref);
+            },
+            BindG: function() {
+                var ref = this.stack.pop();
+                var name = this.stack.pop().toString();
+                this.globalVars.getByName(name, ref);
+                this.stack.push(ref);
             },
             UnsetL: function(id) {
                 this.currentFrame.localVars.unsetById(id);

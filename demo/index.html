@@ -21,7 +21,7 @@
             <div class="php col-md-4 col-xs-4">
                 <h2>PHP</h2>
                 <div id="input-php" class="form-control"></div>
-                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="operators">Operators</a>, <a href="#" class="call">Function call</a>, <a href="#" class="loop">Loop</a></div>
+                <div class="examples">Examples: <a href="#" class="echo">Echo</a>, <a href="#" class="operators">Operators</a>, <a href="#" class="call">Function call</a>, <a href="#" class="loop">Loop</a>, <a href="#" class="byref">By reference</a>, <a href="#" class="dollardollar">Dollar-dollar</a></div>
                 <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
             </div>
             <div class="hhbc col-md-4 col-xs-4">
@@ -153,14 +153,14 @@
         });
 
         $('.php .examples .call').click(function() {
-            phpEditor.setValue('<?php\necho foo("bar");\n\nfunction foo($x) {\n  return "foo" . $x;\n}\n');
+            phpEditor.setValue('<?php\necho foo("bar");\n\nfunction foo($x) {\n\treturn "foo" . $x;\n}\n');
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .loop').click(function() {
-            phpEditor.setValue('<?php\nwhile (true) {\n  echo 42;\n}\n');
+            phpEditor.setValue('<?php\nwhile (true) {\n\techo 42;\n}\n');
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
@@ -168,6 +168,20 @@
 
         $('.php .examples .operators').click(function() {
             phpEditor.setValue('<?php\n$x = 2;\n// $y = 4\n$y = $x + 2;\n// Concat 4 and "1" = "41"\n$y .= "1";\n// Increment "41" = 42\n$y++;\n// Output\necho $y;\n');
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .byref').click(function() {
+            phpEditor.setValue('<?php\n$x = "foo";\n$y = &$x;\nbar($x);\necho $x;\necho $y;\n\nfunction bar(&$z) {\n\t$z = "bar";\n}\n');
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .dollardollar').click(function() {
+            phpEditor.setValue('<?php\n$foo = "bar";\n$bar = "Dollars!";\necho $$foo;\n');
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;

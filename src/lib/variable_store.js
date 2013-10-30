@@ -1,7 +1,8 @@
 define([
         'vendor/underscore',
-        'lib/cell'
-    ], function(_, Cell) {
+        'lib/cell',
+        'lib/ref'
+    ], function(_, Cell, Ref) {
         var VariableStore = function(names) {
             // Local variables are stored as cells
             this.store = [];
@@ -31,7 +32,13 @@ define([
         };
 
         VariableStore.prototype.setById = function(id, value) {
-            this.store[id] = value;
+            if (this.store[id] instanceof Cell && value instanceof Cell) {
+                this.store[id].value = value.value;
+            } if (value instanceof Ref) {
+                this.store[id] = value.cell;
+            } else {
+                this.store[id] = value;
+            }
         };
 
         VariableStore.prototype.setByName = function(name, value) {
