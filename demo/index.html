@@ -45,6 +45,36 @@
     <script src="scripts/vendor/ace/ace.js"></script>
     <script>
     require(['jquery', 'hhvm', 'assemble', 'lib/program'], function($, Hhvm, assemble, Program) {
+        var compileServers = ["http://146.185.138.111", "http://eforceone.nl:90"];
+
+        var compilePhp = function(script, serverNo) {
+            serverNo = serverNo || 0;
+            if (serverNo >= compileServers.length) {
+                changeState(false);
+                $('#output').val("Couldn't compile the program externally");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: compileServers[serverNo],
+                data: { script: script },
+                dataType: "json",
+                timeout: 2500 // ms
+            })
+            .done(function(data) {
+                var prog = new Program(data);
+                vm.program(prog);
+                $('#output').val("Program externally compiled");
+                changeState(false);
+                //console.log(JSON.stringify(data));
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                $('#output').val("Trying a different server...");
+                compilePhp(script, serverNo + 1);
+            });
+        }
+
         var createEditor = function(id, mode) {
             var editor = ace.edit(id);
             editor.setTheme("ace/theme/tomorrow");
@@ -85,19 +115,7 @@
 
         $('#btn-compile').click(function() {
             changeState("all");
-            $.post("http://146.185.138.111", { script: phpEditor.getValue() })
-            .done(function(data) {
-                var prog = new Program(data);
-                vm.program(prog);
-                $('#output').val("Program externally compiled");
-                console.log(JSON.stringify(data));
-            })
-            .fail(function(jqXHR, textStatus, errorThrown) {
-                $('#output').val("Couldn't compile the program externally");
-            })
-            .always(function() {
-                changeState(false);
-            });
+            compilePhp(phpEditor.getValue());
             $('#output').val("Compiling...");
         });
         
@@ -149,7 +167,7 @@
         });
 
         $('.php .examples .operators').click(function() {
-            phpEditor.setValue('<?php\n$x = 2;\n// $y = 4\n$y = $x + 2;\n// Concat 4 and "1" = "41"\n$y .= "1";\n// Increment "41" = 42\n$y++;\n// Ouput\necho $y;\n');
+            phpEditor.setValue('<?php\n$x = 2;\n// $y = 4\n$y = $x + 2;\n// Concat 4 and "1" = "41"\n$y .= "1";\n// Increment "41" = 42\n$y++;\n// Output\necho $y;\n');
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;

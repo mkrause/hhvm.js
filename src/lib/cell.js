@@ -18,6 +18,8 @@ define([
                 return "";
             } else if (this.value === true) {
                 return "1";
+            } else if (_.isArray(this.value)) {
+                return "Array";
             }
             return "" + this.value;
         };
