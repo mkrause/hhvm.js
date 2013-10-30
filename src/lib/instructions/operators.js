@@ -252,7 +252,8 @@ define([
                 this.stack.push(new Cell(def && typeof value === className));
             },
             Print: function() {
-                this.print(this.stack.pop().value);
+                var message = this.stack.pop().value;
+                this.print(message);
                 this.stack.push(new Cell(1));
             },
             Clone: function() {

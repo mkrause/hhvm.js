@@ -2,7 +2,7 @@ define([
         'vendor/underscore'
     ], function(_) {
         var Cell = function(value) {
-            this.value = value || null;
+            this.value = value !== undefined ? value : null;
         };
         
         Cell.prototype.valueOf = function() {
