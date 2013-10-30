@@ -1,12 +1,27 @@
 define([
-        'vendor/underscore'
-    ], function(_) {
+        'vendor/underscore',
+        'lib/cell'
+    ], function(_, Cell) {
         var VariableStore = function(names) {
             // Local variables are stored as cells
             this.store = [];
             this.names = names || [];
         };
         
+        VariableStore.prototype.defineById = function(id, value) {
+            if (this.store[id] !== undefined) {
+                return true;
+            }
+
+            value = value || new Cell(null);
+            this.setById(id, value);
+            return false;
+        };
+
+        VariableStore.prototype.defineByName = function(name, value) {
+            return this.defineById(this.getIdFromName(name), value);
+        };
+
         VariableStore.prototype.getById = function(id) {
             return this.store[id];
         };

@@ -40,12 +40,12 @@ define([
                 this.stack.push(top);
             },
             CGetN: function() {
-                var name = String(this.stack.pop().value);
+                var name = this.stack.pop().toString();
                 var value = this.currentFrame.localVars.getByName(name);
                 cGetHelper(this, value, name);
             },
             CGetG: function() {
-                var name = String(this.stack.pop().value);
+                var name = this.stack.pop().toString();
                 var value = this.globalVars.getByName(name);
                 cGetHelper(this, value, name);
             },
@@ -58,12 +58,12 @@ define([
                 vGetHelper(this, value, name, this.currentFrame.localVars);
             },
             VGetN: function() {
-                var name = String(this.stack.pop().value);
+                var name = this.stack.pop().toString();
                 var value = this.currentFrame.localVars.getByName(name);
                 vGetHelper(this, value, name, this.currentFrame.localVars);
             },
             VGetG: function() {
-                var name = String(this.stack.pop().value);
+                var name = this.stack.pop().toString();
                 var value = this.globalVars.getByName(name);
                 vGetHelper(this, value, name, this.globalVars);
             },
