@@ -36,7 +36,7 @@ define([
             this.bConverter = new BinaryConverter();
             
             this.running = false;
-            this.statusCode = 1;
+            this.statusCode = 0;
             
             // I/O
             this.output = "";
@@ -147,21 +147,26 @@ define([
         };
         
         Hhvm.prototype.warning = function(message) {
-            this.print("WARNING: " + message + "\n");
+            this.print("Warning: " + message + "\n");
         };
         
         Hhvm.prototype.notify = function(message) {
-            this.print("NOTICE: " + message + "\n");
+            this.print("Notice: " + message + "\n");
         };
         
-        Hhvm.prototype.fatal = function(e) {
-            this.print(e);
-            this.errorHandler(e);
-            this.stop(0);
+        Hhvm.prototype.fatal = function(error) {
+            this.print("Fatal error: " + error.message);
+            this.errorHandler(error);
+            this.stop(1);
         };
         
         Hhvm.prototype.recoverable = function(message) {
-            this.print("ERROR: " + message + "\n");
+            this.print("Recoverable error: " + message + "\n");
+        };
+
+        Hhvm.prototype.interrupt = function() {
+            this.print("Interrupted");
+            this.stop(1);
         };
         
         Hhvm.prototype.stop = function(statusCode) {
@@ -170,7 +175,7 @@ define([
             }
             
             this.running = false;
-            this.statusCode = statusCode || 1;
+            this.statusCode = statusCode || 0;
         };
 
         Hhvm.prototype.reset = function() {
@@ -207,7 +212,12 @@ define([
                 // Stop when only the Application frame remains (containing the exit code on stack)
                 if (vm.callStack.length() === 1) {
                     var cell = vm.currentFrame.stack.pop();
-                    vm.stop(cell === undefined ? 1 : cell.value);
+                    // The Pseudo-main should always return 1 for a clean exit
+                    if (cell !== undefined && cell.value === 1) {
+                        vm.stop();
+                    } else {
+                        vm.fatal(new Error("Illegal return value of pseudo-main function (must be 1)"));
+                    }
                     return;
                 }
 

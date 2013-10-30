@@ -122,7 +122,7 @@
         });
         
         $('#btn-stop').click(function() {
-            vm.stop();
+            vm.interrupt();
         });
 
         // Examples
@@ -156,14 +156,14 @@
         });
 
         $('.hhbc .examples .echo').click(function() {
-            hhbcEditor.setValue('Int 42\nPrint\nPopC\nInt 0 # Exit code\nRetC\n');
+            hhbcEditor.setValue('Int 42\nPrint\nPopC\nInt 1 # Return val\nRetC\n');
             hhbcEditor.clearSelection();
             $('#btn-assemble').click();
             return false;
         });
 
         $('.hhbc .examples .loop').click(function() {
-            hhbcEditor.setValue('Int 42\nPrint\nPopC\nJmp -11 # Infinite loop\nInt 0 # Exit code\nRetC\n');
+            hhbcEditor.setValue('Int 42\nPrint\nPopC\nJmp -11 # Infinite loop\nInt 1 # Return val\nRetC\n');
             hhbcEditor.clearSelection();
             $('#btn-assemble').click();
             return false;

@@ -23,7 +23,7 @@ define([
             as = _.isString(as) ? as.split("\n") : as;
             _.each(as, function(line) {
                 // Remove comments
-                line = line.replace(/#.+/, '');
+                line = line.replace(/(#|\/\/).*/, '');
                 
                 // Skip empty lines
                 line = line.trim();
