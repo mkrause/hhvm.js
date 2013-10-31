@@ -30,7 +30,7 @@ var checkOpcodes = function(vm){
         var unit = data.units[i];
         for(var k = 0; k < unit.bc.length; k++){
             var bc = unit.bc[k];
-            if(bc != 0 && instructionSet.byOpcode(bc) == undefined){
+            if(bc !== 0 && instructionSet.byOpcode(bc) == undefined){
                 console.log("Unimplemented opcode: " + bc);
             }
         }
@@ -53,12 +53,13 @@ define([
         test("Nop", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1),
+                exitHandler: checkExitCode(0),
                 onError: throwError
             });
             
             vm.program(assemble([
                 "Nop",
+                "Int 1",
                 "RetC"
             ]));
             vm.run();
@@ -69,7 +70,7 @@ define([
         test("p1", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1),
+                exitHandler: checkExitCode(0),
                 onError: throwError
             });
             
@@ -82,7 +83,7 @@ define([
         test("p2", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1),
+                exitHandler: checkExitCode(0),
                 onError: throwError
             });
             
@@ -95,7 +96,7 @@ define([
         test("p3", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1),
+                exitHandler: checkExitCode(0),
                 onError: throwError
             });
             
@@ -108,7 +109,7 @@ define([
         test("p4", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1),
+                exitHandler: checkExitCode(0),
                 onError: throwError
             });
             
@@ -121,7 +122,7 @@ define([
         test("p5", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1),
+                exitHandler: checkExitCode(0),
                 onError: throwError
             });
             
@@ -134,7 +135,7 @@ define([
         test("p6", function() {
             var vm = new hhvm({
                 blocking: true,
-                exitHandler: checkExitCode(1),
+                exitHandler: checkExitCode(0),
                 onError: throwError
             });
             
