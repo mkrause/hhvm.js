@@ -9,6 +9,13 @@ define([
         Program.prototype.getByteCode = function() {
             return this.data.units[this.currentUnit].bc;
         };
+        
+        Program.prototype.getUnit = function(unitId) {
+            if (!this.data.units[unitId]) {
+                throw new Error("No such unit: " + unitId);
+            }
+            return this.data.units[unitId].bc;
+        };
 
         Program.prototype.length = function() {
             return this.data.units[this.currentUnit].bc.length;
