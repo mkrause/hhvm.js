@@ -17,25 +17,17 @@ define([
                         117,
                         0,
                         2,
-                        78,
-                        0,
-                        172,
-                        0,
-                        18,
+                        14,
                         0,
                         0,
                         0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        117,
                         2,
-                        129,
-                        2,
-                        0,
-                        2,
-                        178,
-                        0,
-                        252,
-                        255,
-                        255,
-                        255,
                         2,
                         78,
                         0,
@@ -44,6 +36,50 @@ define([
                         4,
                         2,
                         0,
+                        0,
+                        0,
+                        0,
+                        9,
+                        79,
+                        2,
+                        47,
+                        70,
+                        30,
+                        0,
+                        0,
+                        0,
+                        129,
+                        2,
+                        1,
+                        84,
+                        3,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        2,
+                        129,
+                        2,
+                        0,
+                        2,
+                        69,
+                        217,
+                        255,
+                        255,
+                        255,
+                        78,
+                        0,
+                        13,
+                        169,
+                        4,
+                        2,
+                        1,
                         0,
                         0,
                         0,
@@ -57,50 +93,102 @@ define([
                         0,
                         0,
                         0,
-                        74,
-                        185,
-                        0,
-                        76
+                        74
                     ],
-                    "bc_meta": [],
-                    "filepath": "/tmp/script_367c057abc2ba24cbc0eb72c5eaca626970d2b63",
-                    "md5": "16058b7da5589c69f2fd410d19465145",
+                    "bc_meta": [
+                        2,
+                        0,
+                        0,
+                        0,
+                        30,
+                        0,
+                        0,
+                        0,
+                        33,
+                        0,
+                        0,
+                        0,
+                        255,
+                        255,
+                        255,
+                        127,
+                        28,
+                        0,
+                        0,
+                        0,
+                        31,
+                        0,
+                        0,
+                        0,
+                        34,
+                        0,
+                        0,
+                        0,
+                        3,
+                        0,
+                        0,
+                        4,
+                        0,
+                        20
+                    ],
+                    "filepath": "/tmp/script_862ff6eab0d8855ecc1fef6e2bf3eb3b61fa75de",
+                    "md5": "08f29bd1c5859f41208facf8fbf620d3",
                     "linetable": [
                         {
                             "pastOffset": 7,
-                            "line": 4
+                            "line": 5
                         },
                         {
                             "pastOffset": 8,
-                            "line": 4
+                            "line": 5
                         },
                         {
                             "pastOffset": 17,
-                            "line": 9
+                            "line": 6
+                        },
+                        {
+                            "pastOffset": 19,
+                            "line": 6
                         },
                         {
                             "pastOffset": 20,
                             "line": 8
                         },
                         {
-                            "pastOffset": 21,
-                            "line": 8
-                        },
-                        {
-                            "pastOffset": 28,
-                            "line": 9
-                        },
-                        {
-                            "pastOffset": 38,
-                            "line": 10
+                            "pastOffset": 31,
+                            "line": 6
                         },
                         {
                             "pastOffset": 39,
-                            "line": 10
+                            "line": 6
                         },
                         {
-                            "pastOffset": 52,
-                            "line": 10
+                            "pastOffset": 42,
+                            "line": 7
+                        },
+                        {
+                            "pastOffset": 55,
+                            "line": 7
+                        },
+                        {
+                            "pastOffset": 58,
+                            "line": 6
+                        },
+                        {
+                            "pastOffset": 64,
+                            "line": 8
+                        },
+                        {
+                            "pastOffset": 74,
+                            "line": 9
+                        },
+                        {
+                            "pastOffset": 75,
+                            "line": 9
+                        },
+                        {
+                            "pastOffset": 85,
+                            "line": 9
                         }
                     ],
                     "mainReturn": {
@@ -110,6 +198,7 @@ define([
                     "mergeable": false,
                     "typedefs": [],
                     "litStrs": [
+                        "sizeof",
                         "print_r"
                     ],
                     "functions": [
@@ -117,14 +206,14 @@ define([
                             "name": "",
                             "fullName": "",
                             "line1": 1,
-                            "line2": 10,
+                            "line2": 9,
                             "base": 0,
-                            "past": 52,
+                            "past": 85,
                             "attrs": 65664,
                             "returnType": -1,
                             "docComment": "",
                             "numLocals": 2,
-                            "numIterators": 1,
+                            "numIterators": 0,
                             "maxStackCells": 4,
                             "isClosureBody": false,
                             "isGenerator": false,
@@ -135,7 +224,7 @@ define([
                             "params": [],
                             "localNames": [
                                 "newArray",
-                                "element"
+                                "i"
                             ],
                             "staticVars": [],
                             "userAttributes": {},
