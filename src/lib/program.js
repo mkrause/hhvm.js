@@ -29,8 +29,12 @@ define([
         };
 
         Program.prototype.getScalarArray = function(id) {
-            // TODO: implement
-            return undefined;
+            var array = new Array();
+            var obj = JSON.parse(this.data.units[this.currentUnit].arrays[id]);
+            _.each(obj, function(value, key) {
+                array[key] = value;
+            });
+            return array;
         };
 
         Program.prototype.getConstantByName = function(name) {
