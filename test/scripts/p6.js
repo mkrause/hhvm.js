@@ -130,8 +130,8 @@ define([
                         0,
                         20
                     ],
-                    "filepath": "/tmp/script_93f7340c94a8813a9430ba6807eb5f76e0f83242",
-                    "md5": "8356d29514420ebbcad1719be430a629",
+                    "filepath": "/tmp/script_c4bd0cbbb20a7e91dd097d95b230a3ff0a8958bb",
+                    "md5": "5e18c511a7e13eb5931c5a21753f8f79",
                     "linetable": [
                         {
                             "pastOffset": 7,
@@ -197,7 +197,7 @@ define([
                     "mergeable": false,
                     "typedefs": [],
                     "litStrs": [
-                        "sizeof",
+                        "count",
                         "print_r"
                     ],
                     "functions": [
