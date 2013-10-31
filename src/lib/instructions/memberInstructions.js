@@ -1,11 +1,10 @@
 define([
         'vendor/underscore',
+        'lib/instructions/memberOperations',
         'lib/instructions/subopcodes'
-    ], function(_, subopcodes) {
+    ], function(_, operations, subopcodes) {
         return {
             //TODO: implement missing functions
-            
-            
             
             IncDecM: function(op, vector){
                 //retrieve base
@@ -42,7 +41,7 @@ define([
                         base = this.hhbc.BaseH();
                         break;
                 }
-                
+
                 //Perform intermediate operations
                 for(var i = 0; i < vector.members.length - 1; i++){
                     var member = members[i];

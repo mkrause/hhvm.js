@@ -4,7 +4,7 @@ define([
         'lib/fpi',
         'lib/cell',
         'lib/ref'
-    ], function(_, Builtin, FPI, Cell, Ref) {
+    ], function(_, builtin, FPI, Cell, Ref) {
         
         var pushFunc = function(vm, numParams, x) {
             if(_.isString(x)) {
@@ -115,7 +115,7 @@ define([
                 this.dispatcher.functionCall(fpi, parameters);
             },
             FCallBuiltin: function(totalParams, passedParams, funcName) {
-                var func = Builtin[funcName];
+                var func = builtin[funcName];
 
                 if (func === undefined) {
                     throw new Error("Builtin function " + funcName + "() not supported (yet)");
