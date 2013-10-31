@@ -44,32 +44,31 @@ define([
                         2,
                         47,
                         70,
-                        30,
+                        29,
                         0,
                         0,
                         0,
-                        129,
+                        133,
+                        0,
+                        4,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
                         2,
-                        1,
-                        84,
-                        3,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
+                        2,
                         2,
                         129,
                         2,
                         0,
                         2,
                         69,
-                        217,
+                        218,
                         255,
                         255,
                         255,
@@ -131,8 +130,8 @@ define([
                         0,
                         20
                     ],
-                    "filepath": "/tmp/script_862ff6eab0d8855ecc1fef6e2bf3eb3b61fa75de",
-                    "md5": "08f29bd1c5859f41208facf8fbf620d3",
+                    "filepath": "/tmp/script_93f7340c94a8813a9430ba6807eb5f76e0f83242",
+                    "md5": "8356d29514420ebbcad1719be430a629",
                     "linetable": [
                         {
                             "pastOffset": 7,
@@ -163,31 +162,31 @@ define([
                             "line": 6
                         },
                         {
-                            "pastOffset": 42,
+                            "pastOffset": 53,
                             "line": 7
                         },
                         {
-                            "pastOffset": 55,
+                            "pastOffset": 54,
                             "line": 7
                         },
                         {
-                            "pastOffset": 58,
+                            "pastOffset": 57,
                             "line": 6
                         },
                         {
-                            "pastOffset": 64,
+                            "pastOffset": 63,
                             "line": 8
+                        },
+                        {
+                            "pastOffset": 73,
+                            "line": 9
                         },
                         {
                             "pastOffset": 74,
                             "line": 9
                         },
                         {
-                            "pastOffset": 75,
-                            "line": 9
-                        },
-                        {
-                            "pastOffset": 85,
+                            "pastOffset": 84,
                             "line": 9
                         }
                     ],
@@ -208,7 +207,7 @@ define([
                             "line1": 1,
                             "line2": 9,
                             "base": 0,
-                            "past": 85,
+                            "past": 84,
                             "attrs": 65664,
                             "returnType": -1,
                             "docComment": "",
