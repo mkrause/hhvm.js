@@ -5,6 +5,6 @@ $newArray[] = 42;
 
 
 foreach($newArray as $element){
-    element++;
+    $element++;
 }
 print_r($newArray);

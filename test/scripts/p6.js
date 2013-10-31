@@ -9,21 +9,98 @@ define([
             "units": [
                 {
                     "bc": [
-                        16,
+                        17,
                         0,
                         0,
                         0,
                         0,
-                        68,
-                        0
+                        117,
+                        0,
+                        2,
+                        78,
+                        0,
+                        172,
+                        0,
+                        18,
+                        0,
+                        0,
+                        0,
+                        2,
+                        129,
+                        2,
+                        0,
+                        2,
+                        178,
+                        0,
+                        252,
+                        255,
+                        255,
+                        255,
+                        2,
+                        78,
+                        0,
+                        13,
+                        169,
+                        4,
+                        2,
+                        0,
+                        0,
+                        0,
+                        0,
+                        4,
+                        14,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        74,
+                        185,
+                        0,
+                        76
                     ],
                     "bc_meta": [],
-                    "filepath": "/tmp/script_0cd2254e86e4aeb7a0f08d26e8654355c683fb60",
-                    "md5": "d1cad5c3a55f261895101d16ab214356",
+                    "filepath": "/tmp/script_367c057abc2ba24cbc0eb72c5eaca626970d2b63",
+                    "md5": "16058b7da5589c69f2fd410d19465145",
                     "linetable": [
                         {
                             "pastOffset": 7,
+                            "line": 4
+                        },
+                        {
+                            "pastOffset": 8,
+                            "line": 4
+                        },
+                        {
+                            "pastOffset": 17,
+                            "line": 9
+                        },
+                        {
+                            "pastOffset": 20,
                             "line": 8
+                        },
+                        {
+                            "pastOffset": 21,
+                            "line": 8
+                        },
+                        {
+                            "pastOffset": 28,
+                            "line": 9
+                        },
+                        {
+                            "pastOffset": 38,
+                            "line": 10
+                        },
+                        {
+                            "pastOffset": 39,
+                            "line": 10
+                        },
+                        {
+                            "pastOffset": 52,
+                            "line": 10
                         }
                     ],
                     "mainReturn": {
@@ -33,22 +110,22 @@ define([
                     "mergeable": false,
                     "typedefs": [],
                     "litStrs": [
-                        "syntax error, unexpected T_INC"
+                        "print_r"
                     ],
                     "functions": [
                         {
                             "name": "",
                             "fullName": "",
-                            "line1": 8,
-                            "line2": 8,
+                            "line1": 1,
+                            "line2": 10,
                             "base": 0,
-                            "past": 7,
+                            "past": 52,
                             "attrs": 65664,
                             "returnType": -1,
                             "docComment": "",
-                            "numLocals": 0,
-                            "numIterators": 0,
-                            "maxStackCells": 1,
+                            "numLocals": 2,
+                            "numIterators": 1,
+                            "maxStackCells": 4,
                             "isClosureBody": false,
                             "isGenerator": false,
                             "isGeneratorFromClosure": false,
@@ -56,14 +133,19 @@ define([
                             "hasGeneratorAsBody": false,
                             "isAsync": false,
                             "params": [],
-                            "localNames": [],
+                            "localNames": [
+                                "newArray",
+                                "element"
+                            ],
                             "staticVars": [],
                             "userAttributes": {},
                             "retTypeConstraint": "",
                             "originalFilename": ""
                         }
                     ],
-                    "arrays": []
+                    "arrays": [
+                        "[1,41,42]"
+                    ]
                 }
             ]
         };
