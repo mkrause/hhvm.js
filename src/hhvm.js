@@ -215,15 +215,11 @@ define([
             // Note that we don't just loop since that would hang up the browser.
             var vm = this;
             var performStep = function() {
-                // Stop when only the Application frame remains (containing the exit code on stack)
+                // Stop when only the Application frame remains
                 if (vm.callStack.length() === 1) {
-                    var cell = vm.currentFrame.stack.pop();
-                    // The Pseudo-main should always return 1 for a clean exit
-                    if (cell !== undefined && cell.value === 1) {
-                        vm.stop();
-                    } else {
-                        vm.fatal(new Error("Illegal return value of pseudo-main function (must be 1)"));
-                    }
+                    var returnValue = vm.currentFrame.stack.pop();
+                    // Ignore the return value
+                    vm.stop();
                     return;
                 }
 
