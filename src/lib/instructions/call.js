@@ -1,9 +1,10 @@
 define([
         'vendor/underscore',
+        'lib/functions/builtin',
         'lib/fpi',
         'lib/cell',
         'lib/ref'
-    ], function(_, FPI, Cell, Ref) {
+    ], function(_, Builtin, FPI, Cell, Ref) {
         
         var pushFunc = function(vm, numParams, x) {
             if(_.isString(x)) {
@@ -18,6 +19,14 @@ define([
             } else {
                 throw new Error("Supplied function not a String or Object: " + typeof(x) + " " + JSON.stringify(x));
             }
+        };
+
+        var popParams = function(vm, numParams) {
+            var parameters = [];
+            _(numParams).times(function(n) {
+                parameters.unshift(vm.stack.pop());
+            });
+            return parameters;
         };
 
         var isPassedByValue = function(vm, paramId) {
@@ -96,11 +105,7 @@ define([
                 }
             },
             FCall: function(numParams) {
-                var parameters = [];
-                _(numParams).times(function(n) {
-                    parameters.unshift(this.stack.pop());
-                }, this);
-
+                var parameters = popParams(this, numParams);
                 var fpi = this.FPIstack.pop();
                 this.dispatcher.functionCall(fpi, parameters);
             },
@@ -110,8 +115,15 @@ define([
                 this.dispatcher.functionCall(fpi, parameters);
             },
             FCallBuiltin: function(totalParams, passedParams, funcName) {
-                // TODO: implement
-                throw new Error("Builtin function " + funcName + "() not supported (yet)");
+                var func = Builtin[funcName];
+
+                if (func === undefined) {
+                    throw new Error("Builtin function " + funcName + "() not supported (yet)");
+                }
+
+                // Call function
+                var args = popParams(this, totalParams);
+                var ret = func.apply(this, args);
             }
         };
     }
