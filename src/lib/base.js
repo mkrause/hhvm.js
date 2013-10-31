@@ -1,6 +1,7 @@
 define([
-        'vendor/underscore'
-    ], function(_) {
+        'vendor/underscore',
+        'lib/cell',
+    ], function(_, Cell) {
         var Base = function(value) {
             this.value = value !== undefined ? value : null;
         };
