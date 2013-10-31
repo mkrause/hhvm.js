@@ -3,9 +3,9 @@ define([
     ], function(_) {
         return {
             //TODO: implement missing functions
-            CGetM: function(vector){
-                //TODO
-                console.log(JSON.stringify(vector));
+            IncDecM: function(op, vector){
+                //TODO: implement function
+                console.log("IncDecM: op: " + op + " vector: " + vector);
             }
         };
     }

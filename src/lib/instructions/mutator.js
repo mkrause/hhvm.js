@@ -69,9 +69,6 @@ define([
                 this.globalVars.setByName(name, value);
                 this.stack.push(value);
             },
-            SetS: function() {
-                // TODO: implement
-            },
             SetOpL: function(id, op) {
                 var name = this.currentFrame.localVars.getNameFromId(id);
                 var pushArguments = _.bind(function() {
