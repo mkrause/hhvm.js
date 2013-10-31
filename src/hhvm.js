@@ -10,8 +10,9 @@ define([
         'lib/instruction_set',
         'lib/stack',
         'lib/dispatcher',
-        'lib/variable_store'
-    ], function(_, BinaryConverter, InstructionSet, Stack, Dispatcher, VariableStore) {
+        'lib/variable_store',
+        'lib/member_vector'
+    ], function(_, BinaryConverter, InstructionSet, Stack, Dispatcher, VariableStore, MemberVector) {
         var Hhvm = function(options) {
             options = options || {};
             this.options = _.defaults(options, {
@@ -109,9 +110,10 @@ define([
                 arg = this.bConverter.decodeInt32(bytes4);
                 this.offsetPc(4);
             } else if (type === 'memberVector') {
-                var bytes4 = bc.slice(pc + 1, pc + 5);
-                arg = this.bConverter.decodeInt32(bytes4);
-                this.offsetPc(4);
+                var length = bc[pc + 1] + 8;
+                var bytes = bc.slice(pc + 1, pc + length + 1);
+                arg = new MemberVector(bytes);
+                this.offsetPc(length);
             } else {
                 this.fatal(new Error("Invalid argument type: " + type));
                 return;
