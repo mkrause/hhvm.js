@@ -16,6 +16,10 @@ define([
             PASS_BY_REFERENCE: 1
         };
 
+        FPI.prototype.getParameterType = function(paramId) {
+            return this.parameterTable[paramId] ? this.parameterTable[paramId].parameterType : undefined;
+        };
+
         FPI.prototype.initializeParameterTable = function() {
             // TODO: Lookup in meta data of functionName
             return {};

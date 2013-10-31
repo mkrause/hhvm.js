@@ -21,11 +21,13 @@ define([
         };
 
         var isPassedByValue = function(vm, paramId) {
-            return vm.FPIstack.peek().parameterTable[paramId].parameterType === FPI.parameterType.PASS_BY_VALUE;
+            var fpi = vm.FPIstack.peek();
+            return fpi.getParameterType(paramId) === fpi.parameterType.PASS_BY_VALUE;
         };
 
         var isPassedByReference = function(vm, paramId) {
-            return vm.FPIstack.peek().parameterTable[paramId].parameterType === FPI.parameterType.PASS_BY_REFERENCE;
+            var fpi = vm.FPIstack.peek();
+            return fpi.getParameterType(paramId) === fpi.parameterType.PASS_BY_REFERENCE;
         };
         
         return {
@@ -51,7 +53,6 @@ define([
                 }
             },
             FPassV: function(paramId) {
-                var parameterType = this.FPIstack.peek().parameterTable[paramId].parameterType;
                 if(isPassedByValue(this, paramId)) {
                     this.hhbc.Unbox();
                 } else if(isPassedByReference(this, paramId)) {
