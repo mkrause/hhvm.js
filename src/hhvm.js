@@ -108,6 +108,10 @@ define([
                 var bytes4 = bc.slice(pc + 1, pc + 5);
                 arg = this.bConverter.decodeInt32(bytes4);
                 this.offsetPc(4);
+            } else if (type === 'memberVector') {
+                var bytes4 = bc.slice(pc + 1, pc + 5);
+                arg = this.bConverter.decodeInt32(bytes4);
+                this.offsetPc(4);
             } else {
                 this.fatal(new Error("Invalid argument type: " + type));
                 return;

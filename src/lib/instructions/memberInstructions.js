@@ -1,11 +1,15 @@
 define([
         'vendor/underscore',
-    ], function(_) {
+        'lib/instructions/subopcodes'
+    ], function(_, subopcodes) {
         return {
             //TODO: implement missing functions
             IncDecM: function(op, vector){
                 //TODO: implement function
-                console.log("IncDecM: op: " + op + " vector: " + vector);
+                var mnemonic = subopcodes.IncDec.getMnemonic(op);
+                console.log("IncDecM: mnemonic: " + mnemonic + " vector: " + vector);
+                
+                
             }
         };
     }

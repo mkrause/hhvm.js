@@ -11,8 +11,9 @@ define([
         'lib/instructions/mutator',
         'lib/instructions/call',
         'lib/instructions/isset',
-        'lib/instructions/misc'
-    ], function(_, opcodeToInstr, mnemonicToOpcode, basic, literals, operators, controlFlow, getInstr, mutators, calls, isset, misc) {
+        'lib/instructions/misc',
+        'lib/instructions/memberInstructions'
+    ], function(_, opcodeToInstr, mnemonicToOpcode, basic, literals, operators, controlFlow, getInstr, mutators, calls, isset, misc, memberInstructions) {
         // Instruction modules
         var modules = [
             basic,
@@ -23,7 +24,8 @@ define([
             mutators,
             calls,
             isset,
-            misc
+            misc,
+            memberInstructions
         ];
         
         // Merge all the different instruction modules together to get a map of all
