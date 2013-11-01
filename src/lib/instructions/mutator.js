@@ -29,23 +29,19 @@ define([
             switch (mnemonic) {
                 case "PreInc":
                     cell.value++;
-                    store.setByName(name, cell);
                     vm.stack.push(cell.clone());
                     break;
                 case "PostInc":
                     vm.stack.push(cell.clone());
                     cell.value++;
-                    store.setByName(name, cell);
                     break;
                 case "PreDec":
                     cell.value--;
-                    store.setByName(name, cell);
                     vm.stack.push(cell.clone());
                     break;
                 case "PostDec":
                     vm.stack.push(cell.clone());
                     cell.value--;
-                    store.setByName(name, cell);
                     break;
             }
         };

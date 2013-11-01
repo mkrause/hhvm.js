@@ -28,7 +28,8 @@
                     <a href="#" class="call">Function call</a>,
                     <a href="#" class="loop">Loop</a>,
                     <a href="#" class="byref">By reference</a>,
-                    <a href="#" class="dollardollar">Dollar-dollar</a>
+                    <a href="#" class="dollardollar">Dollar-dollar</a>,
+                    <a href="#" class="array">Array</a>
                 </div>
                 <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
             </div>
@@ -194,6 +195,13 @@
 
         $('.php .examples .dollardollar').click(function() {
             phpEditor.setValue('<?php\n$foo = "bar";\n$bar = "Dollars!";\necho $$foo;\n');
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .array').click(function() {
+            phpEditor.setValue('<?php\n$e = 0;\n$array = array(\n\t$e+1, $e+2, $e+3,\n\t"end" => "The end!"\n);\n$string = "string";\necho $array[2];\necho $string[2];\necho "\\n" . $array["end"];\n');
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
