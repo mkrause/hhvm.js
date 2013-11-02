@@ -6,4 +6,4 @@ $newArray[] = 42;
 for($i = 0; $i < count($newArray); $i++){
     $newArray[$i]++;
 }
-print_r($newArray);
+echo "[" + $newArray[0] + ", " + $newArray[1] + ", " + $newArray[2] + "]";

@@ -6,7 +6,7 @@ define([
         'lib/instructions/subopcodes'
     ], function(_, Cell, Ref, Base, subopcodes) {
         
-        var incDecElem = function(base, op, offset){
+        var incDecElem = function(base, op, offset, stack){
             var cell = base.value;
             if (cell === null) {
                 this.warning("Member of true or number cannot be incremented. Pushing null on the stack");
@@ -28,18 +28,18 @@ define([
                 switch(mnemonic) {
                     case "PreInc":
                         cell.value[offset]++;
-                        this.stack.push(new Cell(cell.value[offset]));
+                        stack.push(new Cell(cell.value[offset]));
                         break;
                     case "PostInc":
-                        this.stack.push(new Cell(cell.value[offset]));
+                        stack.push(new Cell(cell.value[offset]));
                         cell.value[offset]++;
                         break;
                     case "PreDec":
                         cell.value[offset]--;
-                        this.stack.push(new Cell(cell.value[offset]));
+                        stack.push(new Cell(cell.value[offset]));
                         break;
                     case "PostDec":
-                        this.stack.push(new Cell(cell.value[offset]));
+                        stack.push(new Cell(cell.value[offset]));
                         cell.value[offset]--;
                         break;
                 }
@@ -47,7 +47,7 @@ define([
                 this.warning("Member of true or number cannot be incremented. Pushing null on the stack");
                 this.hhbc.Null();
             } else {
-                throw new Error("Objects or strings not supported yet");
+                throw new Error("Objects or strings not supported yet for value " + cell.value);
             }
         };
         
@@ -120,11 +120,11 @@ define([
             },
             IncDecElemC: function(base, op) {
                 var offset = this.stack.pop().value;
-                incDecElem(base, op, offset);
+                incDecElem(base, op, offset, this.stack);
             },
             IncDecElemL: function(base, op, localVarId) {
                 var offset = this.currentFrame.localVars.getById(localVarId);
-                incDecElem(base.value, op, offset);
+                incDecElem(base, op, offset, this.stack);
             }
             //TODO: implement missing operations
         };
