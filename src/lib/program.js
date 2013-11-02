@@ -36,7 +36,7 @@ define([
         };
 
         Program.prototype.getScalarArray = function(id) {
-            var array = new Array();
+            var array = [];
             var obj = this.data.units[this.currentUnit].arrays[id];
             _.each(obj, function(value, key) {
                 array[key] = value;
