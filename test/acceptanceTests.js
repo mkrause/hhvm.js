@@ -142,7 +142,7 @@ define([
             vm.program(new Program(p6));
             checkOpcodes(vm);
             vm.run();
-            checkVMState(vm, "[2, 42, 43]");
+            checkVMState(vm, "Array\n(\n\t[0] => 2\n\t[1] => 42\n\t[2] => 43\n)\n");
         });
     }
 );
