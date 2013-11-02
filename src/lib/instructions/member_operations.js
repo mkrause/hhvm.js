@@ -5,52 +5,50 @@ define([
         'lib/base',
         'lib/instructions/subopcodes'
     ], function(_, Cell, Ref, Base, subopcodes) {
-        
-        var incDecElem = function(base, op, offset, stack){
+        var incDecElem = function(vm, base, op, offset) {
             var cell = base.value;
             if (cell === null) {
-                this.warning("Member of true or number cannot be incremented. Pushing null on the stack");
-                this.hhbc.Null();
+                vm.warning("Member of true or number cannot be incremented. Pushing null on the stack");
+                vm.hhbc.Null();
                 return;
             }
 
             if(cell.value === null || cell.value === false || cell.value === "") {
                 cell.value = [];
             }
-
             var mnemonic = subopcodes.IncDec.getMnemonic(op);
             if(_.isArray(cell.value)) {
                 if(cell.value[offset] === undefined) {
-                    this.warning("Undefined variable at offset: " + offset);
+                    vm.warning("Undefined variable at offset: " + offset);
                     cell.value[offset] = null;
                 }
                 //Inc/Dec
                 switch(mnemonic) {
                     case "PreInc":
                         cell.value[offset]++;
-                        stack.push(new Cell(cell.value[offset]));
+                        vm.stack.push(new Cell(cell.value[offset]));
                         break;
                     case "PostInc":
-                        stack.push(new Cell(cell.value[offset]));
+                        vm.stack.push(new Cell(cell.value[offset]));
                         cell.value[offset]++;
                         break;
                     case "PreDec":
                         cell.value[offset]--;
-                        stack.push(new Cell(cell.value[offset]));
+                        vm.stack.push(new Cell(cell.value[offset]));
                         break;
                     case "PostDec":
-                        stack.push(new Cell(cell.value[offset]));
+                        vm.stack.push(new Cell(cell.value[offset]));
                         cell.value[offset]--;
                         break;
                 }
             } else if(cell.value === true || _.isNumber(cell.value)) {
-                this.warning("Member of true or number cannot be incremented. Pushing null on the stack");
-                this.hhbc.Null();
+                vm.warning("Member of true or number cannot be incremented. Pushing null on the stack");
+                vm.hhbc.Null();
             } else {
                 throw new Error("Objects or strings not supported yet for value " + cell.value);
             }
         };
-        
+
         return {
             BaseC: function() {
                 var value = this.stack.pop().value;
@@ -120,11 +118,11 @@ define([
             },
             IncDecElemC: function(base, op) {
                 var offset = this.stack.pop().value;
-                incDecElem(base, op, offset, this.stack);
+                incDecElem(this, base, op, offset);
             },
             IncDecElemL: function(base, op, localVarId) {
                 var offset = this.currentFrame.localVars.getById(localVarId);
-                incDecElem(base, op, offset, this.stack);
+                incDecElem(this, base, op, offset);
             }
             //TODO: implement missing operations
         };

@@ -6,15 +6,15 @@ define([
             this.value = value !== undefined ? value : null;
         };
         
-        Cell.prototype.valueOf = function() {
+        Base.prototype.valueOf = function() {
             return this.value;
         };
         
-        Cell.prototype.clone = function() {
+        Base.prototype.clone = function() {
             return new Base(this.value);
         };
         
-        Cell.prototype.toString = function() {
+        Base.prototype.toString = function() {
             if (this.value === null || this.value === false) {
                 return "";
             } else if (this.value === true) {
