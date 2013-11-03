@@ -13,8 +13,7 @@
 
 #input-php,
 #input-hhbc,
-#output
-{
+#output {
     height: 220px;
     font-family: monospace;
     margin-bottom: 10px;

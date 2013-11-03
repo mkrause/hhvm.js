@@ -6,7 +6,6 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Libraries -->
     <link rel="stylesheet" href="style/bootstrap.css">
     <link rel="stylesheet" href="style/bootstrap_theme.css">
     <link rel="stylesheet" href="style/demo.css">
@@ -53,24 +52,74 @@
         </div>
     </div>
 
-    <script src="../src/vendor/require.js" data-main="../src/hhvm.js"></script>
-    <script src="scripts/vendor/jquery.js"></script>
     <script src="scripts/vendor/ace/ace.js"></script>
+    <script src="scripts/vendor/jquery.js"></script>
+    
+    <script src="../src/vendor/require.js"></script>
+    <script src="../src/require_config.js"></script>
     <script>
-    require(['jquery', 'hhvm', 'assemble', 'lib/program'], function($, Hhvm, assemble, Program) {
-        var compileServers = ["http://146.185.138.111", "http://eforceone.nl:90"];
-
-        var compilePhp = function(script, serverNo) {
-            serverNo = serverNo || 0;
-            if (serverNo >= compileServers.length) {
-                changeState(false);
+    // Configure RequireJS to load scripts from the "src" directory
+    require.config({
+        baseUrl: '../src',
+        paths: {
+            'demo': '../demo/scripts'
+        }
+    });
+    
+    require(['hhvm', 'lib/program', 'assemble'], function(Hhvm, Program, assemble) {
+        var buttons = $("#editor button");
+        var buttonRun = $("#btn-run");
+        var buttonStop = $("#btn-stop");
+        
+        // Append output to the output area
+        var appendToOutput = function(output) {
+            var currentOutput = $('#output').val();
+            $('#output').val(currentOutput + output);
+        };
+        
+        // Create and configure the code editors
+        var createEditor = function(id, mode) {
+            var editor = ace.edit(id);
+            editor.setTheme("ace/theme/tomorrow");
+            editor.getSession().setMode("ace/mode/" + mode);
+            editor.setShowPrintMargin(false);
+            editor.setFontSize(14);
+            return editor;
+        };
+        
+        var phpEditor = createEditor("input-php", "php");
+        var hhbcEditor = createEditor("input-hhbc", "hhbc");
+        
+        // Change the user interaction state
+        var changeState = function(state) {
+            switch (state) {
+            case "idle":
+                buttons.prop("disabled", false);
+                buttonStop.prop("disabled", true);
+                break
+            case "running":
+                buttons.prop("disabled", true);
+                buttonStop.prop("disabled", false);
+                break;
+            case "intermittent":
+                buttons.prop("disabled", true);
+                break;
+            }
+        };
+        
+        // Use a specialized server to compile PHP code to an hhvm.js program
+        var compilationServers = ["http://146.185.138.111", "http://eforceone.nl:90"];
+        var compilePhp = function(script, serverId) {
+            serverId = serverId || 0;
+            if (!compilationServers[serverId]) {
+                changeState("idle");
                 $('#output').val("Couldn't compile the program externally");
                 return;
             }
-
+            
             $.ajax({
                 type: "POST",
-                url: compileServers[serverNo],
+                url: compilationServers[serverId],
                 data: { script: script },
                 dataType: "json",
                 timeout: 2500 // ms
@@ -79,61 +128,38 @@
                 var prog = new Program(data);
                 vm.program(prog);
                 $('#output').val("Program externally compiled");
-                changeState(false);
+                changeState("idle");
                 //console.log(JSON.stringify(data));
             })
             .fail(function(jqXHR, textStatus, errorThrown) {
+                // Fall back to a different compilation server
                 $('#output').val("Trying a different server...");
-                compilePhp(script, serverNo + 1);
+                compilePhp(script, serverId + 1);
             });
-        }
-
-        var createEditor = function(id, mode) {
-            var editor = ace.edit(id);
-            editor.setTheme("ace/theme/tomorrow");
-            editor.getSession().setMode("ace/mode/" + mode);
-            editor.setShowPrintMargin(false);
-            editor.setFontSize(14);
-            return editor;
-        }
-        
-        var phpEditor = createEditor("input-php", "php");
-        var hhbcEditor = createEditor("input-hhbc", "hhbc");
+        };
 
         var vm = new Hhvm({
             outputHandler: function(str) {
-                var currentOutput = $('#output').val();
-                $('#output').val(currentOutput + str);
+                appendToOutput(str);
             },
             exitHandler: function(statusCode) {
                 var msg = "\n-----\nDone, exited with status code " + statusCode;
-                var currentOutput = $('#output').val();
-                $('#output').val(currentOutput + msg);
-                changeState(false);
+                appendToOutput(msg);
+                changeState("idle");
             },
             onError: function(errorMessage) {
-                changeState(false);
+                changeState("idle");
             }
         });
 
-        var changeState = function(state) {
-            if (state === "all") {
-                $("#editor button").prop("disabled", true);
-                return;
-            }
-
-            $("#editor button").prop("disabled", state);
-            $("#btn-stop").prop("disabled", !state);
-        }
-
         $('#btn-compile').click(function() {
-            changeState("all");
+            changeState("intermittent");
             compilePhp(phpEditor.getValue());
             $('#output').val("Compiling...");
         });
         
         $('#btn-assemble').click(function() {
-            changeState("all");
+            changeState("intermittent");
             try {
                 var prog = assemble(hhbcEditor.getValue());
                 vm.program(prog);
@@ -141,14 +167,14 @@
             } catch (e) {
                 $('#output').val("PARSE ERROR: " + e);
             } finally {
-                changeState(false);
+                changeState("idle");
             }
         });
         
         $('#btn-run').click(function() {
             // Clear the output
             $('#output').val("");
-            changeState(true);
+            changeState("running");
             vm.run();
         });
         
@@ -159,49 +185,103 @@
         // Examples
 
         $('.php .examples .echo').click(function() {
-            phpEditor.setValue('<?php\necho 42;\n');
+            phpEditor.setValue(
+'<?php\n\
+echo 42;\n'
+            );
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .call').click(function() {
-            phpEditor.setValue('<?php\necho foo("bar");\n\nfunction foo($x) {\n\treturn "foo" . $x;\n}\n');
+            phpEditor.setValue(
+'<?php\n\
+echo foo("bar");\n\
+\n\
+function foo($x) {\n\
+    return "foo" . $x;\n\
+}\n'
+            );
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .loop').click(function() {
-            phpEditor.setValue('<?php\nwhile (true) {\n\techo 42;\n}\n');
+            phpEditor.setValue(
+'<?php\n\
+while (true) {\n\
+    echo 42;\n\
+}\n'
+            );
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .operators').click(function() {
-            phpEditor.setValue('<?php\n$x = 2;\n// $y = 4\n$y = $x + 2;\n// Concat 4 and "1" = "41"\n$y .= "1";\n// Increment "41" = 42\n$y++;\n// Output\necho $y;\n');
+            phpEditor.setValue(
+'<?php\n\
+$x = 2;\n\
+// $y == 4\n\
+$y = $x + 2;\n\
+// Concat 4 and "1" == "41"\n\
+$y .= "1";\n\
+// Increment "41" == 42\n\
+$y++;\n\
+// Output\n\
+echo $y;\n'
+            );
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
-
+        
         $('.php .examples .byref').click(function() {
-            phpEditor.setValue('<?php\n$x = "foo";\n$y = &$x;\nbar($x);\necho $x;\necho $y;\n\nfunction bar(&$z) {\n\t$z = "bar";\n}\n');
+            phpEditor.setValue(
+'<?php\n\
+$x = "foo";\n\
+$y = &$x;\n\
+bar($x);\n\
+echo $x;\n\
+echo $y;\n\
+\n\
+function bar(&$z) {\n\
+    $z = "bar";\n\
+}\n'
+            );
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .dollardollar').click(function() {
-            phpEditor.setValue('<?php\n$foo = "bar";\n$bar = "Dollars!";\necho $$foo;\n');
+            phpEditor.setValue(
+'<?php\n\
+$foo = "bar";\n\
+$bar = "Dollars!";\n\
+echo $$foo;\n'
+            );
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
         });
 
         $('.php .examples .array').click(function() {
-            phpEditor.setValue('<?php\n$e = 0;\n$array = array(\n\t$e+1, $e+2, $e+3,\n\t"end" => "The end!"\n);\n$string = "string";\necho $array[2];\necho $string[2];\necho "\\n" . $array["end"];\n');
+            phpEditor.setValue(
+'<?php\n\
+$e = 0;\n\
+$array = array(\n\
+    $e+1, $e+2, $e+3,\n\
+\t"end" => "The end!"\n\
+);\n\
+\n\
+$string = "string";\n\
+echo $array[2];\n\
+echo $string[2];\n\
+echo "\\n" . $array["end"];\n'
+            );
             phpEditor.clearSelection();
             $('#btn-compile').click();
             return false;
@@ -220,9 +300,10 @@
             $('#btn-assemble').click();
             return false;
         });
-
-        $('.hhbc .examples .echo').click();
+        
+        // Load the default examples
         $('.php .examples .echo').click();
+        $('.hhbc .examples .echo').click();
     });
     </script>
 </body>

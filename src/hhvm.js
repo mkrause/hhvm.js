@@ -1,9 +1,3 @@
-require.config({
-    shim: {
-        'vendor/underscore': { exports: '_' }
-    }
-});
-
 define([
         'vendor/underscore',
         'lib/util/binary_converter',
