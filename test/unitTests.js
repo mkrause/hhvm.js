@@ -1,9 +1,3 @@
-require.config({
-    baseUrl: '../src/',
-    shim: {
-        'vendor/underscore': { exports: '_' }
-    }
-});
 
 var checkVMState = function(vm, stackSize, output){
     ok(!vm.running);

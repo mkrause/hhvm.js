@@ -1,8 +1,4 @@
-// TODO: shouldn't the test cases be in binary format? We are now using the assembler, but we cannot create an 100% covering assembler (Erik)
-
-require.config({
-    baseUrl: '../src/'
-});
+// TODO: shouldn't the test cases be in binary format? We are now using the assembler, but we cannot create a 100% covering assembler (Erik)
 
 var checkVMState = function(vm, output){
     ok(!vm.running);
@@ -42,12 +38,12 @@ define([
         'assemble',
         'lib/program',
         'lib/instruction_set',
-        '../test/scripts/p1',
-        '../test/scripts/p2',
-        '../test/scripts/p3',
-        '../test/scripts/p4',
-        '../test/scripts/p5',
-        '../test/scripts/p6',
+        'tests/scripts/p1',
+        'tests/scripts/p2',
+        'tests/scripts/p3',
+        'tests/scripts/p4',
+        'tests/scripts/p5',
+        'tests/scripts/p6'
     ], function(hhvm, assemble, Program, instructionSet, p1, p2, p3, p4, p5, p6) {
         
         test("Nop", function() {
