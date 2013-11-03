@@ -54,7 +54,7 @@ define([
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(0),
-                onError: throwError
+                errorHandler: throwError
             });
             
             vm.program(assemble([
@@ -71,7 +71,7 @@ define([
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(0),
-                onError: throwError
+                errorHandler: throwError
             });
             
             vm.program(new Program(p1));
@@ -84,7 +84,7 @@ define([
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(0),
-                onError: throwError
+                errorHandler: throwError
             });
             
             vm.program(new Program(p2));
@@ -97,7 +97,7 @@ define([
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(0),
-                onError: throwError
+                errorHandler: throwError
             });
             
             vm.program(new Program(p3));
@@ -110,7 +110,7 @@ define([
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(0),
-                onError: throwError
+                errorHandler: throwError
             });
             
             vm.program(new Program(p4));
@@ -123,7 +123,7 @@ define([
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(0),
-                onError: throwError
+                errorHandler: throwError
             });
             
             vm.program(new Program(p5));
@@ -136,7 +136,7 @@ define([
             var vm = new hhvm({
                 blocking: true,
                 exitHandler: checkExitCode(0),
-                onError: throwError
+                errorHandler: throwError
             });
             
             vm.program(new Program(p6));

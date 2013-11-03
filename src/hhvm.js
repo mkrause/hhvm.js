@@ -19,7 +19,7 @@ define([
                 // Default exit handler
                 exitHandler: function(statusCode) {},
                 // Default error handler
-                onError: function(errorMessage) {}
+                errorHandler: function(errorMessage) {}
             });
             
             // Implementation of the HipHop bytecode instruction set
@@ -40,7 +40,7 @@ define([
             // Events
             this.outputHandler = _.bind(this.options.outputHandler, this);
             this.exitHandler = _.bind(this.options.exitHandler, this);
-            this.errorHandler = _.bind(this.options.onError, this);
+            this.errorHandler = _.bind(this.options.errorHandler, this);
             
             // Registers, memory
             this.prog = null;

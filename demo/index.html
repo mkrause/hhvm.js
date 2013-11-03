@@ -147,7 +147,7 @@
                 appendToOutput(msg);
                 changeState("idle");
             },
-            onError: function(errorMessage) {
+            errorHandler: function(errorMessage) {
                 changeState("idle");
             }
         });
