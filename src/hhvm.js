@@ -11,6 +11,7 @@ define([
         var Hhvm = function(options) {
             options = options || {};
             this.options = _.defaults(options, {
+                // Whether or not to use a blocking execution model
                 blocking: false,
                 // Default output handler: just append to an internal string
                 outputHandler: function(str) {
@@ -28,9 +29,10 @@ define([
             // The dispatcher that manages the activation frames
             this.dispatcher = new Dispatcher(this);
 
-            // A binary converter helper
+            // Utility for converting binary encodings
             this.bConverter = new BinaryConverter();
             
+            // VM state
             this.running = false;
             this.statusCode = 0;
             
@@ -56,7 +58,18 @@ define([
             this.FPIstack = null;
         };
         
-        // Set the program counter
+        // Reset state
+        Hhvm.prototype.reset = function() {
+            this.running = false;
+            this.callStack = new Stack();
+            this.currentFrame = null;
+            this.stack = null;
+            this.fpiStack = null;
+            this.heap = {};
+            this.globalVars = null;
+        };
+        
+        // Change the program counter using an offset
         Hhvm.prototype.offsetPc = function(offset) {
             if (this.currentFrame !== null) {
                 this.currentFrame.pc += offset;
@@ -177,17 +190,6 @@ define([
             
             this.running = false;
             this.statusCode = statusCode || 0;
-        };
-
-        Hhvm.prototype.reset = function() {
-            // Reset state
-            this.running = false;
-            this.callStack = new Stack();
-            this.currentFrame = null;
-            this.stack = null;
-            this.fpiStack = null;
-            this.heap = {};
-            this.globalVars = null;
         };
 
         Hhvm.prototype.exit = function() {
