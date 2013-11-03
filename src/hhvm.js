@@ -6,7 +6,8 @@ define([
         'lib/dispatcher',
         'lib/variable_store',
         'lib/member_vector'
-    ], function(_, BinaryConverter, InstructionSet, Stack, Dispatcher, VariableStore, MemberVector) {
+    ], function(_, BinaryConverter, InstructionSet, Stack, Dispatcher, VariableStore,
+            MemberVector) {
         var Hhvm = function(options) {
             options = options || {};
             this.options = _.defaults(options, {
@@ -226,7 +227,7 @@ define([
                 // Execute current instruction
                 vm.step();
             };
-
+            
             // Run in blocking mode
             if(vm.options.blocking) {
                 while (vm.running) {
@@ -236,7 +237,19 @@ define([
             // Run in non-blocking mode
             } else {
                 (function async() {
-                    performStep();
+                    // How many ms to run before we return execution to the browser
+                    var executionTime = 10;
+                    var now = (new Date).getTime();
+                    var endTime = now + executionTime;
+                    
+                    while ((new Date).getTime() < endTime) {
+                        if (vm.running) {
+                            performStep();
+                        } else {
+                            break;
+                        }
+                    }
+                    
                     if (vm.running) {
                         setTimeout(async, 0);
                     } else {
