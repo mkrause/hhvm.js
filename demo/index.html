@@ -129,7 +129,7 @@
                 vm.program(prog);
                 $('#output').val("Program externally compiled");
                 changeState("idle");
-                //console.log(JSON.stringify(data));
+                console.log(data.units[0].toString_DEBUG);
             })
             .fail(function(jqXHR, textStatus, errorThrown) {
                 // Fall back to a different compilation server
