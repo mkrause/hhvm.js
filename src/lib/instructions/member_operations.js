@@ -5,14 +5,50 @@ define([
         'lib/base',
         'lib/instructions/subopcodes'
     ], function(_, Cell, Ref, Base, subopcodes) {
-        var incDecElem = function(vm, base, op, offset) {
+        var checkNullBase = function(vm, base) {
             var cell = base.value;
             if (cell === null) {
-                vm.warning("Member of true or number cannot be incremented. Pushing null on the stack");
                 vm.hhbc.Null();
+                return true;
+            }
+            return false;
+        };
+
+        var CGetElemHelper = function(vm, base, index) {
+            if (checkNullBase(vm, base)) {
                 return;
             }
 
+            var cell = base.value;
+            var value = cell.value;
+            var result = null;
+            if (_.isArray(value)) {
+                if (value[index] !== undefined) {
+                    result = value[index];
+                } else {
+                    vm.warning("Undefined variable at index: " + index);
+                    result = null;
+                }
+            } else if (_.isObject(value)) {
+                throw new Error("Objects not supported yet");
+            } else if (_.isString(value)) {
+                index = parseInt(index, 10);
+                if (index >= 0 && index < value.length) {
+                    result = value.charAt(index);
+                } else {
+                    vm.warning("Undefined variable at index: " + index);
+                    result = "";
+                }
+            }
+            vm.stack.push(new Cell(result));
+        };
+
+        var incDecElem = function(vm, base, op, offset) {
+            if (checkNullBase(vm, base)) {
+                return;
+            }
+
+            var cell = base.value;
             if(cell.value === null || cell.value === false || cell.value === "") {
                 cell.value = [];
             }
@@ -87,41 +123,19 @@ define([
             },
             //TODO: implement missing base operations
             CGetElemC: function(base) {
-                var cell = base.value;
-                if (cell === null) {
-                    this.hhbc.Null();
-                    return;
-                }
-
-                var value = cell.value;
                 var index = this.stack.pop().value;
-                var result = null;
-                if (_.isArray(value)) {
-                    if (value[index] !== undefined) {
-                        result = value[index];
-                    } else {
-                        this.warning("Undefined variable at index: " + index);
-                        result = null;
-                    }
-                } else if (_.isObject(value)) {
-                    throw new Error("Objects not supported yet");
-                } else if (_.isString(value)) {
-                    index = parseInt(index, 10);
-                    if (index >= 0 && index < value.length) {
-                        result = value.charAt(index);
-                    } else {
-                        this.warning("Undefined variable at index: " + index);
-                        result = "";
-                    }
-                }
-                this.stack.push(new Cell(result));
+                CGetElemHelper(this, base, index);
+            },
+            CGetElemL: function(base, id) {
+                var index = this.currentFrame.localVars.getById(id).value;
+                CGetElemHelper(this, base, index);
             },
             IncDecElemC: function(base, op) {
                 var offset = this.stack.pop().value;
                 incDecElem(this, base, op, offset);
             },
-            IncDecElemL: function(base, op, localVarId) {
-                var offset = this.currentFrame.localVars.getById(localVarId);
+            IncDecElemL: function(base, op, id) {
+                var offset = this.currentFrame.localVars.getById(id).value;
                 incDecElem(this, base, op, offset);
             }
             //TODO: implement missing operations

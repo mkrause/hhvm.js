@@ -21,19 +21,30 @@ define([
         };
 
         MemberVector.prototype.parseLocDescription = function() {
+            var lc = {};
+
             // These two ints probably indicate the location descriptor type
-            var int1 = this.binConverter.decodeInt32(this.bytes.slice(this.pointer, this.pointer + 4));
+            var type1 = this.binConverter.decodeInt32(this.bytes.slice(this.pointer, this.pointer + 4).reverse());
             this.pointer += 4;
-            var int2 = this.binConverter.decodeInt32(this.bytes.slice(this.pointer, this.pointer + 4));
+            var type2 = this.binConverter.decodeInt32(this.bytes.slice(this.pointer, this.pointer + 4).reverse());
             this.pointer += 4;
-            var varint = this.binConverter.decodeVarInt(this.bytes.slice(this.pointer, this.pointer + 4));
-            this.pointer += varint.length;
-            
-            // TODO: Support more than 'L'
-            if (int1 !== 0 || int2 !== 0) {
-                throw new Error("Unsupported location descriptor type");
+
+            switch (type2) {
+                case 0:
+                    lc.type = "L";
+                    var varint = this.binConverter.decodeVarInt(this.bytes.slice(this.pointer, this.pointer + 4));
+                    this.pointer += varint.length;
+                    lc.value = varint.value;
+                    break;
+                case 1:
+                    lc.type = "C";
+                    break;
+                // TODO: support more location descriptors types
+                default:
+                    throw new Error("Unsupported location descriptor type");
             }
-            return { type: "L", value: varint.value };
+
+            return lc;
         };
 
         MemberVector.prototype.parseMembers = function() {
@@ -47,6 +58,11 @@ define([
         MemberVector.prototype.parseMember = function() {
             var member = {};
             switch (this.bytes[this.pointer]) {
+                // TODO: support more member types
+                case 0:
+                    member.type = "EC";
+                    this.pointer++;
+                    break;
                 case 2:
                     member.type = "EL";
                     this.pointer++;

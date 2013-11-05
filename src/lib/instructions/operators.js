@@ -31,8 +31,8 @@ define([
 
         return {
             Concat: function() {
-                var val1 = this.stack.pop().value;
-                var val2 = this.stack.pop().value;
+                var val1 = this.stack.pop();
+                var val2 = this.stack.pop();
                 this.stack.push(new Cell(val2.toString() + val1.toString()));
             },
             Abs: function() {
@@ -96,13 +96,16 @@ define([
                 this.stack.push(new Cell(Math.sqrt(value)));
             },
             Strlen: function() {
-                var string = this.stack.pop().value;
-                if (_.isArray(string)) {
+                var cell = this.stack.pop();
+                var string = "";
+                if (_.isArray(cell)) {
                     this.warning("Argument type is array instead of string");
                     this.hhbc.Null();
                     return;
-                } else if (!_.isString(string)) {
-                    string = string.toString();
+                } else if (_.isString(cell.value)) {
+                    string = cell.value;
+                } else {
+                    string = cell.toString();
                 }
                 this.stack.push(new Cell(string.length));
             },
@@ -218,9 +221,9 @@ define([
                 this.stack.push(new Cell(value));
             },
             CastString: function() {
-                var value = this.stack.pop().value;
-                if(value !== null){
-                    this.stack.push(new Cell(value.toString()));
+                var cell = this.stack.pop();
+                if(cell.value !== null){
+                    this.stack.push(new Cell(cell.toString()));
                 } else {
                     throw new Error("Object does not implement toString. Needed for CastString.");
                 }

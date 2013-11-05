@@ -5,10 +5,10 @@ define([
 
         var extendSign = function(byte) {
             return (byte & 128) ? 255 : 0;
-        }
+        };
 
-        var BinaryConverter = function() {
-            this.bigEndian = false;
+        var BinaryConverter = function(bigEndian) {
+            this.bigEndian = bigEndian || false;
             this.parser = new BinaryParser(this.bigEndian, false);
         };
 
