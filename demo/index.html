@@ -17,32 +17,43 @@
         </div>
         
         <div id="editor" class="row">
-            <div class="php col-md-4 col-xs-4">
-                <h2>PHP</h2>
-                <div id="input-php" class="form-control"></div>
-                <div class="examples">
-                    Examples:
-                    <a href="#" class="echo">Echo</a>,
-                    <a href="#" class="operators">Operators</a>,
-                    <a href="#" class="call">Function call</a>,
-                    <a href="#" class="loop">Loop</a>,
-                    <a href="#" class="byref">By reference</a>,
-                    <a href="#" class="dollardollar">Dollar-dollar</a>,
-                    <a href="#" class="array">Array</a>
+            <div class="col-md-6 col-xs-6">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#hhbc" data-toggle="tab">HipHop bytecode</a>
+                    </li>
+                    <li>
+                        <a href="#php" data-toggle="tab">PHP</a>
+                    </li>
+                </ul>
+                
+                <div id="myTabContent" class="tab-content">
+                    <div id="hhbc" class="hhbc tab-pane active">
+                        <div id="input-hhbc" class="form-control"></div>
+                        <div class="examples">
+                            Examples:
+                            <a href="#" class="echo">Echo</a>,
+                            <a href="#" class="loop">Loop</a>
+                        </div>
+                        <button id="btn-assemble" class="btn btn-primary btn-lg">Assemble</button>
+                    </div>
+                    <div id="php" class="php tab-pane">
+                        <div id="input-php" class="form-control"></div>
+                        <div class="examples">
+                            Examples:
+                            <a href="#" class="echo">Echo</a>,
+                            <a href="#" class="operators">Operators</a>,
+                            <a href="#" class="call">Function call</a>,
+                            <a href="#" class="loop">Loop</a>,
+                            <a href="#" class="byref">By reference</a>,
+                            <a href="#" class="dollardollar">Dollar-dollar</a>,
+                            <a href="#" class="array">Array</a>
+                        </div>
+                        <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
+                    </div>
                 </div>
-                <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
             </div>
-            <div class="hhbc col-md-4 col-xs-4">
-                <h2>HipHop bytecode</h2>
-                <div id="input-hhbc" class="form-control"></div>
-                <div class="examples">
-                    Examples:
-                    <a href="#" class="echo">Echo</a>,
-                    <a href="#" class="loop">Loop</a>
-                </div>
-                <button id="btn-assemble" class="btn btn-primary btn-lg">Assemble</button>
-            </div>
-            <div class="col-md-4 col-xs-4">
+            <div class="col-md-6 col-xs-6">
                 <h2>Output</h2>
                 <textarea id="output" class="form-control" readonly></textarea>
                 <div class="examples"></div>

@@ -16,5 +16,6 @@
 #output {
     height: 220px;
     font-family: monospace;
+    margin-top: 5px;
     margin-bottom: 10px;
 }
