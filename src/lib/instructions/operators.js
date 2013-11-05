@@ -98,7 +98,7 @@ define([
             Strlen: function() {
                 var cell = this.stack.pop();
                 var string = "";
-                if (_.isArray(cell)) {
+                if (_.isArray(cell.value)) {
                     this.warning("Argument type is array instead of string");
                     this.hhbc.Null();
                     return;
