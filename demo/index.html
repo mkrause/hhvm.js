@@ -187,7 +187,7 @@
 
         $('.php .examples .echo').click(function() {
             phpEditor.setValue(
-'<?hh\n\
+'<?php\n\
 echo 42;\n'
             );
             phpEditor.clearSelection();
@@ -197,7 +197,7 @@ echo 42;\n'
 
         $('.php .examples .call').click(function() {
             phpEditor.setValue(
-'<?hh\n\
+'<?php\n\
 echo foo("bar");\n\
 \n\
 function foo($x) {\n\
@@ -211,7 +211,7 @@ function foo($x) {\n\
 
         $('.php .examples .loop').click(function() {
             phpEditor.setValue(
-'<?hh\n\
+'<?php\n\
 while (true) {\n\
     echo 42;\n\
 }\n'
@@ -223,7 +223,7 @@ while (true) {\n\
 
         $('.php .examples .operators').click(function() {
             phpEditor.setValue(
-'<?hh\n\
+'<?php\n\
 $x = 2;\n\
 // $y == 4\n\
 $y = $x + 2;\n\
@@ -241,7 +241,7 @@ echo $y;\n'
         
         $('.php .examples .byref').click(function() {
             phpEditor.setValue(
-'<?hh\n\
+'<?php\n\
 $x = "foo";\n\
 $y = &$x;\n\
 bar($x);\n\
@@ -259,7 +259,7 @@ function bar(&$z) {\n\
 
         $('.php .examples .dollardollar').click(function() {
             phpEditor.setValue(
-'<?hh\n\
+'<?php\n\
 $foo = "bar";\n\
 $bar = "Dollars!";\n\
 echo $$foo;\n'
@@ -271,7 +271,7 @@ echo $$foo;\n'
 
         $('.php .examples .array').click(function() {
             phpEditor.setValue(
-'<?hh\n\
+'<?php\n\
 $e = 0;\n\
 $array = array(\n\
     $e+1, $e+2, $e+3,\n\
