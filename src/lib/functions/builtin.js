@@ -41,6 +41,19 @@ define([
                 } else {
                     this.print(output);
                 }
+            },
+            /* NOTE: the accuracy of this function is lower than
+             *       described in the PHP documentation. */
+            microtime: function(get_as_float) {
+                if(typeof(get_as_float) === 'undefined') get_as_float = false;
+                var output;
+
+                if(get_as_float) {
+                    this.hhbc.Double(Date.now() / 1000);
+                } else {
+                    var time = Date.now();
+                    this.hhbc.String('' + (time % 1000) * 1000 + ' ' + time / 1000);
+                }
             }
         };
     }
