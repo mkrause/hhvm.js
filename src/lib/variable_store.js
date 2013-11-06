@@ -3,14 +3,14 @@ define([
         'lib/cell',
         'lib/ref'
     ], function(_, Cell, Ref) {
-        var VariableStore = function(names) {
+        var VariableStore = function(names, values) {
             // Local variables are stored as cells
-            this.store = [];
             this.names = names || [];
+            this.values = values || [];
         };
         
         VariableStore.prototype.defineById = function(id, value) {
-            if (this.store[id] !== undefined) {
+            if (this.values[id] !== undefined) {
                 return true;
             }
 
@@ -24,33 +24,33 @@ define([
         };
 
         VariableStore.prototype.getById = function(id) {
-            return this.store[id];
+            return this.values[id];
         };
 
         VariableStore.prototype.getByName = function(name) {
-            return this.store[this.getIdFromName(name)];
+            return this.getById(this.getIdFromName(name));
         };
 
         VariableStore.prototype.setById = function(id, value) {
-            if (this.store[id] instanceof Cell && value instanceof Cell) {
-                this.store[id].value = value.value;
+            if (this.values[id] instanceof Cell && value instanceof Cell) {
+                this.values[id].value = value.value;
             } else if (value instanceof Ref) {
-                this.store[id] = value.cell;
+                this.values[id] = value.cell;
             } else {
-                this.store[id] = value;
+                this.values[id] = value;
             }
         };
 
         VariableStore.prototype.setByName = function(name, value) {
-            this.store[this.getIdFromName(name)] = value;
+            this.setById(this.getIdFromName(name), value);
         };
 
         VariableStore.prototype.unsetById = function(id) {
-            delete this.store[id];
+            delete this.values[id];
         };
 
         VariableStore.prototype.unsetByName = function(name) {
-            delete this.store[this.getIdFromName(name)];
+            this.unsetById(this.getIdFromName(name));
         };
 
         VariableStore.prototype.getNameFromId = function(id) {
@@ -62,7 +62,7 @@ define([
         };
         
         VariableStore.prototype.toString = function() {
-            var pairs = _.zip(names, store);
+            var pairs = _.zip(this.names, this.values);
             return _.object(pairs).toString();
         };
 

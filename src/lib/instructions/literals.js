@@ -24,7 +24,7 @@ define([
                 } else {
                     collection.set(position, cell);
                 }
-                this.stack.push(new Cell(collection));
+                vm.stack.push(new Cell(collection));
             } else {
                 throw new Error("Not an instance of a collection");
             }
@@ -48,10 +48,10 @@ define([
 
         var clsCnsHelper = function(vm, classDef, name) {
             var constant = classDef.getConstantByName(name);
-            if(constant === undefined){
+            if(constant === undefined) {
                 throw new Error("No constant named '" + name +"' in class '" + classDef.name + "'");
             }
-            this.stack.push(new Cell(constant));
+            vm.stack.push(new Cell(constant));
         };
 
         return {
@@ -127,32 +127,31 @@ define([
                 colAddElemHelper(this, value, collection);
             },
             Cns: function(name) {
-                var value = this.prog.getConstantByName(name);
+                var value = this.constantVars[name];
                 cnsHelper(this, value, name, "notice");
             },
             CnsE: function(name) {
-                var value = this.prog.getConstantByName(name);
+                var value = this.constantVars[name];
                 cnsHelper(this, value, name, "error");
             },
             CnsU: function(name, strFallback) {
-                var value = this.prog.getConstantByName(name);
+                var value = this.constantVars[name];
                 if (!cnsHelper(this, value, name)) {
                     this.hhbc.Cns(strFallback);
                 }
             },
             ClsCns: function(name) {
                 var classRef = this.stack.pop();
-                var classDef = classRef.value;
-                clsCnsHelper(this, classDef, name);
+                clsCnsHelper(this, classRef.classDef, name);
             },
             ClsCnsD: function(name, className) {
                 var classDef = this.prog.getClassByName(className);
                 if(classDef === undefined) {
                     //TODO: make sure autoload is invoked when class is not defined yet.
+                    classDef = this.prog.getClassByName(className);
                 }
 
-                classDef = this.prog.getClassByName(className);
-                if(classDef === undefined){
+                if(classDef === undefined) {
                     throw new Error("No class named '" + className + "'");
                 }
 

@@ -32,18 +32,24 @@ define([
                 var cell = this.currentFrame.localVars.getById(id);
                 issetHelper(this, cell);
             },
-            IssetN: function(id) {
+            IssetN: function() {
                 var name = this.stack.pop().value;
                 var cell = this.currentFrame.localVars.getByName(name);
                 issetHelper(this, cell);
             },
+            IssetG: function() {
+                var cell = this.currentFrame.localVars.getById(id);
+                issetHelper(this, cell);
+            },
+            IssetS: function() {
+                var classDef = vm.stack.pop().classDef;
+                var name = vm.stack.pop().value;
+                var prop = classDef.staticProperties.getByName(name);
+                issetHelper(this, prop);
+            },
             EmptyL: function(id) {
                 var x = this.globalVars.getById(id);
                 emptyHelper(this, x);
-            },
-            IssetG: function(id) {
-                var cell = this.currentFrame.localVars.getById(id);
-                issetHelper(this, cell);
             },
             EmptyN: function() {
                 var name = this.stack.pop().value;
@@ -54,6 +60,12 @@ define([
                 var name = this.stack.pop().value;
                 var x = this.globalVars.getByName(name);
                 emptyHelper(this, x);
+            },
+            EmptyS: function() {
+                var classDef = vm.stack.pop().classDef;
+                var name = vm.stack.pop().value;
+                var prop = classDef.staticProperties.getByName(name);
+                emptyHelper(this, prop);
             },
             IsNullC: function() {
                 var value = this.stack.pop().value;

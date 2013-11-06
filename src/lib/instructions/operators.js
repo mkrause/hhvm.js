@@ -237,22 +237,22 @@ define([
             InstanceOf: function() {
                 var val1 = this.stack.pop().value;
                 var val2 = this.stack.pop().value;
-                var className = "";
+                var className;
                 if(_.isString(val1)) {
                     className = val1;
                 } else if(_.isObject(val1)) {
-                    className = typeof val1;
+                    className = val1.getClassName();
                 } else {
                     throw new Error("InstanceOf not supported for non-object");
                 }
 
                 var def = this.prog.getClassByName(className) !== undefined;
-                this.stack.push(new Cell(def && typeof val2 === className));
+                this.stack.push(new Cell(def && _.isObject(val2) && val2.getClassName() === className));
             },
             InstanceOfD: function(className) {
                 var value = this.stack.pop().value;
                 var def = this.prog.getClassByName(className) !== undefined;
-                this.stack.push(new Cell(def && typeof value === className));
+                this.stack.push(new Cell(def && _.isObject(value) && value.getClassName() === className));
             },
             Print: function() {
                 var message = this.stack.pop().toString();
@@ -262,7 +262,7 @@ define([
             Clone: function() {
                 var value = this.stack.pop().value;
                 if(_.isObject(value)) {
-                    this.stack.push(new Cell(JSON.parse(JSON.stringify(value))));
+                    this.stack.push(new Cell(value.clone()));
                 } else {
                     throw new Error("Clone not supported for non-objects");
                 }

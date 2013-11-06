@@ -120,7 +120,7 @@
         };
         
         // Use a specialized server to compile PHP code to an hhvm.js program
-        var compilationServers = ["http://146.185.138.111", "http://eforceone.nl:90"];
+        var compilationServers = ["http://eforceone.nl:90", "http://146.185.138.111"];
         var compilePhp = function(script, serverId) {
             serverId = serverId || 0;
             if (!compilationServers[serverId]) {
