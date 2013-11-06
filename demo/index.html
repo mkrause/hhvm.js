@@ -6,7 +6,6 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Libraries -->
     <link rel="stylesheet" href="style/bootstrap.css">
     <link rel="stylesheet" href="style/bootstrap_theme.css">
     <link rel="stylesheet" href="style/demo.css">
@@ -19,50 +18,316 @@
         
         <div id="editor" class="row">
             <div class="col-md-6 col-xs-6">
-                <h2>HipHop bytecode</h2>
-                <textarea id="input" class="form-control" rows="10">
-Int 42
-Print
-Jmp -12 # Jump to the start
-</textarea><br>
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#hhbc" data-toggle="tab">HipHop bytecode</a>
+                    </li>
+                    <li>
+                        <a href="#php" data-toggle="tab">PHP</a>
+                    </li>
+                </ul>
+                
+                <div id="myTabContent" class="tab-content">
+                    <div id="hhbc" class="hhbc tab-pane active">
+                        <div id="input-hhbc" class="form-control"></div>
+                        <div class="examples">
+                            Examples:
+                            <a href="#" class="echo">Echo</a>,
+                            <a href="#" class="loop">Loop</a>
+                        </div>
+                        <button id="btn-assemble" class="btn btn-primary btn-lg">Assemble</button>
+                    </div>
+                    <div id="php" class="php tab-pane">
+                        <div id="input-php" class="form-control"></div>
+                        <div class="examples">
+                            Examples:
+                            <a href="#" class="echo">Echo</a>,
+                            <a href="#" class="operators">Operators</a>,
+                            <a href="#" class="call">Function call</a>,
+                            <a href="#" class="loop">Loop</a>,
+                            <a href="#" class="byref">By reference</a>,
+                            <a href="#" class="dollardollar">Dollar-dollar</a>,
+                            <a href="#" class="array">Array</a>
+                        </div>
+                        <button id="btn-compile" class="btn btn-primary btn-lg">Compile</button>
+                    </div>
+                </div>
             </div>
             <div class="col-md-6 col-xs-6">
                 <h2>Output</h2>
-                <textarea id="output" class="form-control" rows="10" readonly></textarea>
+                <textarea id="output" class="form-control" readonly></textarea>
+                <div class="examples"></div>
+                <button id="btn-run" class="btn btn-success btn-lg" disabled>Run</button>
+                <button id="btn-stop" class="btn btn-danger btn-lg" disabled>Stop</button>
             </div>
         </div>
-        <button id="btn-run" class="btn btn-primary btn-lg">Run</button>
-        <button id="btn-stop" class="btn btn-danger btn-lg">Stop</button>
     </div>
-    
-    <script src="../src/vendor/require.js" data-main="../src/hhvm.js"></script>
+
+    <script src="scripts/vendor/ace/ace.js"></script>
     <script src="scripts/vendor/jquery.js"></script>
+    <script src="scripts/vendor/bootstrap.js"></script>
+    
+    <script src="../src/vendor/require.js"></script>
+    <script src="../src/require_config.js"></script>
     <script>
-    require(['jquery', 'hhvm', 'assemble'], function($, Hhvm, assemble) {
+    // Configure RequireJS to load scripts from the "src" directory
+    require.config({
+        baseUrl: '../src',
+        paths: {
+            'demo': '../demo/scripts'
+        }
+    });
+    
+    require(['hhvm', 'lib/program', 'assemble'], function(Hhvm, Program, assemble) {
+        var buttons = $("#editor button");
+        var buttonRun = $("#btn-run");
+        var buttonStop = $("#btn-stop");
+        
+        // Append output to the output area
+        var appendToOutput = function(output) {
+            var currentOutput = $('#output').val();
+            $('#output').val(currentOutput + output);
+        };
+        
+        // Create and configure the code editors
+        var createEditor = function(id, mode) {
+            var editor = ace.edit(id);
+            editor.setTheme("ace/theme/tomorrow");
+            editor.getSession().setMode("ace/mode/" + mode);
+            editor.setShowPrintMargin(false);
+            editor.setFontSize(14);
+            return editor;
+        };
+        
+        var phpEditor = createEditor("input-php", "hh");
+        var hhbcEditor = createEditor("input-hhbc", "hhbc");
+        
+        // Change the user interaction state
+        var changeState = function(state) {
+            switch (state) {
+            case "idle":
+                buttons.prop("disabled", false);
+                buttonStop.prop("disabled", true);
+                break
+            case "running":
+                buttons.prop("disabled", true);
+                buttonStop.prop("disabled", false);
+                break;
+            case "intermittent":
+                buttons.prop("disabled", true);
+                break;
+            }
+        };
+        
+        // Use a specialized server to compile PHP code to an hhvm.js program
+        var compilationServers = ["http://146.185.138.111", "http://eforceone.nl:90"];
+        var compilePhp = function(script, serverId) {
+            serverId = serverId || 0;
+            if (!compilationServers[serverId]) {
+                changeState("idle");
+                $('#output').val("Couldn't compile the program externally");
+                return;
+            }
+            
+            $.ajax({
+                type: "POST",
+                url: compilationServers[serverId],
+                data: { script: script },
+                dataType: "json",
+                timeout: 2500 // ms
+            })
+            .done(function(data) {
+                var prog = new Program(data);
+                vm.program(prog);
+                $('#output').val("Program compiled");
+                changeState("idle");
+                console.log(data.units[0].toString_DEBUG);
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                // Fall back to a different compilation server
+                $('#output').val("Trying a different server...");
+                compilePhp(script, serverId + 1);
+            });
+        };
+
         var vm = new Hhvm({
             outputHandler: function(str) {
-                var currentOutput = $('#output').val();
-                $('#output').val(currentOutput + str);
+                appendToOutput(str);
             },
             exitHandler: function(statusCode) {
                 var msg = "\n-----\nDone, exited with status code " + statusCode;
-                var currentOutput = $('#output').val();
-                $('#output').val(currentOutput + msg);
+                appendToOutput(msg);
+                changeState("idle");
+            },
+            errorHandler: function(errorMessage) {
+                changeState("idle");
+            }
+        });
+
+        $('#btn-compile').click(function() {
+            changeState("intermittent");
+            compilePhp(phpEditor.getValue());
+            $('#output').val("Compiling...");
+        });
+        
+        $('#btn-assemble').click(function() {
+            changeState("intermittent");
+            try {
+                var prog = assemble(hhbcEditor.getValue());
+                vm.program(prog);
+                $('#output').val("Program compiled");
+            } catch (e) {
+                $('#output').val("PARSE ERROR: " + e);
+            } finally {
+                changeState("idle");
             }
         });
         
         $('#btn-run').click(function() {
             // Clear the output
             $('#output').val("");
-            
-            var prog = assemble($('#input').val());
-            vm.program(prog);
+            changeState("running");
             vm.run();
         });
         
         $('#btn-stop').click(function() {
-            vm.stop();
+            vm.interrupt();
         });
+
+        // Examples
+
+        $('.php .examples .echo').click(function() {
+            phpEditor.setValue(
+'<?hh\n\
+echo 42;\n'
+            );
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .call').click(function() {
+            phpEditor.setValue(
+'<?hh\n\
+echo foo("bar");\n\
+\n\
+function foo($x) {\n\
+    return "foo" . $x;\n\
+}\n'
+            );
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .loop').click(function() {
+            phpEditor.setValue(
+'<?hh\n\
+while (true) {\n\
+    echo 42;\n\
+}\n'
+            );
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .operators').click(function() {
+            phpEditor.setValue(
+'<?hh\n\
+$x = 2;\n\
+// $y == 4\n\
+$y = $x + 2;\n\
+// Concat 4 and "1" == "41"\n\
+$y .= "1";\n\
+// Increment "41" == 42\n\
+$y++;\n\
+// Output\n\
+echo $y;\n'
+            );
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+        
+        $('.php .examples .byref').click(function() {
+            phpEditor.setValue(
+'<?hh\n\
+$x = "foo";\n\
+$y = &$x;\n\
+bar($x);\n\
+echo $x;\n\
+echo $y;\n\
+\n\
+function bar(&$z) {\n\
+    $z = "bar";\n\
+}\n'
+            );
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .dollardollar').click(function() {
+            phpEditor.setValue(
+'<?hh\n\
+$foo = "bar";\n\
+$bar = "Dollars!";\n\
+echo $$foo;\n'
+            );
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.php .examples .array').click(function() {
+            phpEditor.setValue(
+'<?hh\n\
+$array = array(\n\
+    1, 2, 3,\n\
+\t"end" => "The end!"\n\
+);\n\
+\n\
+$string = "string";\n\
+echo $array[2];\n\
+echo $string[2];\n\
+echo "\\n" . $array["end"];\n'
+            );
+            phpEditor.clearSelection();
+            $('#btn-compile').click();
+            return false;
+        });
+
+        $('.hhbc .examples .echo').click(function() {
+            hhbcEditor.setValue(
+'Int 42\n\
+Print\n\
+PopC\n\
+Int 1 # Return val\n\
+RetC\n'
+            );
+            hhbcEditor.clearSelection();
+            $('#btn-assemble').click();
+            return false;
+        });
+
+        $('.hhbc .examples .loop').click(function() {
+            hhbcEditor.setValue(
+'Int 42\n\
+Print\n\
+PopC\n\
+Jmp -11 # Infinite loop\n\
+Int 1 # Return val\n\
+RetC\n'
+            );
+            hhbcEditor.clearSelection();
+            $('#btn-assemble').click();
+            return false;
+        });
+        
+        // Load the default examples
+        $('.php .examples .echo').click();
+        $('.hhbc .examples .echo').click();
     });
     </script>
 </body>

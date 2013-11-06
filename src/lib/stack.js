@@ -20,6 +20,10 @@ define([
         Stack.prototype.isEmpty = function() {
             return this.stack.length === 0;
         };
+
+        Stack.prototype.length = function() {
+            return this.stack.length;
+        };
         
         Stack.prototype.toString = function() {
             return _.reduce(this.stack, function(stringRep, value) {

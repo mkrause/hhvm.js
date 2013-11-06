@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>hhvm.js QUnit Acceptance Tests</title>
+    <link rel="stylesheet" href="../src/vendor/qunit-1.12.0.css">
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <script src="../src/vendor/qunit-1.12.0.js"></script>
+    <script src="../src/vendor/require.js"></script>
+    <script src="../src/require_config.js"></script>
+    <script>
+    require.config({
+        baseUrl: '../src',
+        paths: {
+            'tests': '../test'
+        }
+    });
+    
+    require(['tests/acceptanceTests']);
+    </script>
+</body>
+</html>

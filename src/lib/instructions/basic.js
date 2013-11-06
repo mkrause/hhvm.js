@@ -1,6 +1,8 @@
 define([
-        'vendor/underscore'
-    ], function(_) {
+        'vendor/underscore',
+        'lib/ref',
+        'lib/cell'
+    ], function(_, Ref, Cell) {
         return {
             Nop: function() {},
             PopC: function() {
@@ -20,15 +22,15 @@ define([
             },
             Unbox: function() {
                 var top = this.stack.pop();
-                this.stack.push(this.stack.pop().cell.clone());
+                this.stack.push(top.cell.clone());
             },
             BoxR: function() {
-                if (!(this.stack.peek() instanceof Ref)) {
+                if (this.stack.peek() instanceof Cell) {
                     this.hhbc.Box();
                 }
             },
             UnboxR: function() {
-                if (!(this.stack.peek() instanceof Cell)) {
+                if (this.stack.peek() instanceof Ref) {
                     this.hhbc.Unbox();
                 }
             }

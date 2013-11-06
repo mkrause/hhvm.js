@@ -1,19 +1,20 @@
 define([
-        'vendor/underscore'
-    ], function(_) {
-        var Cell = function(value) {
+        'vendor/underscore',
+        'lib/cell',
+    ], function(_, Cell) {
+        var Base = function(value) {
             this.value = value !== undefined ? value : null;
         };
         
-        Cell.prototype.valueOf = function() {
+        Base.prototype.valueOf = function() {
             return this.value;
         };
         
-        Cell.prototype.clone = function() {
-            return new Cell(this.value);
+        Base.prototype.clone = function() {
+            return new Base(this.value);
         };
         
-        Cell.prototype.toString = function() {
+        Base.prototype.toString = function() {
             if (this.value === null || this.value === false) {
                 return "";
             } else if (this.value === true) {
@@ -24,6 +25,6 @@ define([
             return "" + this.value;
         };
         
-        return Cell;
+        return Base;
     }
 );

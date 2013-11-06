@@ -1,7 +1,59 @@
 define([
         'lib/cell',
-        'lib/ref'
-    ], function(Cell, Ref) {
+        'lib/ref',
+        'lib/collection'
+    ], function(Cell, Ref, Collection) {
+
+        var addElemHelper = function(vm, cell, array, position) {
+            if (_.isArray(array)) {
+                if (position === undefined) {
+                    array.push(cell);
+                } else {
+                    array[position] = cell;
+                }
+                vm.stack.push(new Cell(array));
+            } else {
+                throw new Error("Not an instance of an array");
+            }
+        };
+
+        var colAddElemHelper = function(vm, cell, collection, position) {
+            if (collection instanceof Collection) {
+                if (position === undefined) {
+                    collection.add(cell);
+                } else {
+                    collection.set(position, cell);
+                }
+                this.stack.push(new Cell(collection));
+            } else {
+                throw new Error("Not an instance of a collection");
+            }
+        };
+
+        var cnsHelper = function(vm, constant, name, errorLevel) {
+            if(constant === undefined) {
+                var message = "Undefined constant: " + name;
+                if (errorLevel === "notice") {
+                    vm.notify(message);
+                } else if (errorLevel === "error") {
+                    throw new Error(message);
+                } else {
+                    return false;
+                }
+                constant = name;
+            }
+            vm.stack.push(new Cell(constant));
+            return true;
+        };
+
+        var clsCnsHelper = function(vm, classDef, name) {
+            var constant = classDef.getConstantByName(name);
+            if(constant === undefined){
+                throw new Error("No constant named '" + name +"' in class '" + classDef.name + "'");
+            }
+            this.stack.push(new Cell(constant));
+        };
+
         return {
             Null: function() {
                 this.stack.push(new Cell(null));
@@ -31,102 +83,80 @@ define([
                 this.stack.push(new Cell([]));
             },
             NewPackedArray: function(numElems) {
-                var newArray = [];
-                for (var i = 0; i < numElems; i++){
-                    newArray.push(this.stack.pop());
-                }
-                this.stack.push(new Cell(newArray));
+                var array = [];
+                _(numElems).times(function(n) {
+                    array.push(this.stack.pop());
+                }, this);
+                this.stack.push(new Cell(array));
             },
             AddElemC: function() {
-                var element = this.stack.pop();
-                var position = this.stack.pop();
-                var three = this.stack.pop();
-                if (three.value instanceof Array){
-                    three.value[position] = element;
-                    this.stack.push(three);
-                } else {
-                    this.fatal("Stack error when executing AddElemC");
-                }
+                var value = this.stack.pop();
+                var position = this.stack.pop().value;
+                var array = this.stack.pop().value;
+                addElemHelper(this, value, array, position);
             },
             AddElemV: function() {
-                var element = new Ref(this.stack.pop());
-                var position = this.stack.pop();
-                var three = this.stack.pop();
-                if (three.value instanceof Array){
-                    three.value[position] = element;
-                    this.stack.push(three);
-                } else {
-                    this.fatal("Stack error when executing AddElemV");
-                }
+                var value = new Ref(this.stack.pop());
+                var position = this.stack.pop().value;
+                var array = this.stack.pop().value;
+                addElemHelper(this, value, array, position);
             },
             AddNewElemC: function() {
                 var value = this.stack.pop();
-                var arrayCell = this.stack.pop();
-                if(arrayCell.value instanceof Array){
-                    arrayCell.value.push(value);
-                    this.stack.push(arrayCell);
-                } else {
-                    this.fatal("Stack error when executing AddNewElemC");
-                }
+                var array = this.stack.pop().value;
+                addElemHelper(this, value, array);
             },
             AddNewElemV: function() {
                 var value = new Ref(this.stack.pop());
-                var arrayCell = this.stack.pop();
-                if(arrayCell.value instanceof Array){
-                    arrayCell.push(value);
-                    this.stack.push(arrayCell);
-                } else {
-                    this.fatal("stack error when executing AddNewElemV");
+                var array = this.stack.pop().value;
+                addElemHelper(this, value, array);
+            },
+            NewCol: function(colType, numElems) {
+                var col = new Collection(colType, numElems);
+                this.stack.push(new Cell(col));
+            },
+            ColAddElemC: function() {
+                var value = this.stack.pop();
+                var position = this.stack.pop().value;
+                var collection = this.stack.pop().value;
+                colAddElemHelper(this, value, collection, position);
+            },
+            ColAddNewElemC: function() {
+                var value = this.stack.pop();
+                var collection = this.stack.pop().value;
+                colAddElemHelper(this, value, collection);
+            },
+            Cns: function(name) {
+                var value = this.prog.getConstantByName(name);
+                cnsHelper(this, value, name, "notice");
+            },
+            CnsE: function(name) {
+                var value = this.prog.getConstantByName(name);
+                cnsHelper(this, value, name, "error");
+            },
+            CnsU: function(name, strFallback) {
+                var value = this.prog.getConstantByName(name);
+                if (!cnsHelper(this, value, name)) {
+                    this.hhbc.Cns(strFallback);
                 }
             },
-            //TODO: implement newCol, ColAddElemC, ColAddNewElemC when we have output from hhvm that shows what this is about.
-            Cns: function(litstrId) {
-                var constant = this.constant(litstrId);
-                if(constant == undefined){
-                    this.notice("NOTICE: constant not found by Cns.");
-                    this.stack.push(new Cell(litstrId));
-                } else {
-                    this.stack.push(new Cell(constant));
-                }
+            ClsCns: function(name) {
+                var classRef = this.stack.pop();
+                var classDef = classRef.value;
+                clsCnsHelper(this, classDef, name);
             },
-            CnsE: function(litstrId) {
-                var constant = this.constant(litstrId);
-                if(constant == undefined){
-                    this.fatal("constant not found by CnsE.");
-                } else {
-                    this.stack.push(new Cell(constant));
+            ClsCnsD: function(name, className) {
+                var classDef = this.prog.getClassByName(className);
+                if(classDef === undefined) {
+                    //TODO: make sure autoload is invoked when class is not defined yet.
                 }
-            },
-            CnsU: function(litstrId, litstrFallback) {
-                var constant = this.constant(litstrId);
-                if(constant == undefined){
-                    this.hhbc.Cns(litstrFallback);
-                } else {
-                    this.stack.push(new Cell(constant));
+
+                classDef = this.prog.getClassByName(className);
+                if(classDef === undefined){
+                    throw new Error("No class named '" + className + "'");
                 }
-            },
-            ClsCns: function(litstrId) {
-                var clsClass = this.stack.pop().value;
-                var clsConstant = this.classConstant(litstrId, clsClass);
-                if(clsConstant == undefined){
-                    this.fatal("class constant not found by ClsCns.");
-                } else {
-                    this.stack.push(new Cell(clsConstant));
-                }
-            },
-            ClsCnsD: function(litstrId, classId) {
-                var newClass = this.getClass(classId);
-                //TODO: make sure autoload is invoked when class is not defined yet.
-                if(newClass == undefined){
-                    this.fatal("class could not be loaded by ClsCnsD");
-                } else {
-                    var clsConstant = this.classConstant(litstrId, newClass);
-                    if(clsConstant == undefined){
-                        this.fatal("class constant could not be loaded by ClsCnsD");
-                    } else {
-                        this.stack.push(new Cell(clsConstant));
-                    }
-                }
+
+                clsCnsHelper(this, classDef, name);
             },
             File: function(){
                 this.stack.push(new Cell("__FILE__"));

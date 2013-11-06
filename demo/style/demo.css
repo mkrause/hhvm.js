@@ -2,15 +2,20 @@
     font-size: 16px;
 }
 
-#input {
+.examples {
+    margin-bottom: 10px;
+    min-height: 45px;
+}
+
+.btn {
+    width: 120px;
+}
+
+#input-php,
+#input-hhbc,
+#output {
+    height: 220px;
     font-family: monospace;
-}
-
-#btn-run {
-    width: 100px;
-}
-
-#btn-stop {
-    margin-left: 10px;
-    width: 100px;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }

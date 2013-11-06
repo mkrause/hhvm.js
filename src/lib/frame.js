@@ -1,23 +1,23 @@
 define([
         'vendor/underscore',
         'lib/stack',
-        'lib/fpi'
-    ], function(_, Stack, FPI) {
+        'lib/fpi',
+        'lib/variable_store'
+    ], function(_, Stack, FPI, VariableStore) {
         var Frame = function(fpi, parameters) {
+            parameters = parameters || [];
+
             // Header info
             this.functionName = fpi.functionName;
-            this.numParameters = fpi.numParameters;
 
             // Program counter
             this.pc = fpi.address;
 
             // Local variable store
-            this.localVarStore = {};
-            this.localVarNames = this.loadLocalVariableNames();
+            this.localVars = new VariableStore(fpi.localNames);
 
             // Iterator variable store
-            this.iteratorVarStore = {};
-            this.iteratorVarNames = this.loadIteratorVariableNames();
+            this.iteratorVars = new VariableStore();
 
             // Evaluation stack
             this.stack = new Stack();
@@ -26,36 +26,9 @@ define([
             this.FPIstack = new Stack();
 
             // Add parameters to local variable store
-            for (var i = 0; i < parameters.length; i++) {
-                var name = this.getLocalNameFromId(i);
-                this.localIteratorStore[name] = parameter;
-            }
-        };
-
-        Frame.prototype.getLocalNameFromId = function(id) {
-            return localVarNames[id];
-        };
-
-        Frame.prototype.getIteratorNameFromId = function(id) {
-            return iteratorVarNames[id];
-        };
-
-        Frame.prototype.getLocalIdFromName = function(name) {
-            return localVarNames.indexOf(name);
-        };
-
-        Frame.prototype.getIteratorIdFromName = function(name) {
-            return iteratorVarNames.indexOf(name);
-        };
-        
-        Frame.prototype.loadLocalVariableNames = function() {
-            // TODO: Lookup parameter names in data of functionName
-            return [];
-        };
-        
-        Frame.prototype.loadIteratorVariableNames = function() {
-            // TODO: Lookup parameter names in data of functionName
-            return [];
+            _(parameters.length).times(function(i) {
+                this.localVars.setById(i, parameters[i]);
+            }, this);
         };
         
         Frame.prototype.toString = function() {
