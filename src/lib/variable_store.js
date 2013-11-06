@@ -34,7 +34,7 @@ define([
         VariableStore.prototype.setById = function(id, value) {
             if (this.store[id] instanceof Cell && value instanceof Cell) {
                 this.store[id].value = value.value;
-            } if (value instanceof Ref) {
+            } else if (value instanceof Ref) {
                 this.store[id] = value.cell;
             } else {
                 this.store[id] = value;
