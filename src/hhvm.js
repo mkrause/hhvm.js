@@ -241,10 +241,10 @@ define([
                 (function async() {
                     // How many ms to run before we return execution to the browser
                     var executionTime = 10;
-                    var now = (new Date).getTime();
+                    var now = (new Date()).getTime();
                     var endTime = now + executionTime;
                     
-                    while ((new Date).getTime() < endTime) {
+                    while ((new Date()).getTime() < endTime) {
                         if (vm.running) {
                             performStep();
                         } else {

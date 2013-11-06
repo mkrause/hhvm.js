@@ -139,7 +139,7 @@
             .done(function(data) {
                 var prog = new Program(data);
                 vm.program(prog);
-                $('#output').val("Program externally compiled");
+                $('#output').val("Program compiled");
                 changeState("idle");
                 console.log(data.units[0].toString_DEBUG);
             })
@@ -175,7 +175,7 @@
             try {
                 var prog = assemble(hhbcEditor.getValue());
                 vm.program(prog);
-                $('#output').val("Program assembled");
+                $('#output').val("Program compiled");
             } catch (e) {
                 $('#output').val("PARSE ERROR: " + e);
             } finally {
