@@ -1,9 +1,18 @@
 define([
-        'vendor/underscore'
-    ], function(_) {
+        'vendor/underscore',
+        'lib/classdef'
+    ], function(_, ClassDef) {
         var Program = function(programdata) {
             this.data = programdata;
             this.currentUnit = 0;
+            this.classes = [];
+        };
+
+        Program.prototype.initialize = function() {
+            this.classes = [];
+            _.each(this.data.units[this.currentUnit].classes, function(classmeta, id) {
+                this.classes[id] = new ClassDef(classmeta);
+            }, this);
         };
 
         Program.prototype.getByteCode = function() {
@@ -44,14 +53,14 @@ define([
             return array;
         };
 
-        Program.prototype.getConstantByName = function(name) {
-            // TODO: implement
-            return undefined;
+        Program.prototype.getClassById = function(id) {
+            return this.classes[id];
         };
 
         Program.prototype.getClassByName = function(name) {
-            // TODO: implement
-            return undefined;
+            return _.find(this.classes, function(classDef) {
+                return classDef.name === name;
+            });
         };
         
         return Program;

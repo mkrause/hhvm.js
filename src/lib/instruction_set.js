@@ -11,10 +11,11 @@ define([
         'lib/instructions/mutator',
         'lib/instructions/call',
         'lib/instructions/isset',
+        'lib/instructions/include',
         'lib/instructions/misc',
         'lib/instructions/member_instructions',
         'lib/instructions/member_operations'
-    ], function(_, opcodeToInstr, mnemonicToOpcode, basic, literals, operators, controlFlow, getInstr, mutators, calls, isset, misc, member_instructions, member_operations) {
+    ], function(_, opcodeToInstr, mnemonicToOpcode, basic, literals, operators, controlFlow, getInstr, mutators, calls, isset, include, misc, member_instructions, member_operations) {
         // Instruction modules
         var modules = [
             basic,
@@ -25,6 +26,7 @@ define([
             mutators,
             calls,
             isset,
+            include,
             misc,
             member_instructions
         ];

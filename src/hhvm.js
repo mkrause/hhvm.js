@@ -48,6 +48,7 @@ define([
             this.prog = null;
             this.heap = {};
             this.globalVars = null;
+            this.constantVars = null;
 
             // The call stack containing the activation frames.
             this.callStack = new Stack();
@@ -67,6 +68,7 @@ define([
             this.fpiStack = null;
             this.heap = {};
             this.globalVars = null;
+            this.constantVars = null;
         };
         
         // Change the program counter using an offset
@@ -205,7 +207,9 @@ define([
             
             this.running = true;
             this.dispatcher.initialize();
+            this.prog.initialize();
             this.globalVars = this.currentFrame.localVars;
+            this.constantVars = {};
             
             // Step function: perform one execution step, then call a timeout to asynchronously
             // call itself again as soon as possible.

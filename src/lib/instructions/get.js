@@ -1,8 +1,9 @@
 define([
         'vendor/underscore',
         'lib/cell',
-        'lib/ref'
-    ], function(_, Cell, Ref) {
+        'lib/ref',
+        'lib/classref'
+    ], function(_, Cell, Ref, ClassRef) {
 
         var cGetHelper = function(vm, cell, name) {
             if(cell === undefined) {
@@ -19,6 +20,34 @@ define([
 
             // Box if necessary and push on stack
             vm.stack.push((cell instanceof Ref) ? cell : new Ref(cell));
+        };
+        var sHelper = function(classDef, name) {
+            var prop = classDef.staticProperties.getByName(name);
+            if (prop === undefined) {
+                throw new Error("No accessible static property named " + name + " in class " + classDef.name);
+            }
+            return prop;
+        };
+        var aGetHelper = function(vm, value) {
+            var className;
+            if(_.isString(value)) {
+                className = value;
+            } else if(_.isObject(value)) {
+                className = value.getClassName();
+            } else {
+                throw new Error("Operation not supported on types other than strings and objects");
+            }
+
+            var classDef = vm.prog.getClassByName(className);
+            if(classDef === undefined) {
+                //TODO: make sure autoload is invoked when class is not defined yet.
+                classDef = vm.prog.getClassByName(className);
+            }
+
+            if(classDef === undefined) {
+                throw new Error("No class named " + className);
+            }
+            vm.stack.push(new ClassRef(classDef));
         };
 
         return {
@@ -50,7 +79,10 @@ define([
                 cGetHelper(this, value, name);
             },
             CGetS: function() {
-                //TODO: implement
+                var classDef = this.stack.pop().classDef;
+                var name = this.stack.pop().toString();
+                var prop = sHelper(classDef, name);
+                this.stack.push(new Cell(prop.value));
             },
             VGetL: function(id) {
                 var value = this.currentFrame.localVars.getById(id);
@@ -68,13 +100,18 @@ define([
                 vGetHelper(this, value, name, this.globalVars);
             },
             VGetS: function() {
-                //TODO: implement
+                var classDef = this.stack.pop().classDef;
+                var name = this.stack.pop().toString();
+                var prop = sHelper(classDef, name);
+                this.stack.push(new Ref(prop));
             },
             AGetC: function() {
-                //TODO: implement
+                var value = this.stack.pop().toString();
+                aGetHelper(this, value);
             },
             AGetL: function(id) {
-                //TODO: implement
+                var value = this.currentFrame.localVars.getById(id).value;
+                aGetHelper(this, value);
             }
         };
     }

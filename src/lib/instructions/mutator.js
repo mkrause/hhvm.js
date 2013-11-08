@@ -46,8 +46,15 @@ define([
             }
         };
 
+        var sHelper = function(classDef, name) {
+            var prop = classDef.staticProperties.getByName(name);
+            if (prop === undefined) {
+                throw new Error("No accessible static property named " + name + " in class " + classDef.name);
+            }
+            return prop;
+        };
+
         return {
-            //TODO: implement missing functions
             SetL: function(id) {
                 var value = this.stack.pop();
                 this.currentFrame.localVars.setById(id, value);
@@ -63,6 +70,13 @@ define([
                 var name = this.stack.pop().toString();
                 var value = this.stack.pop();
                 this.globalVars.setByName(name, value);
+                this.stack.push(value);
+            },
+            SetS: function() {
+                var value = this.stack.pop();
+                var classDef = this.stack.pop().classDef;
+                var name = this.stack.pop().toString();
+                classDef.staticProperties.setByName(name, value);
                 this.stack.push(value);
             },
             SetOpL: function(id, op) {
@@ -93,6 +107,18 @@ define([
 
                 setOpHelper(this, this.globalVars, name, op, pushArguments);
             },
+            SetOpS: function(op) {
+                var cell = this.stack.pop();
+                var classDef = this.stack.pop().classDef;
+                var name = this.stack.pop().toString();
+                var prop = sHelper(classDef, name);
+                var pushArguments = _.bind(function() {
+                    this.stack.push(prop);
+                    this.stack.push(cell);
+                }, this);
+
+                setOpHelper(this, classDef.staticProperties, name, op, pushArguments);
+            },
             IncDecL: function(id, op) {
                 var name = this.currentFrame.localVars.getNameFromId(id);
                 incDecHelper(this, this.currentFrame.localVars, name, op);
@@ -104,6 +130,11 @@ define([
             IncDecG: function(op) {
                 var name = this.stack.pop().toString();
                 incDecHelper(this, this.globalVars, name, op);
+            },
+            IncDecS: function(op) {
+                var classDef = this.stack.pop().classDef;
+                var name = this.stack.pop().toString();
+                incDecHelper(this, classDef.staticProperties, name, op);
             },
             BindL: function(id) {
                 var ref = this.stack.peek();
@@ -118,7 +149,14 @@ define([
             BindG: function() {
                 var ref = this.stack.pop();
                 var name = this.stack.pop().toString();
-                this.globalVars.getByName(name, ref);
+                this.globalVars.setByName(name, ref);
+                this.stack.push(ref);
+            },
+            BindS: function() {
+                var ref = this.stack.pop();
+                var classDef = this.stack.pop().classDef;
+                var name = this.stack.pop().toString();
+                classDef.staticProperties.setByName(name, ref);
                 this.stack.push(ref);
             },
             UnsetL: function(id) {
